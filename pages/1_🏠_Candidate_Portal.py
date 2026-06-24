@@ -319,7 +319,7 @@ def render_resume_editor():
             for page in doc:
                 pix = page.get_pixmap(dpi=150)
                 img_data = pix.tobytes("png")
-                st.image(img_data, use_container_width=True)
+                st.image(img_data, use_column_width=True)
         except Exception as e:
             st.error(f"Could not render PDF preview: {e}")
 

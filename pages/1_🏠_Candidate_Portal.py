@@ -311,15 +311,22 @@ def render_resume_editor():
     # Initialize structured lists from plain text area states
     init_structured_lists()
     
-    # Helper to render PDF pages as images to bypass Chrome security blocks
+    # Helper to render PDF pages as styled images to bypass Chrome security blocks and maintain proportions
     def display_pdf_as_images(pdf_path):
         import fitz
+        import base64
         try:
             doc = fitz.open(pdf_path)
             for page in doc:
                 pix = page.get_pixmap(dpi=150)
-                img_data = pix.tobytes("png")
-                st.image(img_data, use_column_width=True)
+                img_bytes = pix.tobytes("png")
+                base64_img = base64.b64encode(img_bytes).decode('utf-8')
+                st.markdown(
+                    f'<div style="display: flex; justify-content: center; margin-bottom: 20px;">'
+                    f'<img src="data:image/png;base64,{base64_img}" style="width: 100%; max-width: 600px; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);" />'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
         except Exception as e:
             st.error(f"Could not render PDF preview: {e}")
 

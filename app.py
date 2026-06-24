@@ -2,19 +2,22 @@ import streamlit as st
 import subprocess
 import sys
 
-# Ensure Playwright library and Chromium binary are installed on startup
-try:
-    import playwright
-except ImportError:
+# Ensure Playwright library and Chromium binary are installed on startup (cached to run only once)
+@st.cache_resource
+def ensure_playwright_installed():
     try:
-        subprocess.run([sys.executable, "-m", "pip", "install", "playwright"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        import playwright
+    except ImportError:
+        subprocess.run([sys.executable, "-m", "pip", "install", "playwright"], check=True)
+    
+    try:
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            p.chromium.launch(headless=True)
     except Exception:
-        pass
+        subprocess.run([sys.executable, "-m", "playwright", "install", "chromium"], check=True)
 
-try:
-    subprocess.run([sys.executable, "-m", "playwright", "install", "chromium"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-except Exception:
-    pass
+ensure_playwright_installed()
 
 from auth_utils import login_user, register_user, logout_user
 
@@ -101,4 +104,3 @@ else:
     # Run navigation
     pg = st.navigation(pages)
     pg.run()
-

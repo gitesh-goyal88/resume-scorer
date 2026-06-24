@@ -12,3 +12,4 @@ requests
 certifi
 rank-bm25
 nltk
+playwright

@@ -1,4 +1,13 @@
 import streamlit as st
+import subprocess
+import sys
+
+# Ensure Playwright Chromium browser binary is installed on startup
+try:
+    subprocess.run([sys.executable, "-m", "playwright", "install", "chromium"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+except Exception as e:
+    st.warning(f"⚠️ Playwright auto-install check failed: {e}")
+
 from auth_utils import login_user, register_user, logout_user
 
 st.set_page_config(

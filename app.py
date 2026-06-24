@@ -1,4 +1,12 @@
 import streamlit as st
+
+st.set_page_config(
+    page_title="ResumeIQ | AI Candidate OS",
+    page_icon="⚡",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 import subprocess
 import sys
 
@@ -21,12 +29,8 @@ ensure_playwright_installed()
 
 from auth_utils import login_user, register_user, logout_user
 
-st.set_page_config(
-    page_title="ResumeIQ | AI Candidate OS",
-    page_icon="⚡",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+
+
 
 # Hide Streamlit elements and apply light mode css
 st.markdown("""

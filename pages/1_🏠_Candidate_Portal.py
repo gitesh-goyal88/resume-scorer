@@ -1074,9 +1074,21 @@ if st.session_state.resume_text:
     </div>
     """, unsafe_allow_html=True)
 
+    # Compile current active skills to reflect manual edits in the editor
+    active_skills = []
+    if "edit_skills_languages_list" in st.session_state and st.session_state.edit_skills_languages_list is not None:
+        active_skills.extend([s.strip() for s in st.session_state.edit_skills_languages_list if s.strip()])
+    if "edit_skills_tools_list" in st.session_state and st.session_state.edit_skills_tools_list is not None:
+        active_skills.extend([s.strip() for s in st.session_state.edit_skills_tools_list if s.strip()])
+    if "edit_skills_soft_list" in st.session_state and st.session_state.edit_skills_soft_list is not None:
+        active_skills.extend([s.strip() for s in st.session_state.edit_skills_soft_list if s.strip()])
+    if not active_skills and st.session_state.get("skills"):
+        active_skills = list(st.session_state.skills)
+    active_skills = list(set(active_skills))
+
     @st.dialog("Your Auto-Generated LinkedIn Bio")
     def show_linkedin_bio():
-        skills_str = ", ".join(st.session_state.skills[:5]) if st.session_state.skills else "problem-solving"
+        skills_str = ", ".join(active_skills[:5]) if active_skills else "problem-solving"
         bio = f"Driven and detail-oriented {role} with a proven track record of delivering high-quality results. Skilled in {skills_str}, I thrive in collaborative environments where I can leverage technology to solve complex problems.\n\nAlways eager to learn and adapt to new challenges, I am currently looking for opportunities to bring my expertise to an innovative team."
         st.write("Copy and paste this into your LinkedIn 'About' section:")
         st.code(bio, language="markdown")
@@ -1094,8 +1106,11 @@ if st.session_state.resume_text:
     presentation_score = st.session_state.health_data["score"]
     
     # 2. Competencies = ATS Market Skill Alignment (from gaps)
+    # Dynamically compute gaps based on active skills and target role
+    gaps = get_market_skill_gaps(st.session_state.predicted_role, active_skills)
+    st.session_state.market_gaps = gaps
+    
     competencies_score = 100
-    gaps = st.session_state.market_gaps or {"matched": [], "missing": []}
     if len(gaps["matched"]) + len(gaps["missing"]) > 0:
         competencies_score = int((len(gaps["matched"]) / (len(gaps["matched"]) + len(gaps["missing"]))) * 100)
         
@@ -1152,7 +1167,7 @@ if st.session_state.resume_text:
     
     with col_radar:
         st.markdown("### 🕸️ Skill Distribution")
-        skill_cats = categorize_skills(st.session_state.skills or [])
+        skill_cats = categorize_skills(active_skills)
         fig_radar = create_radar_chart(skill_cats)
         st.pyplot(fig_radar)
         plt.close(fig_radar)

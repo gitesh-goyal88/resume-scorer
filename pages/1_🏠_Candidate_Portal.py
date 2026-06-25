@@ -1099,6 +1099,23 @@ if st.session_state.resume_text:
     st.markdown("---")
     yoe = st.session_state.get("yoe", 0.0)
     st.header(f"📊 VMock Benchmark Report: {role} ({yoe} YoE)")
+    
+    # 🎯 Role override selectbox directly in the report view
+    from analyzer import MARKET_SKILLS
+    role_options = sorted(list(MARKET_SKILLS.keys()))
+    if role not in role_options:
+        role_options.append(role)
+        role_options = sorted(role_options)
+        
+    selected_role = st.selectbox(
+        "🎯 Target Job Role for Skills Benchmarking (change this if the ML classification is incorrect):",
+        options=role_options,
+        index=role_options.index(role)
+    )
+    if selected_role != role:
+        st.session_state.predicted_role = selected_role
+        st.rerun()
+        
     st.markdown("Your resume is scored on three academic pillars: Impact, Presentation, and Competencies.")
     
     # Calculate VMock Pillars

@@ -20,6 +20,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.naive_bayes import MultinomialNB
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, mean_squared_error, classification_report
 
 
@@ -167,14 +168,18 @@ def compute_health_score(features: dict) -> dict:
 
 
 # ===========================================================================================
-# MODEL 3: Bullet Point Impact Classifier (MultinomialNB)
+# ===========================================================================================
+# MODEL 3: Bullet Point Impact Classifier (Logistic Regression & Weak Supervision)
 # ===========================================================================================
 
 def _get_bullet_dataset() -> tuple:
     """
-    Return a hardcoded list of ~100 bullet points labelled 1 (strong) / 0 (weak).
+    Return a comprehensive bullet point dataset.
+    Combines high-quality expert-written templates with thousands of programmatically
+    extracted and weakly-labeled bullet points from the main resume dataset (Distant Supervision).
     """
-    strong = [
+    # Expert base cases
+    strong_expert = [
         "Increased revenue by 35% by redesigning the checkout flow using React",
         "Reduced server response time by 40% through optimizing SQL queries and implementing Redis caching",
         "Led a team of 8 engineers to deliver a microservices migration 2 weeks ahead of schedule",
@@ -227,7 +232,7 @@ def _get_bullet_dataset() -> tuple:
         "Reduced Docker image sizes by 70% through multi-stage builds and Alpine base images",
     ]
 
-    weak = [
+    weak_expert = [
         "Was responsible for handling the website",
         "Helped with various tasks in the office",
         "Worked on software development projects",
@@ -280,26 +285,78 @@ def _get_bullet_dataset() -> tuple:
         "Managed communication between departments",
     ]
 
+    # Distant/Weak Supervision Extraction from the Main Dataset
+    strong_extracted = []
+    weak_extracted = []
+    
+    data_path = os.path.join("data", "UpdatedResumeDataSet.csv")
+    if os.path.exists(data_path):
+        try:
+            df = pd.read_csv(data_path)
+            action_verbs = {"developed", "led", "managed", "created", "built", "improved", "designed", "optimized", "spearheaded", "implemented", "delivered", "reduced", "increased", "achieved", "solved", "architected", "automated"}
+            
+            for resume_text in df["Resume"]:
+                if not isinstance(resume_text, str):
+                    continue
+                # Split text into lines
+                lines = [line.strip() for line in resume_text.split("\n")]
+                for line in lines:
+                    if len(line) < 20 or len(line) > 250:
+                        continue
+                    
+                    # Heuristics for Distant labeling
+                    words = [w.lower() for w in re.findall(r'\b[a-zA-Z]+\b', line)]
+                    if not words:
+                        continue
+                    
+                    has_action = any(w in action_verbs for w in words)
+                    has_metric = bool(re.search(r'\b\d+%\b|\$\d+|\b\d+\b', line))
+                    length_ok = len(words) >= 6
+                    
+                    if has_action and has_metric and length_ok:
+                        strong_extracted.append(line)
+                    elif not has_action and not has_metric:
+                        weak_extracted.append(line)
+        except Exception as e:
+            print(f"Error loading dataset for weak supervision: {e}")
+            
+    # De-duplicate
+    strong_extracted = list(set(strong_extracted))
+    weak_extracted = list(set(weak_extracted))
+    
+    # Combine expert templates and weakly-supervised data
+    strong = strong_expert + strong_extracted
+    weak = weak_expert + weak_extracted
+    
+    # Sub-sample to balance dataset (50% Strong / 50% Weak)
+    import random
+    random.seed(42)
+    min_size = min(len(strong), len(weak))
+    
+    strong = random.sample(strong, min_size)
+    weak = random.sample(weak, min_size)
+    
     texts = strong + weak
     labels = [1] * len(strong) + [0] * len(weak)
+    
     return texts, labels
 
 
 def train_bullet_classifier() -> dict:
     """
-    Train a MultinomialNB model to classify resume bullet points as
-    Strong (1) or Weak (0) and save to disk.
+    Train a Logistic Regression model to classify resume bullet points as
+    Strong (1) or Weak (0) using TF-IDF and Distant Supervision.
 
     Returns a dict with accuracy and classification report string.
     """
     print("=" * 70)
-    print("MODEL 3: Bullet Point Impact Classifier (MultinomialNB)")
+    print("MODEL 3: Bullet Point Impact Classifier (Logistic Regression)")
     print("=" * 70)
 
     texts, labels = _get_bullet_dataset()
     print(f"Total bullet points: {len(texts)}  (Strong: {sum(labels)}, Weak: {len(labels) - sum(labels)})")
 
-    tfidf = TfidfVectorizer(max_features=500, stop_words="english")
+    tfidf = TfidfVectorizer(max_features=800, stop_words="english", ngram_range=(1, 2))
     X = tfidf.fit_transform(texts)
     y = labels
 
@@ -307,12 +364,12 @@ def train_bullet_classifier() -> dict:
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    nb = MultinomialNB()
-    nb.fit(X_train, y_train)
+    clf = LogisticRegression(random_state=42, max_iter=1000)
+    clf.fit(X_train, y_train)
 
-    train_acc = accuracy_score(y_train, nb.predict(X_train))
-    test_acc = accuracy_score(y_test, nb.predict(X_test))
-    report = classification_report(y_test, nb.predict(X_test), target_names=["Weak", "Strong"])
+    train_acc = accuracy_score(y_train, clf.predict(X_train))
+    test_acc = accuracy_score(y_test, clf.predict(X_test))
+    report = classification_report(y_test, clf.predict(X_test), target_names=["Weak", "Strong"])
 
     print(f"Train accuracy: {train_acc:.4f}")
     print(f"Test  accuracy: {test_acc:.4f}")
@@ -321,7 +378,7 @@ def train_bullet_classifier() -> dict:
 
     os.makedirs("models", exist_ok=True)
     with open(os.path.join("models", "bullet_classifier.pkl"), "wb") as f:
-        pickle.dump(nb, f)
+        pickle.dump(clf, f)
     with open(os.path.join("models", "bullet_vectorizer.pkl"), "wb") as f:
         pickle.dump(tfidf, f)
 

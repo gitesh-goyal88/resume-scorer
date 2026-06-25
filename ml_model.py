@@ -140,7 +140,7 @@ def compute_health_score(features: dict) -> dict:
     verb_score     = min(features.get("action_verb_count", 0) / 10 * 100, 100)
     metrics_score  = min(features.get("metrics_count", 0) / 5 * 100, 100)
     section_score  = (features.get("section_count", 0) / 4) * 100
-    format_score   = max(100 - features.get("formatting_penalty", 0) * 15, 0)
+    format_score   = max(100 - features.get("formatting_penalty", 0), 0)
     
     total = (
         skill_score   * 0.30 +

@@ -1234,14 +1234,22 @@ if st.session_state.resume_text:
         has_metric = bool(re.search(r'\b\d+%\b|\$\d+|\b\d+\b', text))
         
         feedback = []
-        if has_action and has_metric:
+        # Check for action verb
+        if not has_action:
+            feedback.append("Missing strong action verb (e.g. 'led', 'developed').")
+            
+        # Only require a metric if the bullet describes an impact/achievement/scale
+        impact_words = ["increase", "decrease", "improve", "reduce", "grow", "save", "cut", "boost",
+                        "revenue", "scale", "user", "load", "latency", "time", "speed", "performance",
+                        "cost", "budget", "efficient", "optimize", "accelerate", "expand", "lead", "manage"]
+        needs_metric = any(w in text.lower() for w in impact_words)
+        
+        if needs_metric and not has_metric:
+            feedback.append("Missing quantifiable metric (e.g. '20%', '$50k', '5+ developers').")
+            
+        if not feedback:
             st.markdown(f"<div class='bullet-card b-strong'>✅ <strong>Perfect Impact</strong><br><i>\"{text}\"</i></div>", unsafe_allow_html=True)
         else:
-            if not has_action:
-                feedback.append("Missing strong action verb (e.g. 'led', 'developed').")
-            if not has_metric:
-                feedback.append("Missing quantifiable metric (e.g. '20%', '$50k').")
-            
             feedback_str = " | ".join(feedback)
             st.markdown(f"<div class='bullet-card b-weak'>⚠️ <strong>Needs Work</strong><br><i>\"{text}\"</i><br><span class='b-sugg'>💡 Feedback: {feedback_str}</span></div>", unsafe_allow_html=True)
 

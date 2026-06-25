@@ -8,17 +8,29 @@ from collections import Counter
 
 # Common tech and soft skills for basic extraction
 COMMON_SKILLS = {
-    "python", "java", "c++", "c#", "javascript", "typescript", "react", "angular", "vue",
-    "node.js", "express", "django", "flask", "fastapi", "spring boot", "ruby", "rails",
-    "php", "laravel", "go", "rust", "swift", "kotlin", "html", "css", "sql", "mysql",
-    "postgresql", "mongodb", "redis", "docker", "kubernetes", "aws", "azure", "gcp",
-    "git", "github", "gitlab", "linux", "bash", "jenkins", "ci/cd", "terraform", "agile",
-    "scrum", "machine learning", "data analysis", "artificial intelligence", "nlp",
-    "pandas", "numpy", "scikit-learn", "tensorflow", "pytorch", "tableau", "power bi",
-    "excel", "communication", "leadership", "problem solving", "teamwork"
+    # Programming Languages & Core tech
+    "python", "java", "c++", "c#", "javascript", "typescript", "php", "go", "rust", "swift", "kotlin", "ruby", "sql", "html", "css", "solidity", "scala",
+    # Frameworks & Libraries
+    "react", "angular", "vue", "node.js", "express", "django", "flask", "fastapi", "spring boot", "rails", "laravel", "hibernate", "entity framework",
+    "numpy", "pandas", "scikit-learn", "tensorflow", "pytorch", "bootstrap", "tailwind", "jquery",
+    # Databases & Big Data
+    "postgresql", "mysql", "mongodb", "redis", "oracle", "sql server", "nosql", "hadoop", "spark", "hive", "mapreduce", "hdfs", "kafka", "pig",
+    # DevOps, Cloud & Tools
+    "docker", "kubernetes", "aws", "azure", "gcp", "git", "github", "gitlab", "jenkins", "ci/cd", "terraform", "ansible", "bash", "linux", "wireshark",
+    "jira", "confluence", "postman", "prometheus", "grafana", "figma", "tableau", "power bi", "excel",
+    # Domain concepts (QA, PMO, Business, Legal, HR, etc.)
+    "agile", "scrum", "manual testing", "test automation", "selenium", "cucumber", "testng", "junit", "api testing", "regression testing", "load testing",
+    "cybersecurity", "firewalls", "vpn", "penetration testing", "siem", "sap abap", "sap hana", "fiori", "autocad", "solidworks", "matlab", "ansys",
+    "structural analysis", "gis", "surveying", "legal research", "litigation", "contracts", "compliance", "intellectual property",
+    "copywriting", "content writing", "seo", "blogging", "graphic design", "adobe photoshop", "creative direction", "photography",
+    "recruitment", "onboarding", "employee relations", "performance management", "human resources", "talent acquisition",
+    "b2b", "crm", "salesforce", "negotiation", "lead generation", "account management", "operations", "supply chain", "logistics", "six sigma",
+    "pmp", "budgeting", "risk management", "resource planning", "governance", "business analysis", "requirements gathering", "uml", "user stories",
+    "process mapping", "smart contracts", "cryptography", "dapps", "hyperledger", "nutrition", "wellness", "fitness coaching", "physiotherapy",
+    "communication", "leadership", "problem solving", "teamwork"
 }
 
-# Advanced Market Skills Knowledge Base
+# Advanced Market Skills Knowledge Base covering all 25 classes in the dataset
 MARKET_SKILLS = {
     "Data Science": ["python", "sql", "machine learning", "pandas", "numpy", "scikit-learn", "tensorflow", "pytorch", "aws", "docker"],
     "Java Developer": ["java", "spring boot", "sql", "hibernate", "microservices", "docker", "kubernetes", "aws", "git", "ci/cd"],
@@ -27,7 +39,25 @@ MARKET_SKILLS = {
     "HR": ["recruitment", "onboarding", "employee relations", "performance management", "communication", "human resources", "talent acquisition"],
     "Mechanical Engineer": ["autocad", "solidworks", "matlab", "ansys", "manufacturing", "project management", "thermodynamics"],
     "Sales": ["b2b", "crm", "salesforce", "communication", "negotiation", "lead generation", "account management"],
-    "Operations Manager": ["operations", "supply chain", "logistics", "agile", "six sigma", "project management", "leadership"]
+    "Operations Manager": ["operations", "supply chain", "logistics", "agile", "six sigma", "project management", "leadership"],
+    "Advocate": ["legal research", "litigation", "contracts", "corporate law", "compliance", "drafting", "advocacy", "intellectual property"],
+    "Arts": ["graphic design", "illustration", "adobe photoshop", "creative direction", "fine arts", "photography", "digital art", "typography"],
+    "Database": ["sql", "oracle", "database administration", "postgresql", "mysql", "performance tuning", "backup & recovery", "nosql", "mongodb", "data warehousing"],
+    "Health and fitness": ["nutrition", "personal training", "wellness", "fitness coaching", "anatomy", "cardio", "health education", "physiotherapy"],
+    "PMO": ["project management", "pmp", "agile", "scrum", "budgeting", "risk management", "resource planning", "jira", "governance"],
+    "Business Analyst": ["business analysis", "requirements gathering", "sql", "jira", "uml", "agile", "user stories", "tableau", "process mapping", "data analysis"],
+    "DotNet Developer": ["c#", ".net core", "asp.net", "entity framework", "sql server", "mvc", "web api", "javascript", "git", "azure"],
+    "Automation Testing": ["selenium", "java", "python", "test automation", "cucumber", "testng", "junit", "jenkins", "git", "api testing", "postman"],
+    "Network Security Engineer": ["firewalls", "cisco", "network security", "routing & switching", "vpn", "cybersecurity", "wireshark", "penetration testing", "siem"],
+    "SAP Developer": ["sap abap", "sap hana", "sap erp", "fiori", "abap oo", "sapui5", "sap gateway", "sap workflows", "sql"],
+    "Civil Engineer": ["autocad", "civil engineering", "structural analysis", "concrete design", "project estimation", "gis", "construction management", "surveying"],
+    "Python Developer": ["python", "django", "flask", "fastapi", "sql", "git", "docker", "rest apis", "postgresql", "celery", "numpy", "pandas"],
+    "Copywriter": ["copywriting", "content writing", "seo", "blogging", "editing", "proofreading", "creative writing", "social media marketing", "brand messaging"],
+    "DevOps Engineer": ["docker", "kubernetes", "jenkins", "ansible", "terraform", "aws", "git", "linux", "ci/cd", "bash", "prometheus", "grafana"],
+    "Hadoop": ["hadoop", "spark", "hive", "mapreduce", "hdfs", "scala", "python", "sql", "big data", "pig", "kafka"],
+    "ETL Developer": ["etl", "informatica", "sql", "data warehousing", "talend", "data integration", "ssis", "oracle", "data modeling", "pl/sql"],
+    "Blockchain": ["solidity", "ethereum", "blockchain", "smart contracts", "cryptography", "web3.js", "rust", "go", "dapps", "hyperledger"],
+    "Testing": ["manual testing", "test cases", "regression testing", "bug tracking", "jira", "software quality assurance", "system testing"]
 }
 
 def extract_text_from_pdf(pdf_path: str) -> str:

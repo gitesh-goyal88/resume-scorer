@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
 from database import get_leaderboard_data
+from ui_utils import inject_custom_css
+inject_custom_css()
 
-
-
-
-st.title("🏆 Global Candidate Leaderboard")
+st.markdown("<h1 class='gradient-title' style='font-size: 2.8rem; margin-bottom: 5px; padding-bottom: 10px;'>🏆 Global Candidate Leaderboard</h1>", unsafe_allow_html=True)
 st.markdown("Rankings are computed using **Industry Centroid Cosine Similarity** combined with **NLP Heuristic Health Scores**.")
 
 if 'user_id' not in st.session_state or st.session_state.user_id is None:

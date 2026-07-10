@@ -1,19 +1,18 @@
 import streamlit as st
 import pandas as pd
 from database import insert_application, get_all_applications, update_application_status
-
-
-
+from ui_utils import inject_custom_css
+inject_custom_css()
 
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;}
     [data-testid="stAppDeployButton"] {display: none;}
     footer {visibility: hidden;}
-    .kanban-col { background: #F8FAFC; padding: 15px; border-radius: 8px; border: 1px solid #E2E8F0; min-height: 400px; }
-    .job-card { background: #FFFFFF; padding: 15px; border-radius: 6px; border-left: 4px solid #2563EB; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 15px; }
-    .job-title { margin: 0 0 5px 0; font-size: 16px; color: #1E293B; }
-    .job-company { margin: 0 0 10px 0; font-size: 14px; color: #64748B; }
+    .kanban-col { background: #111827; padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); min-height: 400px; }
+    .job-card { background: #1E293B; padding: 15px; border-radius: 8px; border-left: 4px solid #2563EB; box-shadow: 0 4px 6px rgba(0,0,0,0.15); margin-bottom: 15px; border-top: 1px solid rgba(255,255,255,0.04); border-right: 1px solid rgba(255,255,255,0.04); border-bottom: 1px solid rgba(255,255,255,0.04); }
+    .job-title { margin: 0 0 5px 0; font-size: 16px; color: #F1F5F9 !important; font-family: "Outfit", sans-serif; font-weight: 600; }
+    .job-company { margin: 0 0 10px 0; font-size: 14px; color: #94A3B8 !important; }
 </style>
 """, unsafe_allow_html=True)
 

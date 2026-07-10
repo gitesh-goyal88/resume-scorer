@@ -27,6 +27,8 @@ from resume_builder import generate_interview_questions, generate_enhanced_pdf
 from database import insert_candidate, save_user_resume, get_user_resumes
 from job_matcher import get_domain_centroid_score
 import shutil
+from ui_utils import inject_custom_css
+inject_custom_css()
 
 # ── Session state init ─────────────────────────────────────────────────────────
 for key in ["resume_text", "resume_path", "skills", "predicted_role", "issues",
@@ -872,21 +874,9 @@ def estimate_salary(role, ats_score):
     return f"${low:,} - ${high:,}"
 
 # ── Main UI ────────────────────────────────────────────────────────────────────
-st.markdown("""
-<style>
-.skill-tag { display: inline-block; padding: 4px 10px; border-radius: 12px; margin: 4px; font-size: 13px; font-weight: 500; }
-.skill-match { background: #D1FAE5; color: #065F46; border: 1px solid #10B981; }
-.skill-miss { background: #FEE2E2; color: #991B1B; border: 1px solid #EF4444; }
-.bullet-card { padding: 10px; margin-bottom: 8px; background: #FFFFFF; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #E2E8F0; }
-.b-strong { border-left: 4px solid #10B981; }
-.b-weak { border-left: 4px solid #EF4444; }
-.b-sugg { color: #2563EB; font-weight: bold; font-size: 13px;}
-.info-card { background: #F0F9FF; border: 1px solid #BAE6FD; padding: 16px; border-radius: 8px; margin-bottom: 16px;}
-</style>
-""", unsafe_allow_html=True)
-
-st.title("📄 Candidate Portal")
-st.markdown("Upload your resume to get your **Full Report**, Salary Estimate, and tailored LinkedIn bio.")
+# UI Customization styles are injected globally from ui_utils.py
+st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'>📄 Candidate Portal</h1>", unsafe_allow_html=True)
+st.markdown("<p class='sub-heading'>Upload your resume to get your <b>Full Report</b>, Salary Estimate, and tailored LinkedIn bio.</p>", unsafe_allow_html=True)
 
 col1, col2 = st.columns([2, 1])
 with col1:
@@ -1239,14 +1229,27 @@ if st.session_state.resume_text:
                 if not courses:
                     st.info(f"Could not fetch live courses for {skill}. Try checking Udemy manually.")
                 else:
+                    accent = st.session_state.get("theme_accent", "Green")
+                    accent_colors = {
+                        "Blue": "#60A5FA", "Green": "#1ed760", "Red": "#fb7185", "Purple": "#a78bfa", "Amber": "#facc15"
+                    }
+                    bg_trans = {
+                        "Blue": "rgba(96, 165, 250, 0.15)", "Green": "rgba(30, 215, 96, 0.15)",
+                        "Red": "rgba(251, 113, 133, 0.15)", "Purple": "rgba(167, 139, 250, 0.15)", "Amber": "rgba(250, 204, 21, 0.15)"
+                    }
+                    active_color = accent_colors.get(accent, "#1ed760")
+                    active_bg = bg_trans.get(accent, "rgba(30, 215, 96, 0.15)")
+
                     cols = st.columns(3)
                     for j, course in enumerate(courses[:3]):
                         with cols[j]:
                             st.markdown(f"""
-                            <div style='background:#FFFFFF; padding:15px; border-radius:8px; border:1px solid #E2E8F0; box-shadow:0 2px 4px rgba(0,0,0,0.05); height:100%;'>
-                                <span style='font-size:12px; color:#64748B; font-weight:bold;'>{course['platform'].upper()}</span>
-                                <h5 style='color:#1E293B; margin:8px 0;'>{course['title'][:60]}{"..." if len(course['title'])>60 else ""}</h5>
-                                <a href="{course['url']}" target="_blank" style='text-decoration:none; color:#2563EB; font-weight:bold; font-size:14px;'>Watch Course ↗</a>
+                            <div style='background-color: #18181B; border: 1px solid rgba(255, 255, 255, 0.08); padding: 20px; border-radius: 12px; height: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.25); display: flex; flex-direction: column; justify-content: space-between;'>
+                                <div>
+                                    <span style='font-size: 10px; color: {active_color}; font-weight: 700; background: {active_bg}; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;'>{course['platform'].upper()}</span>
+                                    <h5 style='color: #F4F4F5 !important; margin: 12px 0 16px 0; font-family: "Outfit", sans-serif; font-weight: 600; line-height: 1.4; font-size: 14px;'>{course['title'][:60]}{"..." if len(course['title'])>60 else ""}</h5>
+                                </div>
+                                <a href="{course['url']}" target="_blank" style='text-decoration: none; color: {active_color}; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 4px;'>Watch Course ↗</a>
                             </div>
                             """, unsafe_allow_html=True)
     else:

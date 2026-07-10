@@ -3,66 +3,28 @@ import os
 import tempfile
 from job_matcher import recommend_jobs
 from resume_builder import generate_cover_letter_pdf
+from ui_utils import inject_custom_css
+inject_custom_css()
 
 
 
 
-st.markdown("""
-<style>
-    #MainMenu {visibility: hidden;}
-    [data-testid="stAppDeployButton"] {display: none;}
-    footer {visibility: hidden;}
-    
-    .job-card {
-        background: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-left: 4px solid #2563EB;
-        border-radius: 8px;
-        padding: 20px;
-        margin-bottom: 16px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .job-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
-        border-color: #2563EB;
-    }
-    .match-score {
-        float: right;
-        font-size: 24px;
-        font-weight: bold;
-        color: #10B981;
-    }
-    .job-title {
-        margin:0; 
-        color: #1E293B;
-    }
-    .job-meta {
-        margin:5px 0 10px 0; 
-        color: #64748B;
-    }
-    .job-desc {
-        color: #475569; 
-        font-size: 14px;
-    }
-</style>
-""", unsafe_allow_html=True)
+# UI Customization styles are injected globally from ui_utils.py
 
-st.title("💼 Live Job Recommendations")
-st.markdown("Based on your uploaded resume, our TF-IDF matching engine has found the best active roles for you.")
+st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'>💼 Live Job Recommendations</h1>", unsafe_allow_html=True)
+st.markdown("<p class='sub-heading'>Based on your uploaded resume, our TF-IDF matching engine has found the best active roles for you.</p>", unsafe_allow_html=True)
 
 if "resume_text" not in st.session_state or not st.session_state.resume_text:
     st.warning("⚠️ Please upload a resume in the Candidate Portal first to see job matches.")
 else:
     ats = int((st.session_state.ats_ml_score or {"score": 0})["score"])
     st.markdown(f"""
-    <div style='background:#F0F9FF; border:1px solid #BAE6FD; padding:20px; border-radius:8px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;'>
+    <div class='header-card'>
         <div>
-            <h3 style='margin:0; color:#0369A1;'>Your Resume Health Score:</h3>
-            <p style='margin:0; color:#0C4A6E;'>This dictates your competitiveness for the roles below.</p>
+            <h3 style='margin:0; color:#0369A1; font-family:"Outfit", sans-serif;'>Your Resume Health Score:</h3>
+            <p style='margin:4px 0 0 0; color:#0C4A6E; font-size: 14px;'>This dictates your competitiveness for the roles below.</p>
         </div>
-        <h1 style='margin:0; color:{"#10B981" if ats >= 70 else "#F59E0B" if ats >= 40 else "#EF4444"};'>{ats}/100</h1>
+        <h1 style='margin:0; font-family:"Outfit", sans-serif; font-size: 2.5rem; color:{"#10B981" if ats >= 70 else "#F59E0B" if ats >= 40 else "#EF4444"};'>{ats}/100</h1>
     </div>
     """, unsafe_allow_html=True)
     
@@ -86,16 +48,21 @@ else:
                     explainability_html += f"<div><b>❌ Missing Skills:</b> {missing_html}</div>"
                 explainability_html += "</div>"
                 
-            st.markdown(f"""
-            <div class='job-card'>
-                <div class='match-score'>{job['match_score']}% Match <span style='font-size: 14px; font-weight: normal; color: #64748B;'>({job.get('match_label', 'Good')})</span></div>
-                <h3 class='job-title'>{job['title']}</h3>
-                <h5 class='job-meta'>{job['company']} • {job['location']} • {job['salary']}</h5>
-                <p style='margin: 0 0 10px 0; font-size: 12px; font-weight: bold; color: #3B82F6;'>📊 P95 Scaled • Top {100 - job.get('percentile', 0)}% Match in Corpus</p>
-                {explainability_html}
-                <p class='job-desc'>{job['description']}</p>
-            </div>
-            """, unsafe_allow_html=True)
+            html_content = (
+                f"<div class='job-card'>"
+                f"<div class='match-score'>{job['match_score']}% Match <span style='font-size: 14px; font-weight: normal; color: #A1A1AA;'>({job.get('match_label', 'Good')})</span></div>"
+                f"<h3 class='job-title'>{job['title']}</h3>"
+                f"<h5 class='job-meta'>{job['company']} • {job['location']} • {job['salary']}</h5>"
+                f"<p style='margin: 0 0 10px 0; font-size: 12.5px; font-weight: bold; color: #3B82F6;'>📊 P95 Scaled • Top {100 - job.get('percentile', 0)}% Match in Corpus</p>"
+                f"{explainability_html}"
+                f"<input type='checkbox' id='desc_trigger_{job['id']}' class='desc-trigger'>"
+                f"<div class='desc-wrapper'>"
+                f"<p class='job-desc'>{job['description']}</p>"
+                f"</div>"
+                f"<label for='desc_trigger_{job['id']}' class='desc-btn'></label>"
+                f"</div>"
+            )
+            st.markdown(html_content, unsafe_allow_html=True)
             
             col1, col2, col3 = st.columns([1, 1, 1])
             
@@ -119,7 +86,7 @@ else:
                                 mime="application/pdf",
                                 key=f"dl_{job['id']}"
                             )
-
+ 
             with col2:
                 # Mailto cold email
                 skills_str = ", ".join(st.session_state.skills[:3]) if st.session_state.skills else "software development"
@@ -128,7 +95,7 @@ else:
                 
                 import urllib.parse
                 mail_link = f"mailto:hr@{job['company'].lower().replace(' ', '')}.com?subject={urllib.parse.quote(subject)}&body={urllib.parse.quote(body)}"
-                st.markdown(f"<a href='{mail_link}' target='_blank'><button style='width:100%; padding:8px; border-radius:8px; border:1px solid #E2E8F0; background:#FFFFFF; color:#1E293B; cursor:pointer;'>✉️ Draft Email</button></a>", unsafe_allow_html=True)
+                st.markdown(f"<a href='{mail_link}' target='_blank' style='text-decoration: none;'><button style='width: 100%; padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.15); background: transparent; color: #F4F4F5; font-family: \"Plus Jakarta Sans\", sans-serif; font-weight: 600; cursor: pointer; transition: all 0.2s ease;'>✉️ Draft Email</button></a>", unsafe_allow_html=True)
             
             with col3:
                 # Track in Database

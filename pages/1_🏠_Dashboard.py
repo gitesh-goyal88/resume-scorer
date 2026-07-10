@@ -878,9 +878,13 @@ def estimate_salary(role, ats_score):
 # UI Customization styles are injected globally from ui_utils.py
 
 # Global Search
-st.markdown('''
-<div style='margin-bottom: 30px; display: flex; gap: 10px; align-items: center;'>
-    <h2 style='margin: 0; color: #FAFAFA; font-weight: 700; flex-grow: 1;'>Hello Gitesh 👋</h2>
+user_name = st.session_state.get("user_name") or st.session_state.get("edit_name") or "User"
+# Use only the first name
+first_name = user_name.split()[0]
+
+st.markdown(f'''
+<div style='display: flex; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08);'>
+    <h2 style='margin: 0; color: #FAFAFA; font-weight: 700; flex-grow: 1;'>Hello {first_name} 👋</h2>
     <input type='text' placeholder='Search jobs, resumes, reports...' style='padding: 10px 16px; border-radius: 99px; background: #18181B; border: 1px solid rgba(255,255,255,0.08); color: #FAFAFA; width: 300px; font-family: Inter; outline: none;' disabled>
 </div>
 ''', unsafe_allow_html=True)

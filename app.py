@@ -120,22 +120,20 @@ else:
             
     # Define pages
     pages = {
-        "Candidate Tools": [
-            st.Page("pages/1_🏠_Candidate_Portal.py", title="Upload & Enhance", icon="🏠"),
-            st.Page("pages/2_💼_Job_Matches.py", title="Job Matches", icon="💼"),
-            st.Page("pages/5_🎯_Jobscan_Matcher.py", title="Custom Job Scanner", icon="🎯"),
-            st.Page("pages/6_📋_Application_Tracker.py", title="Application Tracker", icon="📋"),
-            st.Page("pages/4_🎙️_Interview_Grader.py", title="Interview Grader", icon="🎙️"),
+        "Main": [
+            st.Page("pages/1_🏠_Dashboard.py", title="Dashboard", icon="🏠"),
+            st.Page("pages/2_📊_Resume_Analysis.py", title="Resume Analysis", icon="📊"),
+            st.Page("pages/3_💼_Job_Matches.py", title="Job Matches", icon="💼"),
+            st.Page("pages/4_📋_Applications.py", title="Applications", icon="📋"),
+            st.Page("pages/5_🎙️_Interview_Prep.py", title="Interview Prep", icon="🎙️"),
+            st.Page("pages/6_📈_Analytics.py", title="Analytics", icon="📈"),
+            st.Page("pages/7_🏆_Leaderboard.py", title="Leaderboard", icon="🏆"),
+            st.Page("pages/8_⚙️_Settings.py", title="Settings", icon="⚙️"),
         ],
-        "Academic IR": [
-            st.Page("pages/4_🔍_Job_Search_Engine.py", title="Job Search Engine", icon="🔍"),
-            st.Page("pages/5_📈_Evaluation_Metrics.py", title="Evaluation Metrics", icon="📈"),
-        ],
-        "Community": [
-            st.Page("pages/7_🏆_Leaderboard.py", title="Global Leaderboard", icon="🏆"),
-        ],
-        "Enterprise Settings": [
-            st.Page("pages/3_👔_HR_Dashboard.py", title="HR Admin Dashboard", icon="👔"),
+        "Legacy Tools": [
+            st.Page("pages/3_👔_HR_Dashboard.py", title="HR Admin", icon="👔"),
+            st.Page("pages/4_🔍_Job_Search_Engine.py", title="Search Engine", icon="🔍"),
+            st.Page("pages/5_🎯_Jobscan_Matcher.py", title="Jobscan Matcher", icon="🎯")
         ]
     }
 

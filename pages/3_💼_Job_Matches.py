@@ -50,10 +50,15 @@ else:
                 
             html_content = (
                 f"<div class='job-card'>"
-                f"<div class='match-score'>{job['match_score']}% Match <span style='font-size: 14px; font-weight: normal; color: #A1A1AA;'>({job.get('match_label', 'Good')})</span></div>"
-                f"<h3 class='job-title'>{job['title']}</h3>"
-                f"<h5 class='job-meta'>{job['company']} • {job['location']} • {job['salary']}</h5>"
-                f"<p style='margin: 0 0 10px 0; font-size: 12.5px; font-weight: bold; color: #3B82F6;'>📊 P95 Scaled • Top {100 - job.get('percentile', 0)}% Match in Corpus</p>"
+                f"<div style='display: flex; gap: 16px; margin-bottom: 16px;'>"
+                f"  <div style='width: 60px; height: 60px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 24px; color: #A1A1AA;'>🏢</div>"
+                f"  <div style='flex-grow: 1;'>"
+                f"      <div class='match-score'>{job['match_score']}% Match <span style='font-size: 14px; font-weight: normal; color: #A1A1AA;'>({job.get('match_label', 'Good')})</span></div>"
+                f"      <h3 class='job-title'>{job['title']}</h3>"
+                f"      <h5 class='job-meta'>{job['company']} • {job['location']} • {job['salary']}</h5>"
+                f"  </div>"
+                f"</div>"
+                f"<p style='margin: 0 0 10px 0; font-size: 12.5px; font-weight: bold; color: #22C55E;'>📊 P95 Scaled • Top {100 - job.get('percentile', 0)}% Match in Corpus</p>"
                 f"{explainability_html}"
                 f"<input type='checkbox' id='desc_trigger_{job['id']}' class='desc-trigger'>"
                 f"<div class='desc-wrapper'>"
@@ -68,7 +73,7 @@ else:
             
             with col1:
                 # Generate Cover Letter
-                if st.button(f"📄 Cover Letter", key=f"cl_{job['id']}", type="primary"):
+                if st.button(f"📄 Cover Letter", key=f"cl_{job['id']}", type="secondary"):
                     with st.spinner("Generating PDF..."):
                         output_path = os.path.join(tempfile.gettempdir(), f"Cover_Letter_{job['company']}.pdf")
                         generate_cover_letter_pdf(
@@ -99,7 +104,7 @@ else:
             
             with col3:
                 # Track in Database
-                if st.button("➕ Track Application", key=f"track_{job['id']}"):
+                if st.button("➕ Track Application", key=f"track_{job['id']}", type="secondary"):
                     from database import insert_application
                     insert_application(job['company'], job['title'], "Wishlist", "")
                     st.toast(f"Added {job['company']} to your Application Tracker!")

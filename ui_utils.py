@@ -17,11 +17,11 @@ def inject_custom_css():
             "border": "rgba(96, 165, 250, 0.4)"
         },
         "Green": {
-            "primary": "#1ed760", 
-            "hover": "#1db954", 
-            "gradient": "linear-gradient(135deg, #1ed760 0%, #1db954 100%)", 
-            "bg_trans": "rgba(30, 215, 96, 0.15)", 
-            "border": "rgba(30, 215, 96, 0.4)"
+            "primary": "#22C55E", 
+            "hover": "#16a34a", 
+            "gradient": "linear-gradient(135deg, #22C55E 0%, #16a34a 100%)", 
+            "bg_trans": "rgba(34, 197, 94, 0.15)", 
+            "border": "rgba(34, 197, 94, 0.4)"
         },
         "Red": {
             "primary": "#fb7185", 
@@ -50,26 +50,26 @@ def inject_custom_css():
     
     css = f"""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
     /* Target only markdown and content tags for typography to keep input frames clean */
     .stMarkdown p, .stMarkdown li, .stMarkdown span, .stMarkdown div, .stMarkdown label,
     [data-testid="stSidebar"] p, [data-testid="stHeader"] {{
-        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-family: 'Inter', sans-serif !important;
         line-height: 1.6 !important;
     }}
     
     h1, h2, h3, h4, h5, h6 {{
-        font-family: 'Outfit', sans-serif !important;
+        font-family: 'Inter', sans-serif !important;
         font-weight: 700 !important;
         letter-spacing: -0.02em !important;
-        color: #F4F4F5 !important;
+        color: #FAFAFA !important;
     }}
 
     /* Canvas styling - Pitch Dark matching the screenshot */
     .stApp {{
         background-color: #09090B !important;
-        color: #F4F4F5 !important;
+        color: #FAFAFA !important;
     }}
     
     [data-testid="stHeader"] {{
@@ -78,8 +78,8 @@ def inject_custom_css():
     
     /* Sidebar matching the screenshot styling */
     [data-testid="stSidebar"] {{
-        background-color: #0C0C0E !important; /* Rich deep charcoal sidebar */
-        border-right: 1px solid rgba(255, 255, 255, 0.04) !important;
+        background-color: #111216 !important; /* Surface background */
+        border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
     }}
     
     /* Sidebar Navigation Links */
@@ -127,9 +127,9 @@ def inject_custom_css():
     .info-card {{
         background-color: #18181B !important;
         border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 12px !important;
+        border-radius: 18px !important;
         padding: 24px !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 24px !important;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
         transition: border-color 0.2s ease, transform 0.2s ease !important;
     }}
@@ -140,9 +140,9 @@ def inject_custom_css():
     .header-card {{
         background-color: #18181B !important;
         border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 12px !important;
-        padding: 20px !important;
-        margin-bottom: 20px !important;
+        border-radius: 18px !important;
+        padding: 24px !important;
+        margin-bottom: 24px !important;
         display: flex !important;
         justify-content: space-between !important;
         align-items: center !important;
@@ -226,7 +226,7 @@ def inject_custom_css():
 
     /* Main Heading Title styling */
     .gradient-title {{
-        color: #F4F4F5 !important;
+        color: #FAFAFA !important;
         font-weight: 800 !important;
         font-size: 3.25rem !important; /* Large, bold matching screenshot scale */
         letter-spacing: -0.03em !important;
@@ -351,9 +351,9 @@ def inject_custom_css():
         background-color: #18181B !important;
         border: 1px solid rgba(255, 255, 255, 0.08) !important;
         border-left: 6px solid {colors['primary']} !important;
-        border-radius: 12px !important;
+        border-radius: 18px !important;
         padding: 24px !important;
-        margin-bottom: 16px !important;
+        margin-bottom: 24px !important;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
         transition: all 0.3s ease !important;
     }}

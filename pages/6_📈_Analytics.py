@@ -42,8 +42,7 @@ metrics_data = {
 }
 
 df_metrics = pd.DataFrame(metrics_data)
-
-st.dataframe(df_metrics.style.highlight_max(axis=0, subset=[c for c in df_metrics.columns if "BM25" in c or "TF-IDF" in c], color="#d1fae5"), use_container_width=True)
+st.dataframe(df_metrics.style.highlight_max(axis=0, subset=[c for c in df_metrics.columns if "BM25" in c or "TF-IDF" in c], color="#064E3B"), use_container_width=True)
 
 st.markdown("### Academic Conclusion")
 st.success("""

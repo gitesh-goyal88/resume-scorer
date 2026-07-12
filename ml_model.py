@@ -205,13 +205,21 @@ def compute_health_score(features: dict) -> dict:
 # MODEL 3: Bullet Point Impact Classifier (Logistic Regression & Weak Supervision)
 # ===========================================================================================
 
-def _get_bullet_dataset() -> tuple:
+def build_semantic_bullet_engine() -> dict:
     """
-    Return a comprehensive bullet point dataset.
-    Combines high-quality expert-written templates with thousands of programmatically
-    extracted and weakly-labeled bullet points from the main resume dataset (Distant Supervision).
+    Builds a Dense Vector Space matrix of 'Gold Standard' expert bullet points
+    using a local SentenceTransformer model. Saves the embeddings for fast Cosine Similarity inference.
     """
-    # Expert base cases
+    print("=" * 70)
+    print("MODEL 3: Semantic Bullet Point Evaluator (SentenceTransformers + Cosine Similarity)")
+    print("=" * 70)
+
+    try:
+        from sentence_transformers import SentenceTransformer
+    except ImportError:
+        print("sentence-transformers not installed. Run: pip install sentence-transformers")
+        return {"status": "failed", "error": "Missing dependency"}
+
     strong_expert = [
         "Increased revenue by 35% by redesigning the checkout flow using React",
         "Reduced server response time by 40% through optimizing SQL queries and implementing Redis caching",
@@ -265,236 +273,100 @@ def _get_bullet_dataset() -> tuple:
         "Reduced Docker image sizes by 70% through multi-stage builds and Alpine base images",
     ]
 
-    weak_expert = [
-        "Was responsible for handling the website",
-        "Helped with various tasks in the office",
-        "Worked on software development projects",
-        "Responsible for managing databases",
-        "Assisted in daily operations of the department",
-        "Participated in team meetings and discussions",
-        "Was part of the engineering team",
-        "Handled customer inquiries",
-        "Did some coding work",
-        "Involved in testing activities",
-        "Worked with team members on projects",
-        "Maintained existing software systems",
-        "Helped the team with different assignments",
-        "Responsible for writing code",
-        "Took care of IT-related issues",
-        "Was in charge of updating the database",
-        "Assisted with project planning",
-        "Contributed to team efforts",
-        "Worked on improving processes",
-        "Handled administrative tasks for the team",
-        "Supported the manager with reports",
-        "Was responsible for some testing",
-        "Performed general duties as assigned",
-        "Helped maintain company systems",
-        "Participated in the software development lifecycle",
-        "Worked on bug fixes",
-        "Assisted with documentation",
-        "Was a member of the development team",
-        "Helped with deployment activities",
-        "Responsible for various IT tasks",
-        "Contributed to code reviews occasionally",
-        "Worked on data analysis tasks",
-        "Was involved in client communications",
-        "Assisted colleagues with technical problems",
-        "Took part in brainstorming sessions",
-        "Managed day-to-day responsibilities",
-        "Responsible for updating spreadsheets",
-        "Handled incoming support requests",
-        "Participated in training sessions",
-        "Worked on multiple projects simultaneously",
-        "Helped organize team events",
-        "Supported the sales team with data",
-        "Was responsible for monitoring systems",
-        "Assisted in onboarding new employees",
-        "Contributed to the marketing strategy",
-        "Worked closely with the product team",
-        "Helped improve internal tools",
-        "Responsible for compiling weekly reports",
-        "Participated in quality assurance efforts",
-        "Managed communication between departments",
-    ]
-
-    # Distant/Weak Supervision Extraction from the Main Dataset
-    strong_extracted = []
-    weak_extracted = []
+    print(f"Loading lightweight SentenceTransformer (all-MiniLM-L6-v2)...")
+    model = SentenceTransformer('all-MiniLM-L6-v2')
     
-    data_path = os.path.join("data", "UpdatedResumeDataSet.csv")
-    if os.path.exists(data_path):
-        try:
-            df = pd.read_csv(data_path)
-            action_verbs = {
-                "developed", "led", "managed", "created", "built", "improved", "designed",
-                "optimized", "spearheaded", "implemented", "delivered", "reduced", "increased",
-                "achieved", "solved", "architected", "automated", "analyzed", "coordinated",
-                "initiated", "established", "facilitated", "supervised", "directed", "constructed",
-                "engineered", "formulated", "launched", "operated", "organized", "produced",
-                "revamped", "restructured", "streamlined", "transformed", "upgraded"
-            }
-
-            weak_phrases = [
-                "responsible for", "helped with", "assisted", "worked on", "participated in",
-                "member of", "duties included", "handled", "involved in", "part of"
-            ]
-
-            heading_words = {
-                'january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october',
-                'november', 'december', 'university', 'college', 'school', 'pune', 'mumbai', 'india', 'education',
-                'details', 'exprience', 'company'
-            }
-            
-            for resume_text in df["Resume"]:
-                if not isinstance(resume_text, str):
-                    continue
-                # Split text into lines using common bullet/newline separators
-                resume_text = resume_text.replace('*', '\n').replace('•', '\n').replace('-', '\n')
-                lines = [line.strip() for line in resume_text.split("\n")]
-                for line in lines:
-                    if len(line) < 15 or len(line) > 250:
-                        continue
-                    
-                    words = [w.lower() for w in re.findall(r'\b[a-zA-Z]+\b', line)]
-                    if not words:
-                        continue
-                    
-                    # Ignore education, heading, date lines
-                    if any(w in heading_words for w in words):
-                        continue
-                    
-                    score = 0
-                    has_action = any(w in action_verbs for w in words)
-                    
-                    if not has_action:
-                        # Must have an action verb to be strong; otherwise if no metric, it's weak
-                        has_metric = bool(re.search(r'\b\d+%\b|\$\d+|\b\d+\b', line))
-                        if not has_metric:
-                            weak_extracted.append(line)
-                        continue
-                    
-                    score += 2
-                    
-                    # 2. Metric check
-                    has_metric = bool(re.search(r'\b\d+%\b|\$\d+|\b\d+\b', line))
-                    if has_metric:
-                        score += 2
-                        
-                    # 3. Length check
-                    length_ok = 8 <= len(words) <= 35
-                    if length_ok:
-                        score += 1
-                        
-                    # 4. Weak phrase check
-                    line_lower = line.lower()
-                    has_weak = any(wp in line_lower for wp in weak_phrases)
-                    if has_weak:
-                        score -= 2
-                        
-                    if score >= 3:
-                        strong_extracted.append(line)
-        except Exception as e:
-            print(f"Error loading dataset for weak supervision: {e}")
-            
-    # De-duplicate
-    strong_extracted = list(set(strong_extracted))
-    weak_extracted = list(set(weak_extracted))
+    print(f"Encoding {len(strong_expert)} Gold Standard XYZ-formula bullet points into Dense Vectors...")
+    embeddings = model.encode(strong_expert, convert_to_numpy=True)
     
-    # Combine expert templates and weakly-supervised data
-    strong = strong_expert + strong_extracted
-    weak = weak_expert + weak_extracted
-    
-    # Sub-sample to balance dataset (50% Strong / 50% Weak)
-    import random
-    random.seed(42)
-    min_size = min(len(strong), len(weak))
-    
-    strong = random.sample(strong, min_size)
-    weak = random.sample(weak, min_size)
-    
-    texts = strong + weak
-    labels = [1] * len(strong) + [0] * len(weak)
-    
-    return texts, labels
-
-
-def train_bullet_classifier() -> dict:
-    """
-    Train a Logistic Regression model to classify resume bullet points as
-    Strong (1) or Weak (0) using TF-IDF and Distant Supervision.
-
-    Returns a dict with accuracy and classification report string.
-    """
-    print("=" * 70)
-    print("MODEL 3: Bullet Point Impact Classifier (Logistic Regression)")
-    print("=" * 70)
-
-    texts, labels = _get_bullet_dataset()
-    print(f"Total bullet points: {len(texts)}  (Strong: {sum(labels)}, Weak: {len(labels) - sum(labels)})")
-
-    tfidf = TfidfVectorizer(max_features=800, stop_words="english", ngram_range=(1, 2))
-    X = tfidf.fit_transform(texts)
-    y = labels
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42, stratify=y
-    )
-
-    clf = LogisticRegression(random_state=42, max_iter=1000)
-    clf.fit(X_train, y_train)
-
-    train_acc = accuracy_score(y_train, clf.predict(X_train))
-    test_acc = accuracy_score(y_test, clf.predict(X_test))
-    report = classification_report(y_test, clf.predict(X_test), target_names=["Weak", "Strong"])
-
-    print(f"Train accuracy: {train_acc:.4f}")
-    print(f"Test  accuracy: {test_acc:.4f}")
-    print("\nClassification Report (test set):")
-    print(report)
-
     os.makedirs("models", exist_ok=True)
-    with open(os.path.join("models", "bullet_classifier.pkl"), "wb") as f:
-        pickle.dump(clf, f)
-    with open(os.path.join("models", "bullet_vectorizer.pkl"), "wb") as f:
-        pickle.dump(tfidf, f)
-
-    print("Saved models/bullet_classifier.pkl")
-    print("Saved models/bullet_vectorizer.pkl")
+    out_path = os.path.join("models", "gold_standard_embeddings.pkl")
+    
+    with open(out_path, "wb") as f:
+        pickle.dump({
+            "texts": strong_expert,
+            "matrix": embeddings
+        }, f)
+        
+    print(f"Successfully saved dense vector matrix to {out_path}")
     print()
-    return {"train_accuracy": train_acc, "test_accuracy": test_acc, "report": report}
+    return {"status": "success", "vector_count": len(strong_expert), "dimensions": embeddings.shape[1]}
+
+
+def evaluate_bullets_semantic(candidate_bullets: list) -> list:
+    """
+    Inference Function: Uses Cosine Similarity to evaluate candidate bullet points
+    against the pre-computed Gold Standard Dense Vector matrix.
+    """
+    if not candidate_bullets:
+        return []
+        
+    try:
+        from sentence_transformers import SentenceTransformer
+        from sklearn.metrics.pairwise import cosine_similarity
+    except ImportError:
+        return [{"bullet": b, "score": 0, "feedback": "Dependency missing"} for b in candidate_bullets]
+        
+    matrix_path = os.path.join("models", "gold_standard_embeddings.pkl")
+    if not os.path.exists(matrix_path):
+        return [{"bullet": b, "score": 0, "feedback": "Gold standard matrix not found"} for b in candidate_bullets]
+        
+    with open(matrix_path, "rb") as f:
+        data = pickle.load(f)
+        gold_matrix = data["matrix"]
+        
+    # Load model (cached locally)
+    model = SentenceTransformer('all-MiniLM-L6-v2')
+    
+    # Vectorize candidate bullets
+    candidate_matrix = model.encode(candidate_bullets, convert_to_numpy=True)
+    
+    # Calculate Cosine Similarity (N_candidates x N_gold)
+    similarity_scores = cosine_similarity(candidate_matrix, gold_matrix)
+    
+    results = []
+    for i, bullet in enumerate(candidate_bullets):
+        # Find the highest similarity score against ANY gold standard bullet
+        max_sim = float(np.max(similarity_scores[i]))
+        
+        # Convert raw cosine similarity (0 to 1) into a user-friendly score (0 to 100)
+        # Typically, anything > 0.65 is very strong in semantic space
+        normalized_score = min(max_sim / 0.70 * 100, 100) 
+        
+        if normalized_score >= 85:
+            feedback = "Excellent semantic impact! Strong action + metric correlation."
+        elif normalized_score >= 60:
+            feedback = "Good, but lacks deeper semantic depth or quantifiable metrics."
+        else:
+            feedback = "Weak semantic structure. Does not match the XYZ formula."
+            
+        results.append({
+            "bullet": bullet,
+            "raw_cosine_similarity": round(max_sim, 4),
+            "impact_score": int(normalized_score),
+            "feedback": feedback
+        })
+        
+    return results
 
 
 def classify_bullets(bullet_list: list) -> list:
     """
     Classify a list of resume bullet-point strings as Strong or Weak.
-
-    Parameters
-    ----------
-    bullet_list : list[str]
-
-    Returns
-    -------
-    list[dict]  Each dict: {"text": str, "label": "Strong"/"Weak", "confidence": float}
+    Now powered by the advanced SentenceTransformer Cosine Similarity engine!
     """
-    model_path = os.path.join("models", "bullet_classifier.pkl")
-    vectorizer_path = os.path.join("models", "bullet_vectorizer.pkl")
-    nb, tfidf = _load_model_safe(model_path, vectorizer_path, train_bullet_classifier)
-
-    X = tfidf.transform(bullet_list)
-    probas = nb.predict_proba(X)
-    preds = nb.predict(X)
-
-    results = []
-    for i, text in enumerate(bullet_list):
-        label = "Strong" if preds[i] == 1 else "Weak"
-        confidence = float(probas[i].max())
-        results.append({
-            "text": text,
+    semantic_results = evaluate_bullets_semantic(bullet_list)
+    
+    legacy_results = []
+    for res in semantic_results:
+        label = "Strong" if res["impact_score"] >= 65 else "Weak"
+        legacy_results.append({
+            "text": res["bullet"],
             "label": label,
-            "confidence": round(confidence, 4),
+            "confidence": res["raw_cosine_similarity"]
         })
-    return results
+        
+    return legacy_results
 
 
 # ===========================================================================================

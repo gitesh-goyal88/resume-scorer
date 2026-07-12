@@ -10,14 +10,17 @@ from llm_utils import call_groq_api
 
 
 
+from ui_utils import inject_custom_css
+inject_custom_css()
+
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;}
     [data-testid="stAppDeployButton"] {display: none;}
     footer {visibility: hidden;}
-    .metric-card { background: #F0F9FF; border: 1px solid #BAE6FD; padding: 20px; border-radius: 8px; text-align: center; }
-    .keyword-match { display: inline-block; padding: 4px 10px; border-radius: 12px; margin: 4px; font-size: 13px; font-weight: 500; background: #D1FAE5; color: #065F46; border: 1px solid #10B981; }
-    .keyword-miss { display: inline-block; padding: 4px 10px; border-radius: 12px; margin: 4px; font-size: 13px; font-weight: 500; background: #FEE2E2; color: #991B1B; border: 1px solid #EF4444; }
+    .metric-card { background: #18181B; border: 1px solid rgba(255, 255, 255, 0.08); padding: 24px; border-radius: 18px; text-align: center; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); }
+    .keyword-match { display: inline-block; padding: 4px 10px; border-radius: 12px; margin: 4px; font-size: 13px; font-weight: 500; background: rgba(16, 185, 129, 0.12); color: #34D399; border: 1px solid rgba(16, 185, 129, 0.25); }
+    .keyword-miss { display: inline-block; padding: 4px 10px; border-radius: 12px; margin: 4px; font-size: 13px; font-weight: 500; background: rgba(239, 68, 68, 0.12); color: #F87171; border: 1px solid rgba(239, 68, 68, 0.25); }
 </style>
 """, unsafe_allow_html=True)
 
@@ -62,7 +65,7 @@ if st.button("🔍 Scan Resume vs JD", type="primary"):
         with st.spinner("Analyzing keyword overlap..."):
             # 1. Extract Skills from JD
             jd_skills = extract_skills(jd_text)
-            resume_skills = st.session_state.skills or []
+            resume_skills = st.session_state.get("skills", [])
             
             # 2. Find Missing vs Matched using Fuzzy Semantic Matching
             import difflib
@@ -108,9 +111,9 @@ if st.button("🔍 Scan Resume vs JD", type="primary"):
             
             st.markdown(f"""
             <div class='metric-card'>
-                <h3 style='margin:0; color:#0369A1;'>Resume Match Rate</h3>
+                <h3 style='margin:0; color:#F4F4F5;'>Resume Match Rate</h3>
                 <h1 style='margin:10px 0; font-size:48px; color:{"#10B981" if match_score >= 70 else "#F59E0B" if match_score >= 40 else "#EF4444"};'>{match_score}%</h1>
-                <p style='margin:0; color:#0C4A6E;'>Aim for 75%+ before submitting your application.</p>
+                <p style='margin:0; color:#A1A1AA;'>Aim for 75%+ before submitting your application.</p>
             </div>
             """, unsafe_allow_html=True)
             

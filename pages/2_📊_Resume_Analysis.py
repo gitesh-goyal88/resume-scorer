@@ -883,9 +883,11 @@ with col_title1:
     st.markdown("<p class='sub-heading'>Your comprehensive AI analysis report, detailed metrics, and live editor.</p>", unsafe_allow_html=True)
 with col_title2:
     if st.button("🗑️ Clear Cache & Restart", use_container_width=True, help="Click to wipe memory and force the new ML Engine to run"):
+        keys_to_keep = ["user_id", "logged_in", "username"]
         for key in list(st.session_state.keys()):
-            del st.session_state[key]
-        st.rerun()
+            if key not in keys_to_keep:
+                del st.session_state[key]
+        st.switch_page("pages/1_🏠_Candidate_Portal.py")
 
 if not st.session_state.resume_text or not st.session_state.ats_ml_score:
     st.markdown('''

@@ -78,44 +78,34 @@ def recommend_jobs(resume_text: str, top_n: int = 10) -> list:
             "Fair"
         )
         
-        # Explainability: Dynamic Keyword Extraction via TF-IDF
-        job_vec = tfidf_matrix[idx].toarray()[0]
-        feature_names = vectorizer.get_feature_names_out()
-        
+        # Explainability: Direct Dictionary Extraction (Bypass TF-IDF penalties for common tech skills)
         from skills_dictionary import SKILLS_DB
-        
-        # Get top 25 highest scoring TF-IDF tokens for this specific job
-        top_indices = job_vec.argsort()[-25:][::-1]
-        top_stemmed_skills = [feature_names[i] for i in top_indices if job_vec[i] > 0]
-        
-        # Un-stemming: Map stemmed tokens back to beautiful English words from the raw text
-        job_desc_lower = str(job_match.get("description", "")).lower()
         import re
-        from text_utils import _stemmer
-        raw_words = set(re.findall(r'\b[a-z0-9]+\b', job_desc_lower))
         
-        stem_to_raw = {}
-        for w in raw_words:
-            stemmed = _stemmer.stem(w)
-            if stemmed not in stem_to_raw or len(w) < len(stem_to_raw[stemmed]):
-                stem_to_raw[stemmed] = w
+        job_desc_lower = str(job_match.get("description", "")).lower()
+        
+        # Extract every skill from the text that exists in our massive database
+        extracted_job_skills = []
+        for skill in SKILLS_DB:
+            # Use word boundaries to prevent "r" from matching inside "manager" or "go" inside "algorithm"
+            if re.search(r'\b' + re.escape(skill) + r'\b', job_desc_lower):
+                extracted_job_skills.append(skill.title())
                 
+        resume_lower = resume_text.lower()
         resume_tokens = set(processed_corpus[-1])
         
+        # We also need to check the raw resume text for multi-word skills like "machine learning"
         matched_skills = []
         missing_skills = []
         
-        for s in top_stemmed_skills:
-            raw_word = stem_to_raw.get(s, s)
-            # Filter dynamically extracted tokens through our comprehensive Skills Dictionary
-            if len(raw_word) > 1 and not raw_word.isdigit() and raw_word.lower() in SKILLS_DB:
-                clean_word = raw_word.title()
-                if s in resume_tokens:
-                    if len(matched_skills) < 8:
-                        matched_skills.append(clean_word)
-                else:
-                    if len(missing_skills) < 8:
-                        missing_skills.append(clean_word)
+        for skill in extracted_job_skills:
+            # Check if the skill is in the resume (using regex to avoid partial matches)
+            if re.search(r'\b' + re.escape(skill.lower()) + r'\b', resume_lower):
+                if len(matched_skills) < 8:
+                    matched_skills.append(skill)
+            else:
+                if len(missing_skills) < 8:
+                    missing_skills.append(skill)
 
         job_match["match_score"] = final_score
         job_match["match_label"] = match_label

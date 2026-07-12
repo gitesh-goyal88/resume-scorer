@@ -78,18 +78,41 @@ def recommend_jobs(resume_text: str, top_n: int = 10) -> list:
             "Fair"
         )
         
-        # Explainability: Matched vs Missing Skills
-        common_tech = ["python", "java", "c++", "c#", "sql", "aws", "docker", "kubernetes", 
-                       "react", "angular", "node", "javascript", "html", "css", "machine learning",
-                       "deep learning", "nlp", "django", "flask", "spring", "agile", "scrum", "git",
-                       "linux", "bash", "rest", "api", "mongodb", "mysql", "postgresql", "ruby"]
+        # Explainability: Dynamic Keyword Extraction via TF-IDF
+        job_vec = tfidf_matrix[idx].toarray()[0]
+        feature_names = vectorizer.get_feature_names_out()
         
+        # Get top 12 highest scoring TF-IDF tokens for this specific job
+        top_indices = job_vec.argsort()[-12:][::-1]
+        top_stemmed_skills = [feature_names[i] for i in top_indices if job_vec[i] > 0]
+        
+        # Un-stemming: Map stemmed tokens back to beautiful English words from the raw text
         job_desc_lower = str(job_match.get("description", "")).lower()
-        resume_lower = resume_text.lower()
+        import re
+        from text_utils import _stemmer
+        raw_words = set(re.findall(r'\b[a-z0-9]+\b', job_desc_lower))
         
-        job_skills = [s for s in common_tech if s in job_desc_lower]
-        matched_skills = [s for s in job_skills if s in resume_lower]
-        missing_skills = [s for s in job_skills if s not in resume_lower]
+        stem_to_raw = {}
+        for w in raw_words:
+            stemmed = _stemmer.stem(w)
+            if stemmed not in stem_to_raw or len(w) < len(stem_to_raw[stemmed]):
+                stem_to_raw[stemmed] = w
+                
+        resume_tokens = set(processed_corpus[-1])
+        
+        matched_skills = []
+        missing_skills = []
+        
+        for s in top_stemmed_skills:
+            raw_word = stem_to_raw.get(s, s)
+            if len(raw_word) > 2 and not raw_word.isdigit():
+                clean_word = raw_word.title()
+                if s in resume_tokens:
+                    if len(matched_skills) < 8:
+                        matched_skills.append(clean_word)
+                else:
+                    if len(missing_skills) < 8:
+                        missing_skills.append(clean_word)
 
         job_match["match_score"] = final_score
         job_match["match_label"] = match_label

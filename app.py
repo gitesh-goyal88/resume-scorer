@@ -128,7 +128,7 @@ else:
     """, unsafe_allow_html=True)
     
     # 2. Build the Top Navigation Bar
-    nav_col1, nav_col2, nav_col3 = st.columns([3, 7, 2])
+    nav_col1, nav_col2, nav_col3 = st.columns([2.2, 8.3, 1.5])
     
     with nav_col1:
         st.markdown(f"""
@@ -145,12 +145,14 @@ else:
     with nav_col2:
         # Horizontal layout for the main pages
         st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
-        c1, c2, c3, c4, c5 = st.columns(5)
+        c1, c2, c3, c4, c5, c6, c7 = st.columns(7)
         with c1: st.page_link("pages/1_🏠_Dashboard.py", label="Home")
         with c2: st.page_link("pages/2_📊_Resume_Analysis.py", label="Analysis")
         with c3: st.page_link("pages/3_💼_Job_Matches.py", label="Jobs")
         with c4: st.page_link("pages/5_🎙️_Interview_Prep.py", label="Prep")
-        with c5: st.page_link("pages/6_📈_Analytics.py", label="Analytics")
+        with c5: st.page_link("pages/6_📈_Analytics.py", label="Stats")
+        with c6: st.page_link("pages/7_🏆_Leaderboard.py", label="Rank")
+        with c7: st.page_link("pages/5_🎯_Jobscan_Matcher.py", label="Jobscan")
 
     with nav_col3:
         st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)

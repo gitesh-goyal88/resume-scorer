@@ -1071,11 +1071,28 @@ if st.session_state.resume_text:
     strong_count = sum(1 for b in bullets if b["label"] == "Strong")
     impact_score = int((strong_count / max(1, len(bullets))) * 100)
     
-    # Row 1: Scores
+    # Combined Overall Score (80-10-10)
+    combined_score = int(
+        (competencies_score * 0.80) + 
+        (impact_score * 0.10) + 
+        (presentation_score * 0.10)
+    )
+    
+    st.markdown("### 🏆 Overall ATS Readiness Score")
+    col_main, _ = st.columns([0.4, 0.6])
+    with col_main:
+        fig_combined = create_gauge_chart(combined_score, "ATS Match (80-10-10 Weighting)")
+        st.pyplot(fig_combined)
+        plt.close(fig_combined)
+        
+    st.markdown("---")
+    st.markdown("### 🔬 Detailed Sub-Scores")
+
+    # Row 1: Sub-Scores
     c1, c2, c3 = st.columns(3)
     
     with c1:
-        st.markdown("### Impact Score")
+        st.markdown("### Bullet Impact Score")
         fig_impact = create_gauge_chart(impact_score, "Bullet Point Strength")
         st.pyplot(fig_impact)
         plt.close(fig_impact)

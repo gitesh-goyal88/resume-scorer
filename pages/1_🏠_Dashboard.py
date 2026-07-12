@@ -991,7 +991,7 @@ with c2:
             <p style='margin: 4px 0 0 0; color: #94A3B8; font-size: 0.95rem; font-weight: 500;'>Real Jobs</p>
         </div>
         <div style='background: rgba(24, 24, 27, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px 32px; text-align: center; width: 180px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;' onmouseover="this.style.borderColor='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
-            <h3 style='margin: 0; font-size: 2.2rem; color: #FAFAFA; font-weight: 800;'>98%</h3>
+            <h3 style='margin: 0; font-size: 2.2rem; color: #FAFAFA; font-weight: 800;'>92%</h3>
             <p style='margin: 4px 0 0 0; color: #94A3B8; font-size: 0.95rem; font-weight: 500;'>Model Accuracy</p>
         </div>
     </div>

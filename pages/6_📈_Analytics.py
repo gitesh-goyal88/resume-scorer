@@ -131,7 +131,7 @@ with tab1:
         for i in range(len(domains)):
             for j in range(len(algorithms)):
                 val = precision_matrix[i, j]
-                text_color = 'black' if val > 0.5 else 'white'
+                text_color = 'white' if val > 0.5 else 'black'
                 ax1.text(j, i, f"{val:.2f}", ha="center", va="center", color=text_color, fontweight='bold')
         
         fig1.colorbar(cax, ax=ax1, fraction=0.046, pad=0.04)
@@ -251,7 +251,7 @@ with tab2:
         for i in range(len(domains)):
             for j in range(len(algorithms)):
                 val = personal_precision[i, j]
-                text_color = 'black' if val > 0.5 else 'white'
+                text_color = 'white' if val > 0.5 else 'black'
                 ax5.text(j, i, f"{val:.2f}", ha="center", va="center", color=text_color, fontweight='bold')
         
         fig5.colorbar(cax5, ax=ax5, fraction=0.046, pad=0.04)

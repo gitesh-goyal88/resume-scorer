@@ -56,7 +56,8 @@ def inject_custom_css():
     .stMarkdown p, .stMarkdown li, .stMarkdown span, .stMarkdown div, .stMarkdown label,
     [data-testid="stSidebar"] p, [data-testid="stHeader"] {{
         font-family: 'Inter', sans-serif !important;
-        line-height: 1.6 !important;
+        line-height: 1.7 !important;
+        font-size: 1.05rem !important;
     }}
     
     h1, h2, h3, h4, h5, h6 {{
@@ -76,19 +77,22 @@ def inject_custom_css():
         background-color: #09090B !important;
     }}
     
-    /* Sidebar matching the screenshot styling */
+    /* Sidebar matching the screenshot styling with increased width */
     [data-testid="stSidebar"] {{
         background-color: #111216 !important; /* Surface background */
         border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+        min-width: 360px !important;
+        max-width: 360px !important;
     }}
     
-    /* Sidebar Navigation Links */
+    /* Sidebar Navigation Links - Scaled Up */
     div[data-testid="stSidebarNavItems"] ul li a {{
         background-color: transparent !important;
         border: 1px solid transparent !important;
-        border-radius: 8px !important;
-        padding: 8px 16px !important;
-        margin: 4px 8px !important;
+        border-radius: 10px !important;
+        padding: 10px 20px !important;
+        margin: 6px 12px !important;
+        font-size: 15px !important;
         transition: all 0.2s ease !important;
     }}
     div[data-testid="stSidebarNavItems"] ul li a:hover {{
@@ -114,12 +118,13 @@ def inject_custom_css():
     }}
     span[data-testid="stSidebarNavLink-categoryName"] {{
         text-transform: uppercase !important;
-        font-size: 11px !important;
+        font-size: 13px !important;
         font-weight: 700 !important;
         color: #52525B !important;
-        letter-spacing: 0.05em !important;
-        padding-left: 12px !important;
-        margin-top: 12px !important;
+        letter-spacing: 0.08em !important;
+        padding-left: 20px !important;
+        margin-top: 16px !important;
+        margin-bottom: 4px !important;
         display: block !important;
     }}
 
@@ -163,7 +168,7 @@ def inject_custom_css():
     .info-card p {{
         color: #A1A1AA !important;
         margin: 0 !important;
-        font-size: 14px !important;
+        font-size: 15px !important;
     }}
 
     .bullet-card {{
@@ -207,10 +212,10 @@ def inject_custom_css():
     /* Custom skill tags - clean flat design */
     .skill-tag {{
         display: inline-block !important;
-        padding: 6px 12px !important;
+        padding: 6px 14px !important;
         border-radius: 16px !important;
         margin: 4px !important;
-        font-size: 13px !important;
+        font-size: 14px !important;
         font-weight: 600 !important;
     }}
     .skill-match {{
@@ -251,10 +256,10 @@ def inject_custom_css():
         border: none !important;
         border-radius: 9999px !important; /* Full pill shape */
         font-weight: 700 !important;
-        padding: 10px 24px !important;
+        padding: 12px 28px !important;
         transition: all 0.2s ease !important;
         box-shadow: 0 4px 14px {colors['bg_trans']} !important;
-        font-size: 14px !important;
+        font-size: 15px !important;
     }}
     div.stButton > button:hover {{
         transform: translateY(-1px) !important;
@@ -376,8 +381,8 @@ def inject_custom_css():
     }}
     .job-desc {{
         color: #D4D4D8 !important; 
-        font-size: 14.5px !important;
-        line-height: 1.6 !important;
+        font-size: 15.5px !important;
+        line-height: 1.7 !important;
         margin: 0 !important;
     }}
 

@@ -930,9 +930,16 @@ p.hero-subtitle, .stMarkdown p.hero-subtitle {
     border: 1px solid rgba(255,255,255,0.08);
     border-radius: 16px;
     padding: 24px;
-    height: 100%;
-    min-height: 240px;
+    height: 300px; /* Force strict uniform sizing */
+    display: flex;
+    flex-direction: column;
     transition: transform 0.2s, border-color 0.2s;
+}
+@media (max-width: 768px) {
+    .feature-card {
+        height: auto;
+        min-height: 240px;
+    }
 }
 .feature-card:hover {
     transform: translateY(-4px);

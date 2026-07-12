@@ -82,8 +82,10 @@ def recommend_jobs(resume_text: str, top_n: int = 10) -> list:
         job_vec = tfidf_matrix[idx].toarray()[0]
         feature_names = vectorizer.get_feature_names_out()
         
-        # Get top 12 highest scoring TF-IDF tokens for this specific job
-        top_indices = job_vec.argsort()[-12:][::-1]
+        from skills_dictionary import SKILLS_DB
+        
+        # Get top 25 highest scoring TF-IDF tokens for this specific job
+        top_indices = job_vec.argsort()[-25:][::-1]
         top_stemmed_skills = [feature_names[i] for i in top_indices if job_vec[i] > 0]
         
         # Un-stemming: Map stemmed tokens back to beautiful English words from the raw text
@@ -105,7 +107,8 @@ def recommend_jobs(resume_text: str, top_n: int = 10) -> list:
         
         for s in top_stemmed_skills:
             raw_word = stem_to_raw.get(s, s)
-            if len(raw_word) > 2 and not raw_word.isdigit():
+            # Filter dynamically extracted tokens through our comprehensive Skills Dictionary
+            if len(raw_word) > 1 and not raw_word.isdigit() and raw_word.lower() in SKILLS_DB:
                 clean_word = raw_word.title()
                 if s in resume_tokens:
                     if len(matched_skills) < 8:

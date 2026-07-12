@@ -968,7 +968,7 @@ with c2:
     <div class='hero-container'>
         <div class='hero-pill'>✨ AI-powered candidate optimization</div>
         <div class='hero-title'>Build a resume that<br><span>outsmarts the ATS</span></div>
-        <p class='hero-subtitle'>ResumeIQ translates your experience into structured data and recommends the highest-matching roles using cosine similarity across a dataset of 10,000+ top tech jobs.</p>
+        <p class='hero-subtitle'>ResumeIQ translates your experience into structured data and recommends the highest-matching roles using cosine similarity across a dataset of 2,800+ real job postings.</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -977,6 +977,26 @@ with c2:
     with u2:
         st.markdown("<p style='color: #FAFAFA; font-weight: 600; font-size: 1.1rem; margin-bottom: 12px; text-align: center;'>Upload your resume to start</p>", unsafe_allow_html=True)
         uploaded_file = st.file_uploader("Upload PDF", type=["pdf"], label_visibility="collapsed")
+
+    # 3-Column Glassmorphism Stats Section
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style='display: flex; justify-content: center; gap: 24px; margin-top: 24px; flex-wrap: wrap;'>
+        <div style='background: rgba(24, 24, 27, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px 32px; text-align: center; width: 180px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;' onmouseover="this.style.borderColor='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+            <h3 style='margin: 0; font-size: 2.2rem; color: #FAFAFA; font-weight: 800;'>960+</h3>
+            <p style='margin: 4px 0 0 0; color: #94A3B8; font-size: 0.95rem; font-weight: 500;'>Resumes Trained</p>
+        </div>
+        <div style='background: rgba(24, 24, 27, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px 32px; text-align: center; width: 180px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;' onmouseover="this.style.borderColor='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+            <h3 style='margin: 0; font-size: 2.2rem; color: #FAFAFA; font-weight: 800;'>2.8K+</h3>
+            <p style='margin: 4px 0 0 0; color: #94A3B8; font-size: 0.95rem; font-weight: 500;'>Real Jobs</p>
+        </div>
+        <div style='background: rgba(24, 24, 27, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px 32px; text-align: center; width: 180px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;' onmouseover="this.style.borderColor='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+            <h3 style='margin: 0; font-size: 2.2rem; color: #FAFAFA; font-weight: 800;'>98%</h3>
+            <p style='margin: 4px 0 0 0; color: #94A3B8; font-size: 0.95rem; font-weight: 500;'>Model Accuracy</p>
+        </div>
+    </div>
+    <div style='height: 40px;'></div>
+    """, unsafe_allow_html=True)
 
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 

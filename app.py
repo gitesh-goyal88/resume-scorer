@@ -136,6 +136,7 @@ else:
     pages = [
         st.Page("pages/1_🏠_Dashboard.py", title="Dashboard", icon="🏠"),
         st.Page("pages/2_📊_Resume_Analysis.py", title="Resume Analysis", icon="📊"),
+        st.Page("pages/3_✍️_Resume_Editor.py", title="Resume Editor", icon="✍️"),
         st.Page("pages/3_💼_Job_Matches.py", title="Job Matches", icon="💼"),
         st.Page("pages/5_🎙️_Interview_Prep.py", title="Interview Prep", icon="🎙️"),
         st.Page("pages/6_📈_Analytics.py", title="Analytics", icon="📈"),
@@ -161,14 +162,15 @@ else:
     with nav_col2:
         # Horizontal layout for the main pages
         st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
-        c1, c2, c3, c4, c5, c6, c7 = st.columns(7)
+        c1, c2, c3, c4, c5, c6, c7, c8 = st.columns(8)
         with c1: st.page_link(pages[0], label="Home", icon="🏠")
         with c2: st.page_link(pages[1], label="Analyze", icon="📊")
-        with c3: st.page_link(pages[2], label="Jobs", icon="💼")
-        with c4: st.page_link(pages[3], label="Prep", icon="🎙️")
-        with c5: st.page_link(pages[4], label="Stats", icon="📈")
-        with c6: st.page_link(pages[5], label="Rank", icon="🏆")
-        with c7: st.page_link(pages[6], label="Jobscan", icon="🎯")
+        with c3: st.page_link(pages[2], label="Editor", icon="✍️")
+        with c4: st.page_link(pages[3], label="Jobs", icon="💼")
+        with c5: st.page_link(pages[4], label="Prep", icon="🎙️")
+        with c6: st.page_link(pages[5], label="Stats", icon="📈")
+        with c7: st.page_link(pages[6], label="Rank", icon="🏆")
+        with c8: st.page_link(pages[7], label="Jobscan", icon="🎯")
 
     with nav_col3:
         st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)

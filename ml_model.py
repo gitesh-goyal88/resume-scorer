@@ -304,8 +304,8 @@ def evaluate_bullets_semantic(candidate_bullets: list) -> list:
     try:
         from sentence_transformers import SentenceTransformer
         from sklearn.metrics.pairwise import cosine_similarity
-    except ImportError:
-        return [{"bullet": b, "raw_cosine_similarity": 0.0, "impact_score": 0, "feedback": "Dependency missing"} for b in candidate_bullets]
+    except Exception as e:
+        return [{"bullet": b, "raw_cosine_similarity": 0.0, "impact_score": 0, "feedback": f"Dependency missing: {str(e)}"} for b in candidate_bullets]
         
     matrix_path = os.path.join("models", "gold_standard_embeddings.pkl")
     if not os.path.exists(matrix_path):

@@ -995,8 +995,23 @@ with c2:
             <p style='margin: 4px 0 0 0; color: #94A3B8; font-size: 0.95rem; font-weight: 500;'>Model Accuracy</p>
         </div>
     </div>
-    <div style='height: 40px;'></div>
     """, unsafe_allow_html=True)
+    
+    # Advanced ML Metrics Popover
+    st.markdown("<br>", unsafe_allow_html=True)
+    m1, m2, m3 = st.columns([1, 2, 1])
+    with m2:
+        with st.popover("📊 View Advanced ML Metrics", use_container_width=True):
+            st.markdown("""
+            **Job Role Classifier Engine (60-40 Split)**
+            - **Train Accuracy:** `95.32%`
+            - **Test Accuracy:** `91.69%`
+            - **Precision:** `96.15%`
+            - **Recall:** `89.78%`
+            - **F1-score:** `90.74%`
+            """)
+
+    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
 
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 

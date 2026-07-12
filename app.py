@@ -126,18 +126,9 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-    # 2. Sidebar UI customization
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("### 🎨 Custom Styling")
-    st.sidebar.selectbox("Accent Color", ["Blue", "Green", "Red", "Purple", "Amber"], key="theme_accent")
-    inject_custom_css()
-
-    st.sidebar.markdown("---")
-    if st.sidebar.button("🚪 Logout", use_container_width=True):
-        logout_user()
-        st.rerun()
-            
-    # Define pages
+    # 2. Sidebar Navigation (Manual Rendering for absolute control)
+    st.sidebar.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+    
     pages = [
         st.Page("pages/1_🏠_Dashboard.py", title="Dashboard", icon="🏠"),
         st.Page("pages/2_📊_Resume_Analysis.py", title="Resume Analysis", icon="📊"),
@@ -147,7 +138,39 @@ else:
         st.Page("pages/7_🏆_Leaderboard.py", title="Leaderboard", icon="🏆"),
         st.Page("pages/5_🎯_Jobscan_Matcher.py", title="Jobscan Matcher", icon="🎯")
     ]
+    
+    for p in pages:
+        st.sidebar.page_link(p, label=p.title, icon=p.icon)
+        
+    # 3. Sidebar UI customization
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("<h4 style='color: #FAFAFA; margin-bottom: 8px;'>🎨 Theme</h4>", unsafe_allow_html=True)
+    c1, c2, c3, c4, c5 = st.sidebar.columns(5)
+    
+    # Render clickable color circles
+    if c1.button("🔵", help="Blue Theme", use_container_width=True):
+        st.session_state.theme_accent = "Blue"
+        st.rerun()
+    if c2.button("🟢", help="Green Theme", use_container_width=True):
+        st.session_state.theme_accent = "Green"
+        st.rerun()
+    if c3.button("🔴", help="Red Theme", use_container_width=True):
+        st.session_state.theme_accent = "Red"
+        st.rerun()
+    if c4.button("🟣", help="Purple Theme", use_container_width=True):
+        st.session_state.theme_accent = "Purple"
+        st.rerun()
+    if c5.button("🟡", help="Amber Theme", use_container_width=True):
+        st.session_state.theme_accent = "Amber"
+        st.rerun()
+        
+    inject_custom_css()
 
-    # Run navigation
-    pg = st.navigation(pages)
+    st.sidebar.markdown("---")
+    if st.sidebar.button("🚪 Logout", use_container_width=True):
+        logout_user()
+        st.rerun()
+            
+    # Run hidden native navigation
+    pg = st.navigation(pages, position="hidden")
     pg.run()

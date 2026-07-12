@@ -898,11 +898,11 @@ st.markdown("""
     animation: glow 3s infinite;
 }
 .hero-title {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    font-weight: 800;
-    color: #FAFAFA;
-    line-height: 1.1;
-    margin-bottom: 24px;
+    font-size: clamp(2.5rem, 6vw, 4.5rem) !important;
+    font-weight: 800 !important;
+    color: #FAFAFA !important;
+    line-height: 1.1 !important;
+    margin-bottom: 24px !important;
     text-align: center;
 }
 .hero-title span {
@@ -953,16 +953,16 @@ with c2:
     st.markdown("""
     <div style='text-align: center; margin-top: 40px;'>
         <div class='hero-pill'>✨ AI-powered candidate optimization</div>
-        <h1 class='hero-title'>Build a resume that<br><span>outsmarts the ATS</span></h1>
+        <div class='hero-title'>Build a resume that<br><span>outsmarts the ATS</span></div>
         <p class='hero-subtitle'>ResumeIQ translates your experience into structured data and recommends the highest-matching roles using cosine similarity across a dataset of 10,000+ top tech jobs.</p>
     </div>
     """, unsafe_allow_html=True)
 
-    # Uploader integrated in Hero
-    st.markdown("<div style='max-width: 500px; margin: 0 auto; background: #18181B; padding: 24px; border-radius: 16px; border: 1px dashed rgba(34, 197, 94, 0.4); text-align: center;'>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #FAFAFA; font-weight: 600; margin-bottom: 12px;'>Upload your resume to start</p>", unsafe_allow_html=True)
-    uploaded_file = st.file_uploader("Upload PDF", type=["pdf"], label_visibility="collapsed")
-    st.markdown("</div>", unsafe_allow_html=True)
+    # Uploader natively centered
+    u1, u2, u3 = st.columns([1, 2, 1])
+    with u2:
+        st.markdown("<p style='color: #FAFAFA; font-weight: 600; margin-bottom: 12px; text-align: center;'>Upload your resume to start</p>", unsafe_allow_html=True)
+        uploaded_file = st.file_uploader("Upload PDF", type=["pdf"], label_visibility="collapsed")
 
 st.markdown("<br><br><br>", unsafe_allow_html=True)
 
@@ -1058,14 +1058,34 @@ st.markdown("<br><br><br>", unsafe_allow_html=True)
 
 # 4. Bottom CTA
 st.markdown("""
-<div style='text-align: center; padding: 60px 0; border-top: 1px solid rgba(255,255,255,0.08);'>
-    <h2 style='font-size: 2.5rem; color: #FAFAFA; margin-bottom: 24px;'>Ready to optimize your career?</h2>
+<style>
+.glass-cta-wrapper {
+    background: rgba(24, 24, 27, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 60px 24px;
+    text-align: center;
+    margin: 40px auto;
+    max-width: 800px;
+    margin-bottom: -110px; /* Pull the next element up! */
+    padding-bottom: 120px; /* Make room inside the box for the button */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+</style>
+<div class='glass-cta-wrapper'>
+    <h2 style='font-size: 2.5rem; color: #FAFAFA; margin-bottom: 16px; font-weight: 700;'>Ready to optimize your career?</h2>
+    <p style='color: #94A3B8; font-size: 1.1rem; max-width: 500px; margin: 0 auto; line-height: 1.6;'>Upload your resume, unlock AI-driven insights, and start mapping your skills to the top tech roles.</p>
 </div>
 """, unsafe_allow_html=True)
-cta1, cta2, cta3 = st.columns([1,2,1])
+
+cta1, cta2, cta3 = st.columns([1.5, 2, 1.5])
 with cta2:
     if st.button("🚀 Let's Try - Go to Resume Analysis", use_container_width=True, type="primary"):
         st.switch_page("pages/2_📊_Resume_Analysis.py")
+
+st.markdown("<br><br><br>", unsafe_allow_html=True)
 
 # Execution of upload logic:
 if uploaded_file and not st.session_state.get("resume_text"):

@@ -972,8 +972,8 @@ with c2:
     </div>
     """, unsafe_allow_html=True)
 
-    # Uploader natively centered & wider for a more premium look
-    u1, u2, u3 = st.columns([1, 4, 1])
+    # Uploader natively centered & wider horizontally
+    u1, u2, u3 = st.columns([1, 6, 1])
     with u2:
         st.markdown("<p style='color: #FAFAFA; font-weight: 600; font-size: 1.1rem; margin-bottom: 12px; text-align: center;'>Upload your resume to start</p>", unsafe_allow_html=True)
         uploaded_file = st.file_uploader("Upload PDF", type=["pdf"], label_visibility="collapsed")

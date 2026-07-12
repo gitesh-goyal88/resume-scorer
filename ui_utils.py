@@ -332,7 +332,7 @@ def inject_custom_css():
         background-color: rgba(0, 0, 0, 0.2) !important;
         border: 2px dashed rgba(255, 255, 255, 0.15) !important;
         border-radius: 12px !important;
-        padding: 60px 20px !important; /* Make it massive vertically */
+        padding: 30px 20px !important; /* Shorter vertically */
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;

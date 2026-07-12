@@ -924,6 +924,7 @@ st.markdown("""
     border-radius: 16px;
     padding: 24px;
     height: 100%;
+    min-height: 240px;
     transition: transform 0.2s, border-color 0.2s;
 }
 .feature-card:hover {

@@ -1267,8 +1267,12 @@ if st.session_state.resume_text:
         
         feedback = []
         
-        # Only run granular heuristics if ML flagged it as Weak
-        if ml_label == "Weak":
+        # 1. Prioritize Deep Learning Semantic Feedback
+        if b.get("feedback"):
+            feedback.append(b["feedback"])
+            
+        # 2. Fallback to Granular Regex Heuristics ONLY if ML gave no feedback
+        elif ml_label == "Weak":
             # Check for action verb
             action_verbs = ["developed", "led", "managed", "created", "built", "improved", "designed", "optimized", "spearheaded", "implemented"]
             has_action = any(v in text.lower() for v in action_verbs)

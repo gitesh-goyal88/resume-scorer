@@ -305,11 +305,11 @@ def evaluate_bullets_semantic(candidate_bullets: list) -> list:
         from sentence_transformers import SentenceTransformer
         from sklearn.metrics.pairwise import cosine_similarity
     except ImportError:
-        return [{"bullet": b, "score": 0, "feedback": "Dependency missing"} for b in candidate_bullets]
+        return [{"bullet": b, "raw_cosine_similarity": 0.0, "impact_score": 0, "feedback": "Dependency missing"} for b in candidate_bullets]
         
     matrix_path = os.path.join("models", "gold_standard_embeddings.pkl")
     if not os.path.exists(matrix_path):
-        return [{"bullet": b, "score": 0, "feedback": "Gold standard matrix not found"} for b in candidate_bullets]
+        return [{"bullet": b, "raw_cosine_similarity": 0.0, "impact_score": 0, "feedback": "Gold standard matrix not found"} for b in candidate_bullets]
         
     with open(matrix_path, "rb") as f:
         data = pickle.load(f)
@@ -333,12 +333,48 @@ def evaluate_bullets_semantic(candidate_bullets: list) -> list:
         # Typically, anything > 0.65 is very strong in semantic space
         normalized_score = min(max_sim / 0.70 * 100, 100) 
         
+        # Base string based on mathematical score
         if normalized_score >= 85:
-            feedback = "Excellent semantic impact! Strong action + metric correlation."
+            base_feedback = "Strong semantic impact."
         elif normalized_score >= 60:
-            feedback = "Good, but lacks deeper semantic depth or quantifiable metrics."
+            base_feedback = "Average semantic impact."
         else:
-            feedback = "Weak semantic structure. Does not match the XYZ formula."
+            base_feedback = "Weak semantic impact."
+            
+        specific_issues = []
+        
+        # 1. Quantifiable metrics check
+        has_metric = bool(re.search(r'\b\d+%\b|\$\d+|\b\d+\b', bullet))
+        if not has_metric:
+            specific_issues.append("lacks quantifiable outcomes (e.g., %, $, or raw numbers)")
+            
+        # 2. Action Verb opening check
+        action_verbs = {"developed", "led", "managed", "created", "built", "improved", "designed", "optimized", "spearheaded", "implemented", "reduced", "increased", "achieved", "architected", "automated", "orchestrated", "engineered"}
+        words = re.findall(r'\b[a-zA-Z]+\b', bullet.lower())
+        if words and words[0] not in action_verbs:
+            specific_issues.append(f"should start with a strong action verb instead of '{words[0]}'")
+            
+        # 3. Length & Detail check
+        if len(words) < 8:
+            specific_issues.append("is too brief and lacks technical context")
+        elif len(words) > 35:
+            specific_issues.append("is too wordy and should be more concise")
+            
+        # 4. XYZ Formula / Structural Connector check
+        impact_connectors = {"by", "through", "resulting in", "leading to", "achieving", "using"}
+        has_connector = any(c in bullet.lower() for c in impact_connectors)
+        if not has_connector and normalized_score < 75:
+            specific_issues.append("is missing a structural connector explaining 'how' (e.g., 'by doing X' or 'using Y')")
+
+        # Assemble the final dynamic feedback
+        if not specific_issues:
+            feedback = "Excellent bullet point! Perfectly aligns with the XYZ formula."
+        else:
+            if len(specific_issues) == 1:
+                issue_str = specific_issues[0]
+            else:
+                issue_str = ", ".join(specific_issues[:-1]) + ", and " + specific_issues[-1]
+            feedback = f"{base_feedback} It {issue_str}."
             
         results.append({
             "bullet": bullet,
@@ -363,7 +399,8 @@ def classify_bullets(bullet_list: list) -> list:
         legacy_results.append({
             "text": res["bullet"],
             "label": label,
-            "confidence": res["raw_cosine_similarity"]
+            "confidence": res["raw_cosine_similarity"],
+            "feedback": res.get("feedback", "")
         })
         
     return legacy_results
@@ -380,7 +417,7 @@ def train_all_models():
     results = {}
 
     results["job_role_classifier"] = train_job_role_classifier()
-    results["bullet_classifier"] = train_bullet_classifier()
+    results["bullet_classifier"] = build_semantic_bullet_engine()
 
     # --- Quick smoke test --------------------------------------------------
     print("=" * 70)

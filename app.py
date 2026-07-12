@@ -138,19 +138,15 @@ else:
         st.rerun()
             
     # Define pages
-    pages = {
-        "Main": [
-            st.Page("pages/1_🏠_Dashboard.py", title="Dashboard", icon="🏠"),
-            st.Page("pages/2_📊_Resume_Analysis.py", title="Resume Analysis", icon="📊"),
-            st.Page("pages/3_💼_Job_Matches.py", title="Job Matches", icon="💼"),
-            st.Page("pages/5_🎙️_Interview_Prep.py", title="Interview Prep", icon="🎙️"),
-            st.Page("pages/6_📈_Analytics.py", title="Analytics", icon="📈"),
-            st.Page("pages/7_🏆_Leaderboard.py", title="Leaderboard", icon="🏆"),
-        ],
-        "Legacy Tools": [
-            st.Page("pages/5_🎯_Jobscan_Matcher.py", title="Jobscan Matcher", icon="🎯")
-        ]
-    }
+    pages = [
+        st.Page("pages/1_🏠_Dashboard.py", title="Dashboard", icon="🏠"),
+        st.Page("pages/2_📊_Resume_Analysis.py", title="Resume Analysis", icon="📊"),
+        st.Page("pages/3_💼_Job_Matches.py", title="Job Matches", icon="💼"),
+        st.Page("pages/5_🎙️_Interview_Prep.py", title="Interview Prep", icon="🎙️"),
+        st.Page("pages/6_📈_Analytics.py", title="Analytics", icon="📈"),
+        st.Page("pages/7_🏆_Leaderboard.py", title="Leaderboard", icon="🏆"),
+        st.Page("pages/5_🎯_Jobscan_Matcher.py", title="Jobscan Matcher", icon="🎯")
+    ]
 
     # Run navigation
     pg = st.navigation(pages)

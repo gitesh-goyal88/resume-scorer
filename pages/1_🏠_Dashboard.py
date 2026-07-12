@@ -977,7 +977,7 @@ with c2:
     with u2:
         st.markdown("<p style='color: #FAFAFA; font-weight: 600; font-size: 1.1rem; margin-bottom: 12px; text-align: center;'>Upload your resume to start</p>", unsafe_allow_html=True)
         uploaded_file = st.file_uploader("Upload PDF", type=["pdf"], label_visibility="collapsed")
-
+        status_placeholder = st.empty()
     # 3-Column Glassmorphism Stats Section
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("""
@@ -1138,7 +1138,7 @@ st.markdown("<br><br><br>", unsafe_allow_html=True)
 
 # Execution of upload logic:
 if uploaded_file and not st.session_state.get("resume_text"):
-    with st.status("🧠 Analyzing your resume pipeline...", expanded=True) as status:
+    with status_placeholder.status("🧠 Analyzing your resume pipeline...", expanded=True) as status:
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
             tmp.write(uploaded_file.read())
             tmp_path = tmp.name

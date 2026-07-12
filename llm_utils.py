@@ -394,19 +394,7 @@ def load_env():
     """Load environment variables, checking os.environ, streamlit secrets, and local .env file."""
     env = {}
     
-    # 1. Check system environment variables
-    if "GROQ_API_KEY" in os.environ:
-        env["GROQ_API_KEY"] = os.environ["GROQ_API_KEY"]
-        
-    # 2. Check Streamlit secrets
-    try:
-        import streamlit as st
-        if "GROQ_API_KEY" in st.secrets:
-            env["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
-    except Exception:
-        pass
-        
-    # 3. Read local .env file if it exists
+    # 1. Read local .env file if it exists (Lowest Priority)
     if os.path.exists(".env"):
         with open(".env", "r") as f:
             for line in f:
@@ -414,6 +402,20 @@ def load_env():
                 if line and not line.startswith("#") and "=" in line:
                     key, val = line.split("=", 1)
                     env[key.strip()] = val.strip()
+
+    # 2. Check Streamlit secrets (Medium Priority)
+    try:
+        import streamlit as st
+        for k, v in st.secrets.items():
+            env[k] = v
+    except Exception:
+        pass
+        
+    # 3. Check system environment variables (Highest Priority)
+    for k, v in os.environ.items():
+        if k in ["GROQ_API_KEY", "OPENAI_API_KEY"] or k.endswith("_API_KEY"):
+            env[k] = v
+            
     return env
 
 def call_groq_api(prompt: str, system_prompt: str = "You are a helpful career assistant.") -> str:
@@ -488,4 +490,4 @@ Best regards,
 {name}"""
 
     # Default fallback
-    return "This feature requires a valid Groq API key in your .env file to generate dynamic AI content."
+    return "This feature requires a valid Groq API key. If running locally, add it to your .env file. If deployed on Streamlit Cloud, add it to the Advanced Settings -> Secrets manager."

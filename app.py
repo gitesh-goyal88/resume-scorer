@@ -112,47 +112,75 @@ else:
         "Blue": "rgba(96, 165, 250, 0.3)", "Green": "rgba(30, 215, 96, 0.3)", 
         "Red": "rgba(251, 113, 133, 0.3)", "Purple": "rgba(167, 139, 250, 0.3)", "Amber": "rgba(250, 204, 21, 0.3)"
     }
-    
-    # 1. Premium Logo Header in Sidebar (matches PromptTunes style)
-    st.sidebar.markdown(f"""
-    <div style='display: flex; align-items: center; gap: 12px; margin-top: 10px; margin-bottom: 24px; padding-left: 12px;'>
-        <div style='background-color: {accent_colors[accent]}; width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px {glow_colors[accent]};'>
-            <span style='color: #000000; font-size: 20px; font-weight: bold;'>⚡</span>
-        </div>
-        <div>
-            <h3 style='margin: 0; font-size: 18px; font-family: "Outfit", sans-serif; color: #F4F4F5;'>ResumeIQ</h3>
-            <p style='margin: 0; font-size: 11px; color: #71717A; font-family: "Plus Jakarta Sans", sans-serif;'>AI Candidate OS</p>
-        </div>
-    </div>
+       
+    # 1. Hide Sidebar and Native Header to reclaim the top space!
+    st.markdown("""
+        <style>
+            [data-testid="stSidebar"] {display: none !important;}
+            [data-testid="collapsedControl"] {display: none !important;}
+            [data-testid="stHeader"] {display: none !important;}
+            [data-testid="stAppViewBlockContainer"] {padding-top: 1rem !important;}
+            /* Make nav links look like a sleek top menu */
+            .stPageLink { text-align: center !important; }
+            .stPageLink a { padding: 8px 12px !important; border-radius: 8px !important; transition: all 0.2s; }
+            .stPageLink a:hover { background: rgba(255,255,255,0.05) !important; }
+        </style>
     """, unsafe_allow_html=True)
-
-    # 2. Sidebar UI customization (Theme Picker)
-    st.sidebar.markdown("<p style='color: #94A3B8; font-size: 13px; font-weight: 600; margin-bottom: 8px; padding-left: 12px;'>THEME</p>", unsafe_allow_html=True)
-    c1, c2, c3, c4, c5 = st.sidebar.columns(5)
     
-    # Render clickable color circles
-    if c1.button("🔵", help="Blue Theme", use_container_width=True):
-        st.session_state.theme_accent = "Blue"
-        st.rerun()
-    if c2.button("🟢", help="Green Theme", use_container_width=True):
-        st.session_state.theme_accent = "Green"
-        st.rerun()
-    if c3.button("🔴", help="Red Theme", use_container_width=True):
-        st.session_state.theme_accent = "Red"
-        st.rerun()
-    if c4.button("🟣", help="Purple Theme", use_container_width=True):
-        st.session_state.theme_accent = "Purple"
-        st.rerun()
-    if c5.button("🟡", help="Amber Theme", use_container_width=True):
-        st.session_state.theme_accent = "Amber"
-        st.rerun()
+    # 2. Build the Top Navigation Bar
+    nav_col1, nav_col2, nav_col3 = st.columns([3, 7, 2])
+    
+    with nav_col1:
+        st.markdown(f"""
+        <div style='display: flex; align-items: center; gap: 12px; margin-top: 5px; margin-bottom: 10px; padding-left: 10px;'>
+            <div style='background-color: {accent_colors[accent]}; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px {glow_colors[accent]};'>
+                <span style='color: #000000; font-size: 18px; font-weight: bold;'>⚡</span>
+            </div>
+            <div>
+                <h3 style='margin: 0; font-size: 18px; font-family: "Outfit", sans-serif; color: #F4F4F5; font-weight: 700;'>ResumeIQ</h3>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         
-    inject_custom_css()
-    
-    st.sidebar.markdown("---")
+    with nav_col2:
+        # Horizontal layout for the main pages
+        st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
+        c1, c2, c3, c4, c5 = st.columns(5)
+        with c1: st.page_link("pages/1_🏠_Dashboard.py", label="Home")
+        with c2: st.page_link("pages/2_📊_Resume_Analysis.py", label="Analysis")
+        with c3: st.page_link("pages/3_💼_Job_Matches.py", label="Jobs")
+        with c4: st.page_link("pages/5_🎙️_Interview_Prep.py", label="Prep")
+        with c5: st.page_link("pages/6_📈_Analytics.py", label="Analytics")
 
-    # 3. Sidebar Navigation (Manual Rendering for absolute control)
-    st.sidebar.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+    with nav_col3:
+        st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
+        tc1, tc2 = st.columns(2)
+        with tc1:
+            with st.popover("🎨", help="Change Theme", use_container_width=True):
+                st.markdown("**Select Accent**")
+                if st.button("🔵 Blue", use_container_width=True):
+                    st.session_state.theme_accent = "Blue"
+                    st.rerun()
+                if st.button("🟢 Green", use_container_width=True):
+                    st.session_state.theme_accent = "Green"
+                    st.rerun()
+                if st.button("🔴 Red", use_container_width=True):
+                    st.session_state.theme_accent = "Red"
+                    st.rerun()
+                if st.button("🟣 Purple", use_container_width=True):
+                    st.session_state.theme_accent = "Purple"
+                    st.rerun()
+                if st.button("🟡 Amber", use_container_width=True):
+                    st.session_state.theme_accent = "Amber"
+                    st.rerun()
+        with tc2:
+            if st.button("🚪", help="Logout", use_container_width=True):
+                logout_user()
+                st.rerun()
+                
+    st.markdown("<hr style='margin-top: 0px; margin-bottom: 24px; border: none; height: 1px; background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);'>", unsafe_allow_html=True)
+    
+    inject_custom_css()
     
     pages = [
         st.Page("pages/1_🏠_Dashboard.py", title="Dashboard", icon="🏠"),
@@ -163,15 +191,7 @@ else:
         st.Page("pages/7_🏆_Leaderboard.py", title="Leaderboard", icon="🏆"),
         st.Page("pages/5_🎯_Jobscan_Matcher.py", title="Jobscan Matcher", icon="🎯")
     ]
-    
-    for p in pages:
-        st.sidebar.page_link(p, label=p.title, icon=p.icon)
-        
-    st.sidebar.markdown("---")
-    if st.sidebar.button("🚪 Logout", use_container_width=True):
-        logout_user()
-        st.rerun()
-            
+
     # Run hidden native navigation
     pg = st.navigation(pages, position="hidden")
     pg.run()

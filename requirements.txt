@@ -13,3 +13,4 @@ certifi==2024.2.2
 rank-bm25==0.2.2
 nltk==3.8.1
 playwright==1.44.0
+sentence-transformers

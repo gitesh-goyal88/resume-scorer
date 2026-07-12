@@ -53,7 +53,7 @@ with tab1:
     algorithms = ["TF-IDF", "BM25", "KNN"]
     
     @st.cache_data(show_spinner=False)
-    def compute_global_metrics():
+    def compute_global_metrics_v2():
         p_matrix = np.zeros((len(domains), len(algorithms)))
         times = [0.0, 0.0, 0.0]
         
@@ -92,7 +92,7 @@ with tab1:
         return p_matrix, [t/len(domains) for t in times]
 
     with st.spinner("Computing precision matrix (Running 18 searches)..."):
-        precision_matrix, exec_times = compute_global_metrics()
+        precision_matrix, exec_times = compute_global_metrics_v2()
         
     avg_precision = np.mean(precision_matrix, axis=0)
     

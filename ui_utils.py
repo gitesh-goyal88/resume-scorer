@@ -330,9 +330,14 @@ def inject_custom_css():
     }}
     [data-testid="stFileUploaderDropzone"] {{
         background-color: rgba(0, 0, 0, 0.2) !important;
-        border: 1px dashed rgba(255, 255, 255, 0.15) !important;
+        border: 2px dashed rgba(255, 255, 255, 0.15) !important;
         border-radius: 12px !important;
-        padding: 20px !important;
+        padding: 60px 20px !important; /* Make it massive vertically */
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
         transition: all 0.3s ease !important;
     }}
     [data-testid="stFileUploaderDropzone"]:hover {{
@@ -345,13 +350,20 @@ def inject_custom_css():
         font-weight: 600 !important;
         border: none !important;
         border-radius: 8px !important;
-        padding: 8px 24px !important;
-        margin-top: 12px !important;
+        padding: 10px 32px !important;
+        margin: 16px auto !important; /* Auto margin for perfect centering */
+        display: block !important;
         transition: all 0.2s ease !important;
     }}
     [data-testid="stFileUploaderDropzone"] button:hover {{
         transform: translateY(-2px) !important;
         box-shadow: 0 4px 12px {colors['bg_trans']} !important;
+    }}
+    [data-testid="stFileUploaderDropzone"] small {{
+        font-size: 14px !important;
+        text-align: center !important;
+        display: block !important;
+        width: 100% !important;
     }}
     
     /* Kanban column layout customization */

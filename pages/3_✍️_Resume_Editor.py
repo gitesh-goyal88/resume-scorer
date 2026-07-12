@@ -33,6 +33,7 @@ if not st.session_state.get("edit_state_initialized"):
         st.session_state.edit_achievements = extracted_fields.get("achievements", "")
         st.session_state.edit_certs_projects = extracted_fields.get("certs_projects", "")
     else:
+        st.error("⚠️ **AI Extraction Failed!** Could not connect to Groq Llama-3. Please ensure your `GROQ_API_KEY` is set in your `.env` file and that you haven't hit rate limits. Falling back to unformatted raw text...")
         # Fallback to naive heuristics
         st.session_state.edit_name = _extract_name(st.session_state.resume_text)
         summary_text = ""

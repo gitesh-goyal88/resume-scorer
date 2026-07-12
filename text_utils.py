@@ -3,7 +3,7 @@ from nltk.stem import PorterStemmer
 from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
 _stemmer = PorterStemmer()
-_stop_words = set(ENGLISH_STOP_WORDS).union({"experience", "skills", "years", "work", "team", "business", "services", "management", "knowledge", "ability"})
+_stop_words = set(ENGLISH_STOP_WORDS)
 
 def preprocess(text: str) -> list:
     """

@@ -46,10 +46,10 @@ def recommend_jobs(resume_text: str, top_n: int = 10) -> list:
     nonzero_sims = similarities[similarities > 0.001]
 
     # To prevent clustering at 99%, we use Baseline Max-Relative Scaling.
-    # We find the top score. If the top score is garbage (<0.15), we use 0.15 as the baseline 
-    # to prevent a terrible 0.04 match from inflating to 95%.
+    # We find the top score. If the top score is garbage, we use a much higher baseline (0.30) 
+    # to prevent a terrible 0.08 match from artificially inflating to 56%.
     max_raw = similarities.max()
-    baseline = max(max_raw, 0.15)
+    baseline = max(max_raw, 0.30)
 
     ranked_indices = np.argsort(similarities)[::-1]
     total_jobs     = len(jobs)
@@ -61,6 +61,10 @@ def recommend_jobs(resume_text: str, top_n: int = 10) -> list:
 
         # Scale relative to the baseline. Top job gets ~96%.
         scaled_score = int((raw / baseline) * 96)
+        
+        # Enforce harsh penalty on objectively terrible semantic matches (< 0.10 raw)
+        if raw < 0.10:
+            scaled_score = min(scaled_score, 25) # Never let a terrible raw score exceed 25% match
         
         # Cap at 99 and floor at 0
         final_score = min(max(scaled_score, 0), 99)

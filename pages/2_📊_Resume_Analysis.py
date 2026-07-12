@@ -164,10 +164,70 @@ if not st.session_state.resume_text or not st.session_state.ats_ml_score:
     st.markdown('''
     <div style='background: #18181B; border: 1px dashed rgba(255,255,255,0.15); border-radius: 18px; padding: 40px; text-align: center; margin-top: 20px;'>
         <h3 style='color: #FAFAFA; margin-bottom: 8px;'>No Analysis Available</h3>
-        <p style='color: #A1A1AA; font-family: Inter; margin-bottom: 24px;'>Please upload a resume on the Dashboard first.</p>
-        <a href='/' target='_self' style='text-decoration: none;'><button style='background-color: #22C55E; color: #000000; border: none; border-radius: 99px; font-weight: 700; padding: 10px 24px; cursor: pointer;'>Go to Dashboard</button></a>
+        <p style='color: #A1A1AA; font-family: Inter; margin-bottom: 24px;'>Please upload a resume below to begin analysis.</p>
     </div>
     ''', unsafe_allow_html=True)
+    
+    uploaded_file = st.file_uploader("Upload PDF", type=["pdf"], label_visibility="collapsed")
+    if uploaded_file:
+        import tempfile
+        from file_utils import extract_text_from_pdf
+        from ml_model import (
+            extract_skills, predict_job_category, classify_bullets,
+            extract_bullet_points, get_market_skill_gaps, calculate_yoe,
+            extract_resume_features, compute_health_score
+        )
+        from resume_builder import clean_resume_text_bullets
+        from formatting_checker import check_formatting, compute_general_score, compute_section_scores
+        
+        with st.status("🧠 Analyzing your resume pipeline...", expanded=True) as status:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+                tmp.write(uploaded_file.read())
+                tmp_path = tmp.name
+            
+            st.write("📄 Parsing PDF structure...")
+            text = extract_text_from_pdf(tmp_path)
+            text = clean_resume_text_bullets(text)
+            st.session_state.resume_text = text
+            st.session_state.resume_path = tmp_path
+            
+            st.write("🔍 Extracting Technical Skills...")
+            skills = extract_skills(text)
+            st.session_state.skills = skills
+            
+            st.write("📏 Checking Formatting & Grammar...")
+            issues = check_formatting(text, tmp_path)
+            st.session_state.issues = issues
+            st.session_state.health_data = compute_general_score(text, issues, skills)
+            st.session_state.section_scores = compute_section_scores(text)
+            
+            st.write("🤖 Detecting Job Role...")
+            prediction = predict_job_category(text)
+            st.session_state.predicted_role = prediction["category"]
+            
+            st.write("🤖 Llama-3 Bullet Inference...")
+            st.session_state.bullet_results = classify_bullets(extract_bullet_points(text))
+            st.session_state.yoe = calculate_yoe(text)
+            
+            st.write("📈 Computing TF-IDF Heatmaps...")
+            gaps = get_market_skill_gaps(st.session_state.predicted_role, skills)
+            st.session_state.market_gaps = gaps
+            
+            features = extract_resume_features(text, tmp_path)
+            raw_features = {
+                "skill_count":        len(st.session_state.skills or []),
+                "action_verb_count":  features.get("action_verb_count", 0),
+                "metrics_count":      features.get("metrics_count", 0),
+                "section_count":      features.get("section_completeness", 0) // 25,
+                "formatting_penalty": len([i for i in (st.session_state.issues or []) if i.get("severity") == "high"]),
+            }
+            health_result = compute_health_score(raw_features)
+            base_ats = health_result["total_score"]
+            st.session_state.ats_ml_score = {"score": base_ats, "grade": health_result["grade"]}
+                
+            status.update(label="✅ Analysis Complete! Reloading...", state="complete", expanded=False)
+            
+        st.rerun()
     st.stop()
 
 if st.session_state.resume_text:

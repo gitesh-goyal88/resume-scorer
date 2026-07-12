@@ -983,7 +983,7 @@ with p2:
     <div class='feature-card'>
         <div class='step-number'>2</div>
         <h4 style='color: #FAFAFA; margin-bottom: 8px;'>AI interprets</h4>
-        <p style='color: #94A3B8; font-size: 14px;'>Our Llama-3 model detects intent, extracting skills, metrics, and experience depth.</p>
+        <p style='color: #94A3B8; font-size: 14px;'>Advanced TF-IDF pipelines extract deep technical skills, metrics, and exact experience depth.</p>
     </div>
     """, unsafe_allow_html=True)
 with p3:
@@ -991,7 +991,7 @@ with p3:
     <div class='feature-card'>
         <div class='step-number'>3</div>
         <h4 style='color: #FAFAFA; margin-bottom: 8px;'>Engine matches</h4>
-        <p style='color: #94A3B8; font-size: 14px;'>Cosine similarity algorithms rank your profile against 10,000+ real-world tech jobs.</p>
+        <p style='color: #94A3B8; font-size: 14px;'>BM25 ranking and KNN algorithms instantly map your profile against 10,000+ real-world tech jobs.</p>
     </div>
     """, unsafe_allow_html=True)
 with p4:
@@ -1041,8 +1041,8 @@ with g4:
 with g5:
     st.markdown("""
     <div class='feature-card'>
-        <h3 style='margin:0; margin-bottom:12px;'>📈 Cosine Similarity</h3>
-        <p style='color: #94A3B8; font-size: 14px;'>Weighted feature-vector matching powered by Scikit-Learn TF-IDF pipelines.</p>
+        <h3 style='margin:0; margin-bottom:12px;'>📈 BM25 & KNN Engine</h3>
+        <p style='color: #94A3B8; font-size: 14px;'>Lightning-fast candidate matching powered by advanced BM25 ranking and K-Nearest Neighbors.</p>
     </div>
     """, unsafe_allow_html=True)
 with g6:

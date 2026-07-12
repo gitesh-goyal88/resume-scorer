@@ -394,7 +394,19 @@ def load_env():
     """Load environment variables, checking os.environ, streamlit secrets, and local .env file."""
     env = {}
     
-    # 1. Read local .env file if it exists (Lowest Priority)
+    # 1. Check system environment variables
+    if "GROQ_API_KEY" in os.environ:
+        env["GROQ_API_KEY"] = os.environ["GROQ_API_KEY"]
+        
+    # 2. Check Streamlit secrets
+    try:
+        import streamlit as st
+        if "GROQ_API_KEY" in st.secrets:
+            env["GROQ_API_KEY"] = st.secrets["GROQ_API_KEY"]
+    except Exception:
+        pass
+        
+    # 3. Read local .env file if it exists
     if os.path.exists(".env"):
         with open(".env", "r") as f:
             for line in f:
@@ -402,20 +414,6 @@ def load_env():
                 if line and not line.startswith("#") and "=" in line:
                     key, val = line.split("=", 1)
                     env[key.strip()] = val.strip()
-
-    # 2. Check Streamlit secrets (Medium Priority)
-    try:
-        import streamlit as st
-        for k, v in st.secrets.items():
-            env[k] = v
-    except Exception:
-        pass
-        
-    # 3. Check system environment variables (Highest Priority)
-    for k, v in os.environ.items():
-        if k in ["GROQ_API_KEY", "OPENAI_API_KEY"] or k.endswith("_API_KEY"):
-            env[k] = v
-            
     return env
 
 def call_groq_api(prompt: str, system_prompt: str = "You are a helpful career assistant.") -> str:
@@ -447,10 +445,17 @@ def call_groq_api(prompt: str, system_prompt: str = "You are a helpful career as
             result = response.json()
             return result["choices"][0]["message"]["content"].strip()
         else:
-            print(f"Groq API Error: {response.status_code} - {response.text}")
+            # If rate limited or error on 70b, silently fallback to 8b-instant
+            print(f"Groq API Error on 70b: {response.status_code} - {response.text}. Retrying with 8b-instant...")
+            data["model"] = "llama-3.1-8b-instant"
+            fallback_response = requests.post(url, headers=headers, json=data, timeout=15)
+            if fallback_response.status_code == 200:
+                result = fallback_response.json()
+                return result["choices"][0]["message"]["content"].strip()
+            print(f"Groq API Error on 8b fallback: {fallback_response.status_code} - {fallback_response.text}")
             return get_fallback_response(prompt)
     except Exception as e:
-        print(f"Network error calling Groq: {e}")
+        print(f"Network error in Groq API: {e}")
         return get_fallback_response(prompt)
 
 def get_fallback_response(prompt: str) -> str:
@@ -490,4 +495,4 @@ Best regards,
 {name}"""
 
     # Default fallback
-    return "This feature requires a valid Groq API key. If running locally, add it to your .env file. If deployed on Streamlit Cloud, add it to the Advanced Settings -> Secrets manager."
+    return "This feature requires a valid Groq API key in your .env file to generate dynamic AI content."

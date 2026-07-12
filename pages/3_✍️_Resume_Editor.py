@@ -5,7 +5,7 @@ import tempfile
 import re
 import ast
 
-
+st.set_page_config(page_title="Resume Editor", page_icon="✍️", layout="wide")
 
 from ui_utils import inject_custom_css
 inject_custom_css()
@@ -13,6 +13,55 @@ inject_custom_css()
 if not st.session_state.get("resume_text"):
     st.warning("⚠️ No resume loaded! Please upload your resume on the Dashboard first.")
     st.stop()
+
+    # ── Initialize State ──
+    if not st.session_state.get("edit_state_initialized"):
+        from llm_utils import extract_resume_fields_via_llm
+        from resume_builder import _extract_name, _extract_section
+        
+        with st.spinner("🔍 Parsing and structuring resume details using AI..."):
+            extracted_fields = extract_resume_fields_via_llm(st.session_state.resume_text)
+            
+        if extracted_fields:
+            st.session_state.edit_name = extracted_fields.get("name", "")
+            st.session_state.edit_summary = extracted_fields.get("summary", "")
+            st.session_state.edit_skills_languages = extracted_fields.get("skills_languages", "")
+            st.session_state.edit_skills_tools = extracted_fields.get("skills_tools", "")
+            st.session_state.edit_skills_soft = extracted_fields.get("skills_soft", "")
+            st.session_state.edit_experience = extracted_fields.get("experience", "")
+            st.session_state.edit_education = extracted_fields.get("education", "")
+            st.session_state.edit_achievements = extracted_fields.get("achievements", "")
+            st.session_state.edit_certs_projects = extracted_fields.get("certs_projects", "")
+        else:
+            # Fallback to naive heuristics
+            st.session_state.edit_name = _extract_name(st.session_state.resume_text)
+            summary_text = ""
+            paragraphs = [p.strip() for p in st.session_state.resume_text.split("\n\n") if p.strip()]
+            if paragraphs:
+                summary_text = paragraphs[0] if len(paragraphs[0].split()) > 5 else (paragraphs[1] if len(paragraphs) > 1 else "")
+            st.session_state.edit_summary = summary_text
+            st.session_state.edit_skills_languages = ""
+            st.session_state.edit_skills_tools = ", ".join(st.session_state.skills) if st.session_state.skills else _extract_section(st.session_state.resume_text, "Skills")
+            st.session_state.edit_skills_soft = ""
+            st.session_state.edit_experience = _extract_section(st.session_state.resume_text, "Experience")
+            st.session_state.edit_education = _extract_section(st.session_state.resume_text, "Education")
+            st.session_state.edit_achievements = _extract_section(st.session_state.resume_text, "Achievements")
+            certs = _extract_section(st.session_state.resume_text, "Certifications")
+            projects = _extract_section(st.session_state.resume_text, "Projects")
+            st.session_state.edit_certs_projects = "\n".join(filter(None, [certs, projects]))
+            
+        # Clear the old structured list states so they get re-initialized on every new resume parsing
+        for list_key in [
+            "edit_experience_list", "edit_education_list", "edit_projects_list",
+            "edit_achievements_list", "edit_skills_languages_list",
+            "edit_skills_tools_list", "edit_skills_soft_list"
+        ]:
+            if list_key in st.session_state:
+                del st.session_state[list_key]
+            
+        st.session_state.edit_state_initialized = True
+        
+
 
 def sanitize_text_field(val, formatter):
     if not val:
@@ -287,13 +336,22 @@ def render_resume_editor():
     # Initialize structured lists from plain text area states
     init_structured_lists()
     
-    def display_pdf(pdf_path):
+    # Helper to render PDF pages as styled images to bypass Chrome security blocks and maintain proportions
+    def display_pdf_as_images(pdf_path):
+        import fitz
         import base64
         try:
-            with open(pdf_path, "rb") as f:
-                base64_pdf = base64.b64encode(f.read()).decode('utf-8')
-            pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="800" type="application/pdf"></iframe>'
-            st.markdown(pdf_display, unsafe_allow_html=True)
+            doc = fitz.open(pdf_path)
+            for page in doc:
+                pix = page.get_pixmap(dpi=150)
+                img_bytes = pix.tobytes("png")
+                base64_img = base64.b64encode(img_bytes).decode('utf-8')
+                st.markdown(
+                    f'<div style="display: flex; justify-content: center; margin-bottom: 20px;">'
+                    f'<img src="data:image/png;base64,{base64_img}" style="width: 100%; max-width: 600px; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);" />'
+                    f'</div>',
+                    unsafe_allow_html=True
+                )
         except Exception as e:
             st.error(f"Could not render PDF preview: {e}")
 
@@ -723,8 +781,8 @@ Do NOT output any markdown code block backticks (```json or ```), styling, or ex
                     skills_soft=st.session_state.edit_skills_soft
                 )
                 
-                # Show PDF via native base64 iframe
-                display_pdf(output_path)
+                # Show PDF as images instead of an iframe to bypass Chrome security blocks
+                display_pdf_as_images(output_path)
                 
                 # Download button below the preview
                 st.markdown(" ")

@@ -119,7 +119,13 @@ else:
             [data-testid="stSidebar"] {display: none !important;}
             [data-testid="collapsedControl"] {display: none !important;}
             [data-testid="stHeader"] {display: none !important;}
-            [data-testid="stAppViewBlockContainer"] {padding-top: 1rem !important;}
+            [data-testid="stAppViewBlockContainer"] {
+                padding-top: 1rem !important;
+                padding-left: 2rem !important;
+                padding-right: 2rem !important;
+                padding-bottom: 2rem !important;
+                max-width: 100% !important;
+            }
             /* Make nav links look like a sleek top menu */
             .stPageLink { text-align: center !important; }
             .stPageLink a { padding: 8px 12px !important; border-radius: 8px !important; transition: all 0.2s; }

@@ -119,11 +119,11 @@ else:
             [data-testid="stSidebar"] {display: none !important;}
             [data-testid="collapsedControl"] {display: none !important;}
             [data-testid="stHeader"] {display: none !important;}
-            [data-testid="stAppViewBlockContainer"] {
-                padding-top: 1rem !important;
-                padding-left: 2rem !important;
-                padding-right: 2rem !important;
-                padding-bottom: 2rem !important;
+            .block-container,
+            [data-testid="block-container"],
+            [data-testid="stAppViewBlockContainer"],
+            [data-testid="stMainBlockContainer"] {
+                padding: 1rem 2rem 5rem 2rem !important;
                 max-width: 100% !important;
             }
             /* Make nav links look like a sleek top menu */
@@ -133,12 +133,22 @@ else:
         </style>
     """, unsafe_allow_html=True)
     
+    pages = [
+        st.Page("pages/1_🏠_Dashboard.py", title="Dashboard", icon="🏠"),
+        st.Page("pages/2_📊_Resume_Analysis.py", title="Resume Analysis", icon="📊"),
+        st.Page("pages/3_💼_Job_Matches.py", title="Job Matches", icon="💼"),
+        st.Page("pages/5_🎙️_Interview_Prep.py", title="Interview Prep", icon="🎙️"),
+        st.Page("pages/6_📈_Analytics.py", title="Analytics", icon="📈"),
+        st.Page("pages/7_🏆_Leaderboard.py", title="Leaderboard", icon="🏆"),
+        st.Page("pages/5_🎯_Jobscan_Matcher.py", title="Jobscan Matcher", icon="🎯")
+    ]
+    
     # 2. Build the Top Navigation Bar
     nav_col1, nav_col2, nav_col3 = st.columns([2.2, 8.3, 1.5])
     
     with nav_col1:
         st.markdown(f"""
-        <div style='display: flex; align-items: center; gap: 12px; margin-top: 5px; margin-bottom: 10px; padding-left: 10px;'>
+        <div style='display: flex; align-items: center; gap: 12px; margin-top: 0px; margin-bottom: 10px;'>
             <div style='background-color: {accent_colors[accent]}; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px {glow_colors[accent]};'>
                 <span style='color: #000000; font-size: 18px; font-weight: bold;'>⚡</span>
             </div>
@@ -152,13 +162,13 @@ else:
         # Horizontal layout for the main pages
         st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
         c1, c2, c3, c4, c5, c6, c7 = st.columns(7)
-        with c1: st.page_link("pages/1_🏠_Dashboard.py", label="Home")
-        with c2: st.page_link("pages/2_📊_Resume_Analysis.py", label="Analysis")
-        with c3: st.page_link("pages/3_💼_Job_Matches.py", label="Jobs")
-        with c4: st.page_link("pages/5_🎙️_Interview_Prep.py", label="Prep")
-        with c5: st.page_link("pages/6_📈_Analytics.py", label="Stats")
-        with c6: st.page_link("pages/7_🏆_Leaderboard.py", label="Rank")
-        with c7: st.page_link("pages/5_🎯_Jobscan_Matcher.py", label="Jobscan")
+        with c1: st.page_link(pages[0], label="Home", icon="🏠")
+        with c2: st.page_link(pages[1], label="Analyze", icon="📊")
+        with c3: st.page_link(pages[2], label="Jobs", icon="💼")
+        with c4: st.page_link(pages[3], label="Prep", icon="🎙️")
+        with c5: st.page_link(pages[4], label="Stats", icon="📈")
+        with c6: st.page_link(pages[5], label="Rank", icon="🏆")
+        with c7: st.page_link(pages[6], label="Jobscan", icon="🎯")
 
     with nav_col3:
         st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
@@ -190,15 +200,7 @@ else:
     
     inject_custom_css()
     
-    pages = [
-        st.Page("pages/1_🏠_Dashboard.py", title="Dashboard", icon="🏠"),
-        st.Page("pages/2_📊_Resume_Analysis.py", title="Resume Analysis", icon="📊"),
-        st.Page("pages/3_💼_Job_Matches.py", title="Job Matches", icon="💼"),
-        st.Page("pages/5_🎙️_Interview_Prep.py", title="Interview Prep", icon="🎙️"),
-        st.Page("pages/6_📈_Analytics.py", title="Analytics", icon="📈"),
-        st.Page("pages/7_🏆_Leaderboard.py", title="Leaderboard", icon="🏆"),
-        st.Page("pages/5_🎯_Jobscan_Matcher.py", title="Jobscan Matcher", icon="🎯")
-    ]
+    # Pages are already defined above
 
     # Run hidden native navigation
     pg = st.navigation(pages, position="hidden")

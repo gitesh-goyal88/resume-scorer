@@ -98,8 +98,10 @@ with tab1:
     
     win_rates = [0, 0, 0]
     for i in range(len(domains)):
-        winner_idx = np.argmax(precision_matrix[i])
-        win_rates[winner_idx] += 1
+        max_val = np.max(precision_matrix[i])
+        for j in range(len(algorithms)):
+            if precision_matrix[i, j] == max_val:
+                win_rates[j] += 1
 
     # Apply global dark theme for Matplotlib
     plt.style.use('dark_background')

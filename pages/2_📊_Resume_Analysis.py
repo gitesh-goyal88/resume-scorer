@@ -1088,22 +1088,7 @@ if st.session_state.resume_text:
         
     with col_sub:
         st.markdown(f"""
-        <div style="
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 16px;
-            padding: 30px;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 24px;
-            margin-top: 15px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        ">
-            <!-- Bullet Impact -->
+        <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 16px; padding: 30px; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 24px; margin-top: 15px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);">
             <div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                     <span style="color: #D4D4D8; font-weight: 600; font-size: 15px;">✍️ Bullet Impact Score</span>
@@ -1113,8 +1098,6 @@ if st.session_state.resume_text:
                     <div style="background: linear-gradient(90deg, #3B82F6, #8B5CF6); width: {impact_score}%; height: 100%; border-radius: 99px; transition: width 1s ease-in-out;"></div>
                 </div>
             </div>
-            
-            <!-- Presentation -->
             <div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                     <span style="color: #D4D4D8; font-weight: 600; font-size: 15px;">📐 Formatting Health</span>
@@ -1124,8 +1107,6 @@ if st.session_state.resume_text:
                     <div style="background: linear-gradient(90deg, #10B981, #34D399); width: {presentation_score}%; height: 100%; border-radius: 99px; transition: width 1s ease-in-out;"></div>
                 </div>
             </div>
-            
-            <!-- Competencies -->
             <div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
                     <span style="color: #D4D4D8; font-weight: 600; font-size: 15px;">🧠 Hard Skill Alignment</span>

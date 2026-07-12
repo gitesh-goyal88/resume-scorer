@@ -897,7 +897,7 @@ st.markdown("""
     margin-bottom: 24px;
     animation: glow 3s infinite;
 }
-.hero-title {
+div.hero-title, .stMarkdown div.hero-title {
     font-size: clamp(2.5rem, 6vw, 4.5rem) !important;
     font-weight: 800 !important;
     color: #FAFAFA !important;
@@ -905,7 +905,7 @@ st.markdown("""
     margin-bottom: 24px !important;
     text-align: center;
 }
-.hero-title span {
+div.hero-title span, .stMarkdown div.hero-title span {
     background: linear-gradient(90deg, #10B981, #3B82F6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

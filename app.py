@@ -126,25 +126,8 @@ else:
     </div>
     """, unsafe_allow_html=True)
 
-    # 2. Sidebar Navigation (Manual Rendering for absolute control)
-    st.sidebar.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
-    
-    pages = [
-        st.Page("pages/1_🏠_Dashboard.py", title="Dashboard", icon="🏠"),
-        st.Page("pages/2_📊_Resume_Analysis.py", title="Resume Analysis", icon="📊"),
-        st.Page("pages/3_💼_Job_Matches.py", title="Job Matches", icon="💼"),
-        st.Page("pages/5_🎙️_Interview_Prep.py", title="Interview Prep", icon="🎙️"),
-        st.Page("pages/6_📈_Analytics.py", title="Analytics", icon="📈"),
-        st.Page("pages/7_🏆_Leaderboard.py", title="Leaderboard", icon="🏆"),
-        st.Page("pages/5_🎯_Jobscan_Matcher.py", title="Jobscan Matcher", icon="🎯")
-    ]
-    
-    for p in pages:
-        st.sidebar.page_link(p, label=p.title, icon=p.icon)
-        
-    # 3. Sidebar UI customization
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("<h4 style='color: #FAFAFA; margin-bottom: 8px;'>🎨 Theme</h4>", unsafe_allow_html=True)
+    # 2. Sidebar UI customization (Theme Picker)
+    st.sidebar.markdown("<p style='color: #94A3B8; font-size: 13px; font-weight: 600; margin-bottom: 8px; padding-left: 12px;'>THEME</p>", unsafe_allow_html=True)
     c1, c2, c3, c4, c5 = st.sidebar.columns(5)
     
     # Render clickable color circles
@@ -165,7 +148,25 @@ else:
         st.rerun()
         
     inject_custom_css()
+    
+    st.sidebar.markdown("---")
 
+    # 3. Sidebar Navigation (Manual Rendering for absolute control)
+    st.sidebar.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
+    
+    pages = [
+        st.Page("pages/1_🏠_Dashboard.py", title="Dashboard", icon="🏠"),
+        st.Page("pages/2_📊_Resume_Analysis.py", title="Resume Analysis", icon="📊"),
+        st.Page("pages/3_💼_Job_Matches.py", title="Job Matches", icon="💼"),
+        st.Page("pages/5_🎙️_Interview_Prep.py", title="Interview Prep", icon="🎙️"),
+        st.Page("pages/6_📈_Analytics.py", title="Analytics", icon="📈"),
+        st.Page("pages/7_🏆_Leaderboard.py", title="Leaderboard", icon="🏆"),
+        st.Page("pages/5_🎯_Jobscan_Matcher.py", title="Jobscan Matcher", icon="🎯")
+    ]
+    
+    for p in pages:
+        st.sidebar.page_link(p, label=p.title, icon=p.icon)
+        
     st.sidebar.markdown("---")
     if st.sidebar.button("🚪 Logout", use_container_width=True):
         logout_user()

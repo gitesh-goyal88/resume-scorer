@@ -35,7 +35,7 @@ with st.spinner("Initializing models..."):
     # Pre-compute KNN (Using Bag of Words / CountVectorizer to differentiate from TF-IDF)
     count_vectorizer = CountVectorizer(tokenizer=identity_tokenizer, preprocessor=identity_tokenizer, token_pattern=None)
     job_count_vectors = count_vectorizer.fit_transform(processed_job_texts)
-    knn = NearestNeighbors(n_neighbors=5, metric='euclidean')
+    knn = NearestNeighbors(n_neighbors=5, metric='cosine')
     knn.fit(job_count_vectors)
 
     # Pre-compute BM25

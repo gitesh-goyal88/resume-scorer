@@ -5,7 +5,7 @@ import tempfile
 import re
 import ast
 
-st.set_page_config(page_title="Resume Editor", page_icon="✍️", layout="wide")
+
 
 from ui_utils import inject_custom_css
 inject_custom_css()

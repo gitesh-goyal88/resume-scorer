@@ -4,7 +4,7 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 from rank_bm25 import BM25Okapi
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.neighbors import NearestNeighbors
 from text_utils import preprocess, identity_tokenizer
@@ -32,9 +32,11 @@ with st.spinner("Initializing models..."):
     vectorizer = TfidfVectorizer(tokenizer=identity_tokenizer, preprocessor=identity_tokenizer, token_pattern=None)
     job_vectors = vectorizer.fit_transform(processed_job_texts)
     
-    # Pre-compute KNN
-    knn = NearestNeighbors(n_neighbors=5, metric='cosine')
-    knn.fit(job_vectors)
+    # Pre-compute KNN (Using Bag of Words / CountVectorizer to differentiate from TF-IDF)
+    count_vectorizer = CountVectorizer(tokenizer=identity_tokenizer, preprocessor=identity_tokenizer, token_pattern=None)
+    job_count_vectors = count_vectorizer.fit_transform(processed_job_texts)
+    knn = NearestNeighbors(n_neighbors=5, metric='euclidean')
+    knn.fit(job_count_vectors)
 
     # Pre-compute BM25
     bm25 = BM25Okapi(processed_job_texts)
@@ -81,7 +83,8 @@ with tab1:
             
             # --- KNN ---
             t0 = time.time()
-            distances, indices = knn.kneighbors(query_vector)
+            knn_query_vector = count_vectorizer.transform([query_processed])
+            distances, indices = knn.kneighbors(knn_query_vector)
             top5_knn = indices[0]
             times[2] += (time.time() - t0)
             p_matrix[i, 2] = sum(1 for idx in top5_knn if is_relevant(idx)) / 5.0
@@ -220,7 +223,8 @@ with tab2:
         
         # KNN
         t0 = time.time()
-        distances, indices = knn.kneighbors(resume_vector)
+        knn_personal_vector = count_vectorizer.transform([resume_processed])
+        distances, indices = knn.kneighbors(knn_personal_vector)
         knn_top = indices[0]
         t_knn = time.time() - t0
         p_knn = sum(1 for idx in knn_top if is_relevant_personal(idx)) / 5.0

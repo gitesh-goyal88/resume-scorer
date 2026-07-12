@@ -287,22 +287,13 @@ def render_resume_editor():
     # Initialize structured lists from plain text area states
     init_structured_lists()
     
-    # Helper to render PDF pages as styled images to bypass Chrome security blocks and maintain proportions
-    def display_pdf_as_images(pdf_path):
-        import fitz
+    def display_pdf(pdf_path):
         import base64
         try:
-            doc = fitz.open(pdf_path)
-            for page in doc:
-                pix = page.get_pixmap(dpi=150)
-                img_bytes = pix.tobytes("png")
-                base64_img = base64.b64encode(img_bytes).decode('utf-8')
-                st.markdown(
-                    f'<div style="display: flex; justify-content: center; margin-bottom: 20px;">'
-                    f'<img src="data:image/png;base64,{base64_img}" style="width: 100%; max-width: 600px; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);" />'
-                    f'</div>',
-                    unsafe_allow_html=True
-                )
+            with open(pdf_path, "rb") as f:
+                base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+            pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="100%" height="800" type="application/pdf"></iframe>'
+            st.markdown(pdf_display, unsafe_allow_html=True)
         except Exception as e:
             st.error(f"Could not render PDF preview: {e}")
 
@@ -732,8 +723,8 @@ Do NOT output any markdown code block backticks (```json or ```), styling, or ex
                     skills_soft=st.session_state.edit_skills_soft
                 )
                 
-                # Show PDF as images instead of an iframe to bypass Chrome security blocks
-                display_pdf_as_images(output_path)
+                # Show PDF via native base64 iframe
+                display_pdf(output_path)
                 
                 # Download button below the preview
                 st.markdown(" ")

@@ -320,7 +320,8 @@ def inject_custom_css():
         -webkit-backdrop-filter: blur(12px) !important;
         border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 16px !important;
-        padding: 24px !important;
+        padding: 16px !important;
+        min-height: 10px !important;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
         transition: all 0.3s ease !important;
     }}
@@ -332,7 +333,8 @@ def inject_custom_css():
         background-color: rgba(0, 0, 0, 0.2) !important;
         border: 2px dashed rgba(255, 255, 255, 0.15) !important;
         border-radius: 12px !important;
-        padding: 30px 20px !important; /* Shorter vertically */
+        padding: 20px 20px !important; /* Shorter vertically */
+        min-height: 10px !important; /* Destroy native height */
         display: flex !important;
         flex-direction: column !important;
         align-items: center !important;

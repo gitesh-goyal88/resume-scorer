@@ -906,17 +906,24 @@ div.hero-title, .stMarkdown div.hero-title {
     text-align: center;
 }
 div.hero-title span, .stMarkdown div.hero-title span {
+    font-size: inherit !important;
     background: linear-gradient(90deg, #10B981, #3B82F6);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-.hero-subtitle {
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    color: #94A3B8;
+p.hero-subtitle, .stMarkdown p.hero-subtitle {
+    font-size: 1.15rem !important;
+    color: #94A3B8 !important;
+    text-align: center !important;
+    max-width: 750px !important;
+    margin: 0 auto 48px auto !important;
+    line-height: 1.6 !important;
+}
+.hero-container {
     text-align: center;
-    max-width: 700px;
-    margin: 0 auto 48px auto;
-    line-height: 1.6;
+    margin-top: -30px;
+    position: relative;
+    z-index: 1;
 }
 .feature-card {
     background: #18181B;
@@ -951,17 +958,17 @@ div.hero-title span, .stMarkdown div.hero-title span {
 c1, c2, c3 = st.columns([1, 6, 1])
 with c2:
     st.markdown("""
-    <div style='text-align: center; margin-top: 40px;'>
+    <div class='hero-container'>
         <div class='hero-pill'>✨ AI-powered candidate optimization</div>
         <div class='hero-title'>Build a resume that<br><span>outsmarts the ATS</span></div>
         <p class='hero-subtitle'>ResumeIQ translates your experience into structured data and recommends the highest-matching roles using cosine similarity across a dataset of 10,000+ top tech jobs.</p>
     </div>
     """, unsafe_allow_html=True)
 
-    # Uploader natively centered
-    u1, u2, u3 = st.columns([1, 2, 1])
+    # Uploader natively centered & wider for a more premium look
+    u1, u2, u3 = st.columns([1.5, 3, 1.5])
     with u2:
-        st.markdown("<p style='color: #FAFAFA; font-weight: 600; margin-bottom: 12px; text-align: center;'>Upload your resume to start</p>", unsafe_allow_html=True)
+        st.markdown("<p style='color: #FAFAFA; font-weight: 600; font-size: 1.1rem; margin-bottom: 12px; text-align: center;'>Upload your resume to start</p>", unsafe_allow_html=True)
         uploaded_file = st.file_uploader("Upload PDF", type=["pdf"], label_visibility="collapsed")
 
 st.markdown("<br><br><br>", unsafe_allow_html=True)

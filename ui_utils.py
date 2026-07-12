@@ -67,9 +67,11 @@ def inject_custom_css():
         color: #FAFAFA !important;
     }}
 
-    /* Canvas styling - Pitch Dark matching the screenshot */
+    /* Canvas styling - Pitch Dark with Dynamic Ambient Glow */
     .stApp {{
         background-color: #09090B !important;
+        background-image: radial-gradient(ellipse at 50% -20%, {colors['bg_trans']} 0%, rgba(9, 9, 11, 1) 70%) !important;
+        background-attachment: fixed !important;
         color: #FAFAFA !important;
     }}
     
@@ -313,21 +315,43 @@ def inject_custom_css():
     
     /* File uploader wrapper and dropzones */
     [data-testid="stFileUploader"] {{
-        background-color: #18181B !important;
-        border: 1px dashed rgba(255, 255, 255, 0.08) !important;
-        border-radius: 8px !important;
-        padding: 10px !important;
+        background-color: rgba(24, 24, 27, 0.6) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 16px !important;
+        padding: 24px !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+        transition: all 0.3s ease !important;
+    }}
+    [data-testid="stFileUploader"]:hover {{
+        border-color: rgba(34, 197, 94, 0.4) !important;
+        box-shadow: 0 8px 32px rgba(34, 197, 94, 0.1) !important;
     }}
     [data-testid="stFileUploaderDropzone"] {{
-        background-color: #121214 !important;
-        border: 1px dashed rgba(255, 255, 255, 0.1) !important;
-        border-radius: 6px !important;
+        background-color: rgba(0, 0, 0, 0.2) !important;
+        border: 1px dashed rgba(255, 255, 255, 0.15) !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+        transition: all 0.3s ease !important;
+    }}
+    [data-testid="stFileUploaderDropzone"]:hover {{
+        border-color: {colors['primary']} !important;
+        background-color: {colors['bg_trans']} !important;
     }}
     [data-testid="stFileUploaderDropzone"] button {{
-        background-color: #18181B !important;
-        color: #F4F4F5 !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        background-color: {colors['primary']} !important;
+        color: #000000 !important;
+        font-weight: 600 !important;
+        border: none !important;
         border-radius: 8px !important;
+        padding: 8px 24px !important;
+        margin-top: 12px !important;
+        transition: all 0.2s ease !important;
+    }}
+    [data-testid="stFileUploaderDropzone"] button:hover {{
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px {colors['bg_trans']} !important;
     }}
     
     /* Kanban column layout customization */

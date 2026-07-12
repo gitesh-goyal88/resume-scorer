@@ -972,7 +972,10 @@ with col_right:
         ''', unsafe_allow_html=True)
     else:
         # Timeline component
-        st.markdown('''
+        jobs_status = "Viewed" if st.session_state.get("jobs_viewed") else "Pending view"
+        jobs_color = "#22C55E" if st.session_state.get("jobs_viewed") else "rgba(255,255,255,0.2)"
+        
+        st.markdown(f'''
         <div style='background: #18181B; border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 24px;'>
             <div style='border-left: 2px solid rgba(255,255,255,0.08); padding-left: 16px; margin-left: 8px;'>
                 <div style='position: relative; margin-bottom: 24px;'>
@@ -986,9 +989,9 @@ with col_right:
                     <p style='color: #A1A1AA; margin: 0; font-size: 12px; font-family: Inter;'>Today</p>
                 </div>
                 <div style='position: relative; margin-bottom: 24px;'>
-                    <div style='position: absolute; left: -25px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2);'></div>
+                    <div style='position: absolute; left: -25px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: {jobs_color};'></div>
                     <p style='color: #FAFAFA; margin: 0; font-weight: 500; font-size: 14px;'>Jobs Matched</p>
-                    <p style='color: #A1A1AA; margin: 0; font-size: 12px; font-family: Inter;'>Pending view</p>
+                    <p style='color: #A1A1AA; margin: 0; font-size: 12px; font-family: Inter;'>{jobs_status}</p>
                 </div>
                 <div style='position: relative; margin-bottom: 0px;'>
                     <div style='position: absolute; left: -25px; top: 4px; width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2);'></div>

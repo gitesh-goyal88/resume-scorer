@@ -4,6 +4,9 @@ import tempfile
 from job_matcher import recommend_jobs
 from resume_builder import generate_cover_letter_pdf
 from ui_utils import inject_custom_css
+
+st.session_state.jobs_viewed = True
+
 inject_custom_css()
 
 

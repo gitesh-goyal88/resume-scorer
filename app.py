@@ -111,12 +111,10 @@ else:
     st.sidebar.selectbox("Accent Color", ["Blue", "Green", "Red", "Purple", "Amber"], key="theme_accent")
     inject_custom_css()
 
-    # Top bar for logout
-    c1, c2 = st.columns([8,1])
-    with c2:
-        if st.button("Logout"):
-            logout_user()
-            st.rerun()
+    st.sidebar.markdown("---")
+    if st.sidebar.button("🚪 Logout", use_container_width=True):
+        logout_user()
+        st.rerun()
             
     # Define pages
     pages = {

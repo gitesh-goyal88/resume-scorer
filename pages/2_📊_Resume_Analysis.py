@@ -1078,36 +1078,65 @@ if st.session_state.resume_text:
         (presentation_score * 0.10)
     )
     
-    st.markdown("### 🏆 Overall ATS Readiness Score")
-    col_main, _ = st.columns([0.4, 0.6])
+    st.markdown("### 🏆 ATS Readiness & ML Breakdown")
+    col_main, col_sub = st.columns([0.4, 0.6], gap="large")
+    
     with col_main:
-        fig_combined = create_gauge_chart(combined_score, "ATS Match (80-10-10 Weighting)")
+        fig_combined = create_gauge_chart(combined_score, "Overall ATS Score")
         st.pyplot(fig_combined)
         plt.close(fig_combined)
         
-    st.markdown("---")
-    st.markdown("### 🔬 Detailed Sub-Scores")
-
-    # Row 1: Sub-Scores
-    c1, c2, c3 = st.columns(3)
-    
-    with c1:
-        st.markdown("### Bullet Impact Score")
-        fig_impact = create_gauge_chart(impact_score, "Bullet Point Strength")
-        st.pyplot(fig_impact)
-        plt.close(fig_impact)
-        
-    with c2:
-        st.markdown("### Presentation Score")
-        fig_health = create_gauge_chart(presentation_score, "Formatting Health")
-        st.pyplot(fig_health)
-        plt.close(fig_health)
-        
-    with c3:
-        st.markdown("### Competencies Score")
-        fig_comp = create_gauge_chart(competencies_score, "Hard Skill Alignment")
-        st.pyplot(fig_comp)
-        plt.close(fig_comp)
+    with col_sub:
+        st.markdown(f"""
+        <div style="
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 16px;
+            padding: 30px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 15px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        ">
+            <!-- Bullet Impact -->
+            <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: #D4D4D8; font-weight: 600; font-size: 15px;">✍️ Bullet Impact Score</span>
+                    <span style="color: #FAFAFA; font-weight: 700;">{impact_score}/100</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.06); border-radius: 99px; width: 100%; height: 10px; overflow: hidden;">
+                    <div style="background: linear-gradient(90deg, #3B82F6, #8B5CF6); width: {impact_score}%; height: 100%; border-radius: 99px; transition: width 1s ease-in-out;"></div>
+                </div>
+            </div>
+            
+            <!-- Presentation -->
+            <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: #D4D4D8; font-weight: 600; font-size: 15px;">📐 Formatting Health</span>
+                    <span style="color: #FAFAFA; font-weight: 700;">{presentation_score}/100</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.06); border-radius: 99px; width: 100%; height: 10px; overflow: hidden;">
+                    <div style="background: linear-gradient(90deg, #10B981, #34D399); width: {presentation_score}%; height: 100%; border-radius: 99px; transition: width 1s ease-in-out;"></div>
+                </div>
+            </div>
+            
+            <!-- Competencies -->
+            <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: #D4D4D8; font-weight: 600; font-size: 15px;">🧠 Hard Skill Alignment</span>
+                    <span style="color: #FAFAFA; font-weight: 700;">{competencies_score}/100</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.06); border-radius: 99px; width: 100%; height: 10px; overflow: hidden;">
+                    <div style="background: linear-gradient(90deg, #F59E0B, #FBBF24); width: {competencies_score}%; height: 100%; border-radius: 99px; transition: width 1s ease-in-out;"></div>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
         
     st.markdown("### 🧠 Explainable AI (XAI) Insights")
     xai_bullets = []

@@ -887,7 +887,7 @@ with col_title2:
         for key in list(st.session_state.keys()):
             if key not in keys_to_keep:
                 del st.session_state[key]
-        st.switch_page("pages/1_🏠_Candidate_Portal.py")
+        st.switch_page("pages/1_🏠_Dashboard.py")
 
 if not st.session_state.resume_text or not st.session_state.ats_ml_score:
     st.markdown('''

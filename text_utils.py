@@ -1,9 +1,9 @@
 import re
 from nltk.stem import PorterStemmer
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS
 
 _stemmer = PorterStemmer()
-_stop_words = {"and", "the", "to", "of", "in", "a", "is", "for", "with", "on", 
-               "are", "we", "you", "this", "our", "at", "as", "by", "or", "an"}
+_stop_words = set(ENGLISH_STOP_WORDS).union({"experience", "skills", "years", "work", "team", "business", "services", "management", "knowledge", "ability"})
 
 def preprocess(text: str) -> list:
     """

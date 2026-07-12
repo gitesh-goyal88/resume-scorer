@@ -52,8 +52,29 @@ inject_custom_css()
 
 # --- Auth Gateway ---
 if st.session_state.user_id is None:
-    st.markdown("<h1 class='gradient-title' style='text-align: center; font-size: 3.5rem; margin-bottom: 5px; padding-bottom: 10px;'>ResumeIQ Platform</h1>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align: center; font-size: 1.2rem; color: #94A3B8;'>Welcome to the world's smartest AI Candidate OS.</p>", unsafe_allow_html=True)
+    # Hide sidebar completely on login page to prevent confusion
+    st.markdown("""
+    <style>
+        [data-testid="stSidebar"] {display: none !important;}
+        [data-testid="collapsedControl"] {display: none !important;}
+        
+        /* Fix mobile distortion by hiding empty padding columns */
+        @media (max-width: 768px) {
+            [data-testid="column"]:nth-of-type(1),
+            [data-testid="column"]:nth-of-type(3) {
+                display: none !important;
+            }
+            [data-testid="column"]:nth-of-type(2) {
+                width: 100% !important;
+                min-width: 100% !important;
+            }
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Use responsive clamp() for fonts so mobile view doesn't break
+    st.markdown("<h1 class='gradient-title' style='text-align: center; font-size: clamp(2rem, 6vw, 3.5rem); margin-bottom: 5px; padding-bottom: 10px;'>ResumeIQ Platform</h1>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; font-size: clamp(0.9rem, 3vw, 1.2rem); color: #94A3B8;'>Welcome to the world's smartest AI Candidate OS.</p>", unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns([1,2,1])
     with col2:

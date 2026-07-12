@@ -143,15 +143,11 @@ else:
             st.Page("pages/1_🏠_Dashboard.py", title="Dashboard", icon="🏠"),
             st.Page("pages/2_📊_Resume_Analysis.py", title="Resume Analysis", icon="📊"),
             st.Page("pages/3_💼_Job_Matches.py", title="Job Matches", icon="💼"),
-            st.Page("pages/4_📋_Applications.py", title="Applications", icon="📋"),
             st.Page("pages/5_🎙️_Interview_Prep.py", title="Interview Prep", icon="🎙️"),
             st.Page("pages/6_📈_Analytics.py", title="Analytics", icon="📈"),
             st.Page("pages/7_🏆_Leaderboard.py", title="Leaderboard", icon="🏆"),
-            st.Page("pages/8_⚙️_Settings.py", title="Settings", icon="⚙️"),
         ],
         "Legacy Tools": [
-            st.Page("pages/3_👔_HR_Dashboard.py", title="HR Admin", icon="👔"),
-            st.Page("pages/4_🔍_Job_Search_Engine.py", title="Search Engine", icon="🔍"),
             st.Page("pages/5_🎯_Jobscan_Matcher.py", title="Jobscan Matcher", icon="🎯")
         ]
     }

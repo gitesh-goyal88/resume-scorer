@@ -587,6 +587,10 @@ def _parse_resume_section(text: str) -> list[dict]:
     if not text or not text.strip():
         return []
         
+    # Aggressively split inline bullets from PyMuPDF raw dumps
+    text = re.sub(r"([a-zA-Z0-9.,])\s*[•\-]\s*([A-Z])", r"\1\n- \2", text)
+    text = re.sub(r"\s*[•]\s*", r"\n- ", text)
+    
     # Clean orphaned bullet characters
     text = clean_resume_text_bullets(text)
     

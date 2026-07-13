@@ -940,6 +940,7 @@ if uploaded_file and not st.session_state.resume_text:
             features = extract_resume_features(text, tmp_path)
             raw_features = {
                 "skill_count":        len(st.session_state.skills or []),
+                "tfidf_skill_score":  features.get("tfidf_skill_score", 0),
                 "action_verb_count":  features.get("action_verb_count", 0),
                 "metrics_count":      features.get("metrics_count", 0),
                 "section_count":      features.get("section_completeness", 0) // 25,

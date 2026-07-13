@@ -1118,10 +1118,13 @@ if st.session_state.resume_text:
     gaps = get_market_skill_gaps(st.session_state.predicted_role, active_skills)
     st.session_state.market_gaps = gaps
     
-    competencies_score = 100
-    if len(gaps["matched"]) + len(gaps["missing"]) > 0:
-        competencies_score = int((len(gaps["matched"]) / (len(gaps["matched"]) + len(gaps["missing"]))) * 100)
-        
+    # 2. Competencies = ML TF-IDF Skill Score
+    try:
+        from analyzer import extract_resume_features
+        _feats = extract_resume_features(st.session_state.resume_text, None)
+        competencies_score = int(_feats.get("tfidf_skill_score", 0))
+    except:
+        competencies_score = 0    
     # 3. Impact = Ratio of Strong Bullets
     bullets = st.session_state.bullet_results
     strong_count = sum(1 for b in bullets if b["label"] == "Strong")

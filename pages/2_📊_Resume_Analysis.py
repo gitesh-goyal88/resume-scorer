@@ -353,12 +353,23 @@ if st.session_state.resume_text:
     strong_count = sum(1 for b in bullets if b["label"] == "Strong")
     impact_score = int((strong_count / max(1, len(bullets))) * 100)
     
-    # Combined Overall Score (80-10-10)
-    combined_score = int(
-        (competencies_score * 0.80) + 
-        (impact_score * 0.10) + 
-        (presentation_score * 0.10)
-    )
+    # 4. Use the actual ML-driven ATS Score from the backend!
+    # Earlier in this file (or in Dashboard), we calculated health_result
+    # and saved the final ML score to st.session_state.ats_ml_score.
+    if "ats_ml_score" in st.session_state and st.session_state.ats_ml_score:
+        combined_score = st.session_state.ats_ml_score.get("score", 0)
+    else:
+        combined_score = 0
+        
+    # We also need the raw tfidf_skill_score to show in the progress bar below.
+    # Since we extract features upon upload, we'll re-extract here if needed,
+    # or just fetch it from the UI's local recalculation.
+    try:
+        from analyzer import extract_resume_features
+        _feats = extract_resume_features(st.session_state.resume_text, None)
+        competencies_score = int(_feats.get("tfidf_skill_score", 0))
+    except:
+        competencies_score = 0
     
     st.markdown("### 🏆 ATS Readiness & ML Breakdown")
     col_main, col_sub = st.columns([0.4, 0.6], gap="large")

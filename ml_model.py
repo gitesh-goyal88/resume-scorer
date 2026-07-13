@@ -335,8 +335,13 @@ def compute_tfidf_skill_score(resume_text: str) -> float:
 
 def compute_health_score(features: dict) -> dict:
     # IR-based skill score (TF-IDF cosine similarity vs job corpus)
-    # Falls back to keyword-count heuristic if tfidf_skill_score unavailable
-    skill_score    = features.get("tfidf_skill_score") or min(features.get("skill_count", 0) / 20 * 100, 100)
+    # Falls back to keyword-count heuristic if tfidf_skill_score is completely missing
+    tfidf_score = features.get("tfidf_skill_score")
+    if tfidf_score is not None:
+        skill_score = tfidf_score
+    else:
+        skill_score = min(features.get("skill_count", 0) / 20 * 100, 100)
+        
     verb_score     = min(features.get("action_verb_count", 0) / 10 * 100, 100)
     metrics_score  = min(features.get("metrics_count", 0) / 5 * 100, 100)
     section_score  = (features.get("section_count", 0) / 4) * 100

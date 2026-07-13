@@ -378,35 +378,41 @@ def categorize_skills(skills: list) -> dict:
 
 def extract_resume_features(text: str, pdf_path: str = None) -> dict:
     """
-    Extracts numerical features from the resume for the ML ATS Score Regressor.
-    Returns a dict of features matching the model's expected input.
+    Extracts numerical features from the resume for the ATS Health Score Engine.
+    Returns a dict of features used by compute_health_score() in ml_model.py.
     """
+    from ml_model import compute_tfidf_skill_score
+
     text_lower = text.lower()
     skills = extract_skills(text)
     issues = check_formatting(text, pdf_path)
-    
+
     action_verbs = ["achieved", "improved", "developed", "managed", "created", "led",
                     "increased", "decreased", "resolved", "spearheaded", "architected", "optimized"]
     found_verbs = [v for v in action_verbs if v in text_lower]
-    
+
     numbers = re.findall(r'\b\d+%\b|\$\d+', text)
-    
+
     formatting_penalty = sum(15 if i["severity"] == "high" else 5 for i in issues)
-    
+
     sections = ["experience", "education", "skills", "project", "summary", "objective"]
-    found_sections = sum(1 for s in sections if s in text_lower)
+    found_sections  = sum(1 for s in sections if s in text_lower)
     section_completeness = (found_sections / len(sections)) * 100
-    
-    # Keyword density: ratio of meaningful long words to total words
-    all_words = re.findall(r'\b[a-zA-Z]{4,}\b', text_lower)
+
+    # Keyword density: ratio of unique meaningful words to total words
+    all_words    = re.findall(r'\b[a-zA-Z]{4,}\b', text_lower)
     unique_words = set(all_words)
     keyword_density = min(100, (len(unique_words) / max(1, len(all_words))) * 100)
-    # Final dictionary
+
+    # IR-based skill score: TF-IDF cosine similarity vs live job corpus (ml_model.py)
+    tfidf_skill_score = compute_tfidf_skill_score(text)
+
     return {
-        "skill_count": len(skills),
-        "keyword_density": keyword_density,
-        "action_verb_count": len(found_verbs),
-        "metrics_count": len(numbers),
+        "skill_count":        len(skills),         # kept for legacy display
+        "tfidf_skill_score":  tfidf_skill_score,   # used by compute_health_score()
+        "keyword_density":    keyword_density,
+        "action_verb_count":  len(found_verbs),
+        "metrics_count":      len(numbers),
         "formatting_penalty": min(50, formatting_penalty),
         "section_completeness": section_completeness
     }

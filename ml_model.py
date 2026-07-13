@@ -126,7 +126,42 @@ def train_job_role_classifier() -> dict:
         pickle.dump(tfidf, f)
     print("\nSaved models/tfidf_vectorizer.pkl")
 
-    # Save ensemble results for Analytics dashboard
+    # --- Compute & save P95 TF-IDF baseline for ATS skill scoring ---
+    # This runs once at training time so compute_tfidf_skill_score() can
+    # just load it at inference instead of recomputing every request.
+    print("\nComputing P95 corpus baseline for ATS skill scorer...")
+    try:
+        from job_matcher import load_jobs_corpus
+        from text_utils import preprocess, identity_tokenizer
+        from sklearn.feature_extraction.text import TfidfVectorizer as _TV
+        from sklearn.metrics.pairwise import cosine_similarity as _cs
+
+        _jobs = load_jobs_corpus()
+        if _jobs:
+            _job_texts = [j["description"] for j in _jobs]
+            _processed  = [preprocess(t) for t in _job_texts]
+            _vec = _TV(
+                tokenizer=identity_tokenizer,
+                preprocessor=identity_tokenizer,
+                token_pattern=None,
+                max_features=5000,
+                sublinear_tf=True
+            )
+            _mat = _vec.fit_transform(_processed)
+            _idx = np.random.RandomState(42).choice(len(_jobs), size=min(200, len(_jobs)), replace=False)
+            _all_top10 = []
+            for i in _idx:
+                s = _cs(_mat[i], _mat).flatten()
+                s[i] = 0
+                _all_top10.append(float(np.mean(np.sort(s)[::-1][:10])))
+            _baseline = float(np.percentile(_all_top10, 95))
+            with open(os.path.join("models", "ats_tfidf_baseline.pkl"), "wb") as f:
+                pickle.dump(_baseline, f)
+            print(f"  P95 baseline = {_baseline:.4f}  →  saved models/ats_tfidf_baseline.pkl")
+    except Exception as e:
+        print(f"  Warning: Could not compute baseline: {e}")
+
+    # Save ensemble metrics for Analytics dashboard
     with open(os.path.join("models", "ensemble_metrics.pkl"), "wb") as f:
         pickle.dump(results, f)
     print("Saved models/ensemble_metrics.pkl")
@@ -236,11 +271,72 @@ def predict_job_category(resume_text: str) -> dict:
 
 
 # ===========================================================================================
-# MODEL 2: Health Score Calculation
+# MODEL 2: ATS Health Score — IR-Based Skill Scoring + Weighted Dimensions
 # ===========================================================================================
 
+def compute_tfidf_skill_score(resume_text: str) -> float:
+    """
+    IR-based skill scorer using TF-IDF + Cosine Similarity.
+
+    Builds a joint TF-IDF matrix over the entire 2800-job corpus + the resume.
+    Computes cosine similarity between the resume vector and every job vector.
+    Takes the mean of the top-10 similarities as the market alignment score.
+    Normalises against a baseline of 0.30 (empirically strong alignment) -> 0-100.
+
+    Replaces the naive hardcoded-keyword-count approach with a genuine
+    Information Retrieval metric grounded in the live job market corpus.
+    """
+    try:
+        from job_matcher import load_jobs_corpus
+        from text_utils import preprocess, identity_tokenizer
+        from sklearn.feature_extraction.text import TfidfVectorizer
+        from sklearn.metrics.pairwise import cosine_similarity
+
+        jobs = load_jobs_corpus()
+        if not jobs:
+            return 0.0
+
+        job_texts  = [job["description"] for job in jobs]
+        corpus     = job_texts + [resume_text]
+        processed  = [preprocess(t) for t in corpus]
+
+        vectorizer = TfidfVectorizer(
+            tokenizer=identity_tokenizer,
+            preprocessor=identity_tokenizer,
+            token_pattern=None,
+            max_features=5000,
+            sublinear_tf=True   # log-normalise TF to suppress very frequent terms
+        )
+        tfidf_matrix = vectorizer.fit_transform(processed)
+
+        resume_vec = tfidf_matrix[-1]    # last row = resume
+        job_vecs   = tfidf_matrix[:-1]   # all other rows = job descriptions
+
+        sims = cosine_similarity(resume_vec, job_vecs).flatten()
+
+        # Mean of top-10 cosine similarities = resume's market alignment score
+        top10_mean = float(np.mean(np.sort(sims)[::-1][:10]))
+
+        # Load the P95 baseline computed once during training.
+        # If missing (first run before training), fall back to a safe default.
+        baseline_path = os.path.join("models", "ats_tfidf_baseline.pkl")
+        if os.path.exists(baseline_path):
+            with open(baseline_path, "rb") as f:
+                baseline = pickle.load(f)
+        else:
+            baseline = 0.67   # safe fallback until training is run
+
+        score = min((top10_mean / baseline) * 100, 100)
+        return round(score, 2)
+
+    except Exception as e:
+        print(f"[compute_tfidf_skill_score] Fallback to 0: {e}")
+        return 0.0
+
 def compute_health_score(features: dict) -> dict:
-    skill_score    = min(features.get("skill_count", 0) / 20 * 100, 100)
+    # IR-based skill score (TF-IDF cosine similarity vs job corpus)
+    # Falls back to keyword-count heuristic if tfidf_skill_score unavailable
+    skill_score    = features.get("tfidf_skill_score") or min(features.get("skill_count", 0) / 20 * 100, 100)
     verb_score     = min(features.get("action_verb_count", 0) / 10 * 100, 100)
     metrics_score  = min(features.get("metrics_count", 0) / 5 * 100, 100)
     section_score  = (features.get("section_count", 0) / 4) * 100

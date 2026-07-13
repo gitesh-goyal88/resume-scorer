@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/images/preview.webp" alt="ResumeIQ Banner" width="100%">
+  <img src="assets/images/preview (1).webp" alt="ResumeIQ Banner" width="100%">
   
   <br/>
   
@@ -30,8 +30,11 @@ Upload your resume (PDF) and let our custom ML pipeline break it down.
 *   **Bullet Point Inference**: Uses a lightweight integration with the Groq API (Llama-3) to grade your resume bullet points (Strong vs. Weak) and suggest actionable improvements.
 
 <p align="center">
-  <img src="assets/images/preview (2).webp" width="48%" />
+  <img src="assets/images/preview (3).webp" width="48%" />
   <img src="assets/images/preview (4).webp" width="48%" />
+</p>
+<p align="center">
+  <img src="assets/images/preview (6).webp" width="80%" />
 </p>
 
 ### ✍️ 2. Interactive Resume Editor & Live PDF Builder
@@ -41,7 +44,9 @@ Don't just analyze your resume—fix it in real-time!
 *   **Failsafe Formatting**: If the AI hits rate limits, the internal PDF Regex Engine automatically steps in to parse your raw text into perfect bullet points.
 
 <p align="center">
-  <img src="assets/images/preview (14).webp" width="80%" />
+  <img src="assets/images/preview (7).webp" width="32%" />
+  <img src="assets/images/preview (8).webp" width="32%" />
+  <img src="assets/images/preview (9).webp" width="32%" />
 </p>
 
 ### 💼 3. Smart Job Matching
@@ -51,8 +56,7 @@ Stop guessing what jobs you qualify for.
 *   Leverages **K-Nearest Neighbors (KNN)** to cluster and recommend the closest semantic job matches.
 
 <p align="center">
-  <img src="assets/images/preview (6).webp" width="48%" />
-  <img src="assets/images/preview (10).webp" width="48%" />
+  <img src="assets/images/preview (10).webp" width="80%" />
 </p>
 
 ### 🎯 4. Jobscan Matcher
@@ -60,19 +64,26 @@ Have a specific Job Description (JD) you want to apply for?
 *   Paste the JD into the Jobscan tab.
 *   Instantly see your match percentage, Keyword Matches, and Missing Keywords calculated directly via **TF-IDF Vectorization** and **Cosine Similarity**.
 
+<p align="center">
+  <img src="assets/images/preview (13).webp" width="32%" />
+  <img src="assets/images/preview (14).webp" width="32%" />
+  <img src="assets/images/preview (15).webp" width="32%" />
+</p>
+
 ### 🎙️ 5. AI Interview Prep & Cover Letter Generator
 Once you find a job, ResumeIQ helps you land it.
 *   **Dynamic Interview Questions**: Generates 5-7 behavioral and technical interview questions based *specifically* on the weak points and skill gaps in your resume!
 *   **1-Click Cover Letters**: Generates a tailored, professional Cover Letter PDF matching your exact resume template.
 
-<p align="center">
-  <img src="assets/images/preview (11).webp" width="48%" />
-  <img src="assets/images/preview (13).webp" width="48%" />
-</p>
-
 ### 📈 6. Analytics & Global Leaderboard
 *   **Radar Charts**: Visualize your technical strengths against the market average.
 *   **Leaderboard**: See how your ATS score stacks up against other candidates on the platform!
+
+<p align="center">
+  <img src="assets/images/preview (2).webp" width="32%" />
+  <img src="assets/images/preview (11).webp" width="32%" />
+  <img src="assets/images/preview (12).webp" width="32%" />
+</p>
 
 ---
 
@@ -123,27 +134,6 @@ DB_PATH=data/jobs.db
 streamlit run app.py
 ```
 *The application will open automatically in your browser at `http://localhost:8501`.*
-
----
-
-## 📸 Image Gallery
-
-Explore more screenshots of the ResumeIQ interface!
-
-<p align="center">
-  <img src="assets/images/preview (1).webp" width="32%" />
-  <img src="assets/images/preview (3).webp" width="32%" />
-  <img src="assets/images/preview (5).webp" width="32%" />
-</p>
-<p align="center">
-  <img src="assets/images/preview (7).webp" width="32%" />
-  <img src="assets/images/preview (8).webp" width="32%" />
-  <img src="assets/images/preview (9).webp" width="32%" />
-</p>
-<p align="center">
-  <img src="assets/images/preview (12).webp" width="32%" />
-  <img src="assets/images/preview (15).webp" width="32%" />
-</p>
 
 ---
 

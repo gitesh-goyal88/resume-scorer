@@ -16,7 +16,7 @@ inject_custom_css()
 st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'>📈 ML Analytics</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sub-heading'>Comprehensive evaluation of Search Algorithms (TF-IDF vs BM25 vs KNN) across professional domains.</p>", unsafe_allow_html=True)
 
-tab1, tab2 = st.tabs(["🌎 Global Benchmarks", "👤 Personal Resume Match"])
+tab1, tab2, tab3 = st.tabs(["🌎 Global Benchmarks", "👤 Personal Resume Match", "🤖 Model Comparison"])
 
 # ----------------- GLOBALS -----------------
 with st.spinner("Initializing models..."):
@@ -330,3 +330,88 @@ with tab2:
     **Academic Conclusion for {first_name}:**
     The Radar Chart geometrically proves why the AI classified you as a `{predicted_role}`! When your resume is mathematically mapped against the entire job corpus, the Top 5 retrieved jobs overwhelmingly align with that specific domain across all search algorithms.
     """)
+
+# ==========================================
+# TAB 3: MODEL COMPARISON
+# ==========================================
+with tab3:
+    st.markdown("### 🤖 Job Role Classifier — Ensemble Model Comparison")
+    st.markdown(
+        "The Job Role Classifier uses a **4-model Soft-Voting Ensemble**. "
+        "Each model independently predicts the job category from TF-IDF features. "
+        "Their `predict_proba` outputs are averaged to produce the final ensemble prediction."
+    )
+
+    import pickle, os
+
+    metrics_path = os.path.join("models", "ensemble_metrics.pkl")
+
+    if not os.path.exists(metrics_path):
+        st.warning("Ensemble metrics not found. Training all models now (this takes ~2 minutes)...")
+        from ml_model import train_job_role_classifier
+        with st.spinner("Training Naive Bayes, KNN, Logistic Regression, Random Forest..."):
+            results = train_job_role_classifier()
+        st.success("Training complete! Reload the page to see the results.")
+    else:
+        with open(metrics_path, "rb") as f:
+            results = pickle.load(f)
+
+        model_display = {
+            "naive_bayes":          "Naive Bayes (MultinomialNB)",
+            "knn":                  "K-Nearest Neighbors (K=5)",
+            "logistic_regression":  "Logistic Regression",
+            "random_forest":        "Random Forest (100 trees)",
+            "ensemble":             "⭐ Soft-Voting Ensemble",
+        }
+
+        rows = []
+        for key, label in model_display.items():
+            if key in results:
+                r = results[key]
+                rows.append({
+                    "Model":          label,
+                    "Train Accuracy": f"{r.get('train_accuracy', '—') * 100:.2f}%" if isinstance(r.get('train_accuracy'), float) else "—",
+                    "Test Accuracy":  f"{r.get('test_accuracy', 0) * 100:.2f}%",
+                })
+
+        df_models = pd.DataFrame(rows)
+
+        def highlight_ensemble(row):
+            if "Ensemble" in str(row["Model"]):
+                return ["background-color: #064E3B; color: #FAFAFA; font-weight: bold"] * len(row)
+            return [""] * len(row)
+
+        st.dataframe(
+            df_models.style.apply(highlight_ensemble, axis=1),
+            use_container_width=True,
+            hide_index=True
+        )
+
+        # Bar chart comparison
+        st.markdown("#### Test Accuracy Comparison")
+        chart_data = {
+            row["Model"].replace("⭐ ", ""): float(row["Test Accuracy"].replace("%", ""))
+            for row in rows if row["Test Accuracy"] != "—"
+        }
+
+        fig, ax = plt.subplots(figsize=(9, 4))
+        colors = ["#3B82F6", "#8B5CF6", "#F59E0B", "#EF4444", "#10B981"]
+        bars = ax.barh(list(chart_data.keys()), list(chart_data.values()), color=colors, height=0.5)
+        ax.set_xlabel("Test Accuracy (%)", color="white")
+        ax.set_xlim(0, 105)
+        ax.tick_params(colors="white")
+        ax.set_facecolor("#18181B")
+        fig.patch.set_facecolor("#18181B")
+        for bar, val in zip(bars, chart_data.values()):
+            ax.text(val + 0.5, bar.get_y() + bar.get_height() / 2,
+                    f"{val:.2f}%", va="center", color="white", fontsize=10, fontweight="bold")
+        for spine in ax.spines.values():
+            spine.set_edgecolor("#3F3F46")
+        st.pyplot(fig)
+
+        st.info(
+            "**How Soft Voting Works:** Each model outputs a probability vector over all 25 job categories. "
+            "The ensemble averages these 4 vectors element-wise and picks the category with the highest mean probability. "
+            "This reduces individual model bias and consistently outperforms any single classifier."
+        )
+

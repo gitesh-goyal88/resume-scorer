@@ -18,7 +18,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, mean_squared_error, classification_report
@@ -46,65 +46,90 @@ def clean_resume_text(text: str) -> str:
 
 def train_job_role_classifier() -> dict:
     """
-    Downloads the resume dataset, trains a KNN classifier for job-role
-    prediction, and saves the model + vectorizer to disk.
+    Downloads the resume dataset, trains an ENSEMBLE of 4 classifiers for job-role
+    prediction (NaiveBayes, KNN, LogisticRegression, RandomForest), and saves each
+    model + the shared TF-IDF vectorizer to disk.
 
-    Returns a dict with train/test accuracy.
+    Returns a dict with per-model train/test accuracy + ensemble accuracy.
     """
     print("=" * 70)
-    print("MODEL 1: Job Role Classifier (MultinomialNB)")
+    print("MODEL 1: Job Role Classifier — 4-Model Soft-Voting Ensemble")
     print("=" * 70)
 
-    # --- Download dataset with SSL bypass (macOS compatibility) -----------
-    dataset_url = (
-        "https://raw.githubusercontent.com/611noorsaeed/"
-        "Resume-Screening-App/main/UpdatedResumeDataSet.csv"
-    )
-    os.makedirs("data", exist_ok=True)
     data_path = os.path.join("data", "UpdatedResumeDataSet.csv")
-
     if not os.path.exists(data_path):
-        print("Data not found locally. Please run generate_data.py to generate massive local datasets.")
-        return {"train_acc": 0, "test_acc": 0}
-    else:
-        print(f"Using local dataset at {data_path}")
+        print("Data not found locally. Please run generate_data.py first.")
+        return {}
 
-    # --- Load & clean -----------------------------------------------------
+    # --- Load & clean ---
     df = pd.read_csv(data_path)
     print(f"Dataset shape: {df.shape}")
     df["cleaned_resume"] = df["Resume"].apply(clean_resume_text)
 
-    # --- Vectorize --------------------------------------------------------
+    # --- Shared TF-IDF Vectorizer ---
     tfidf = TfidfVectorizer(max_features=1500, stop_words="english")
     X = tfidf.fit_transform(df["cleaned_resume"])
-
-    # Use .tolist() to avoid PyArrow / pandas-backed array errors
     y = df["Category"].tolist()
 
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42
     )
 
-    # --- Train MultinomialNB ----------------------------------------------
-    nb_clf = MultinomialNB()
-    nb_clf.fit(X_train, y_train)
-
-    train_acc = accuracy_score(y_train, nb_clf.predict(X_train))
-    test_acc = accuracy_score(y_test, nb_clf.predict(X_test))
-    print(f"Train accuracy: {train_acc:.4f}")
-    print(f"Test  accuracy: {test_acc:.4f}")
-
-    # --- Save -------------------------------------------------------------
     os.makedirs("models", exist_ok=True)
-    with open(os.path.join("models", "resume_classifier.pkl"), "wb") as f:
-        pickle.dump(nb_clf, f)
+
+    results = {}
+
+    # --- Train & evaluate each model ---
+    models_to_train = {
+        "naive_bayes":        MultinomialNB(),
+        "knn":                KNeighborsClassifier(n_neighbors=5, metric="cosine"),
+        "logistic_regression": LogisticRegression(max_iter=1000, random_state=42),
+        "random_forest":      RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1),
+    }
+
+    trained_models = {}
+    for name, clf in models_to_train.items():
+        print(f"\nTraining {name}...")
+        clf.fit(X_train, y_train)
+        train_acc = accuracy_score(y_train, clf.predict(X_train))
+        test_acc  = accuracy_score(y_test,  clf.predict(X_test))
+        print(f"  Train Acc: {train_acc:.4f} | Test Acc: {test_acc:.4f}")
+
+        # Save individual model
+        model_file = os.path.join("models", f"{name}_classifier.pkl")
+        with open(model_file, "wb") as f:
+            pickle.dump(clf, f)
+        print(f"  Saved → {model_file}")
+
+        trained_models[name] = clf
+        results[name] = {
+            "train_accuracy": round(train_acc, 4),
+            "test_accuracy":  round(test_acc, 4),
+        }
+
+    # --- Ensemble soft voting (average predict_proba across all 4) ---
+    print("\nComputing Ensemble (Soft Voting) accuracy...")
+    all_probas = np.mean(
+        [clf.predict_proba(X_test) for clf in trained_models.values()],
+        axis=0
+    )
+    ensemble_classes = list(trained_models["naive_bayes"].classes_)
+    ensemble_preds   = [ensemble_classes[i] for i in np.argmax(all_probas, axis=1)]
+    ensemble_acc     = accuracy_score(y_test, ensemble_preds)
+    print(f"  Ensemble Test Acc: {ensemble_acc:.4f}")
+    results["ensemble"] = {"test_accuracy": round(ensemble_acc, 4)}
+
+    # Save shared TF-IDF vectorizer
     with open(os.path.join("models", "tfidf_vectorizer.pkl"), "wb") as f:
         pickle.dump(tfidf, f)
+    print("\nSaved models/tfidf_vectorizer.pkl")
 
-    print("Saved models/resume_classifier.pkl")
-    print("Saved models/tfidf_vectorizer.pkl")
-    print()
-    return {"train_accuracy": train_acc, "test_accuracy": test_acc}
+    # Save ensemble results for Analytics dashboard
+    with open(os.path.join("models", "ensemble_metrics.pkl"), "wb") as f:
+        pickle.dump(results, f)
+    print("Saved models/ensemble_metrics.pkl")
+
+    return results
 
 
 def _load_model_safe(model_path: str, vectorizer_path: str, train_fn) -> tuple:
@@ -146,23 +171,66 @@ def _load_model_safe(model_path: str, vectorizer_path: str, train_fn) -> tuple:
 
 def predict_job_category(resume_text: str) -> dict:
     """
-    Predict the job category for a given resume text.
+    Predict the job category using a 4-model Soft-Voting Ensemble.
+    Loads NaiveBayes, KNN, LogisticRegression, and RandomForest,
+    averages their predict_proba outputs, and returns the top prediction
+    along with individual model confidence scores.
 
     Returns
     -------
-    dict  {"category": str, "confidence": float}
+    dict  {"category": str, "confidence": float, "model_scores": dict}
     """
-    model_path = os.path.join("models", "resume_classifier.pkl")
     vectorizer_path = os.path.join("models", "tfidf_vectorizer.pkl")
-    knn, tfidf = _load_model_safe(model_path, vectorizer_path, train_job_role_classifier)
+    model_names = ["naive_bayes", "knn", "logistic_regression", "random_forest"]
+
+    # Auto-retrain if any model is missing
+    missing = [not os.path.exists(os.path.join("models", f"{m}_classifier.pkl")) for m in model_names]
+    if any(missing) or not os.path.exists(vectorizer_path):
+        print("One or more ensemble models missing. Retraining all...")
+        train_job_role_classifier()
+
+    # Load vectorizer
+    with open(vectorizer_path, "rb") as f:
+        tfidf = pickle.load(f)
 
     cleaned = clean_resume_text(resume_text)
     vec = tfidf.transform([cleaned])
-    proba = knn.predict_proba(vec)[0]
-    idx = np.argmax(proba)
-    category = str(knn.classes_[idx])
-    confidence = float(proba[idx])
-    return {"category": category, "confidence": round(confidence, 4)}
+
+    # Load each model and collect predict_proba
+    all_probas = []
+    classes = None
+    model_scores = {}
+
+    for name in model_names:
+        try:
+            with open(os.path.join("models", f"{name}_classifier.pkl"), "rb") as f:
+                clf = pickle.load(f)
+            proba = clf.predict_proba(vec)[0]
+            if classes is None:
+                classes = list(clf.classes_)
+            all_probas.append(proba)
+            top_idx = int(np.argmax(proba))
+            model_scores[name] = {
+                "prediction": str(clf.classes_[top_idx]),
+                "confidence": round(float(proba[top_idx]), 4)
+            }
+        except Exception as e:
+            print(f"Warning: Could not load {name}: {e}")
+
+    if not all_probas or classes is None:
+        return {"category": "Unknown", "confidence": 0.0, "model_scores": {}}
+
+    # Soft voting: average probabilities across all models
+    ensemble_proba = np.mean(all_probas, axis=0)
+    top_idx = int(np.argmax(ensemble_proba))
+    category   = str(classes[top_idx])
+    confidence = round(float(ensemble_proba[top_idx]), 4)
+
+    return {
+        "category":     category,
+        "confidence":   confidence,
+        "model_scores": model_scores
+    }
 
 
 # ===========================================================================================

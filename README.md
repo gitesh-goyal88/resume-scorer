@@ -9,12 +9,12 @@
   <p>
     <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
     <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white" alt="Streamlit">
-    <img src="https://img.shields.io/badge/Llama_3-0466C8?style=for-the-badge&logo=meta&logoColor=white" alt="Llama 3">
+    <img src="https://img.shields.io/badge/scikit_learn-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white" alt="scikit-learn">
     <img src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" alt="SQLite">
   </p>
 
   <p align="center">
-    <strong>ResumeIQ</strong> is an enterprise-grade, glassmorphic web application designed to help job seekers instantly analyze their resumes, generate ATS-friendly PDFs, find matching jobs, and prepare for interviews using the power of <strong>Llama-3</strong> and Machine Learning.
+    <strong>ResumeIQ</strong> is an enterprise-grade, glassmorphic web application designed to help job seekers instantly analyze their resumes, generate ATS-friendly PDFs, find matching jobs, and prepare for interviews using a custom suite of <strong>Machine Learning models</strong>.
   </p>
 </div>
 
@@ -23,11 +23,11 @@
 ## ✨ Core Features
 
 ### 📊 1. Deep AI Resume Analysis
-Upload your resume (PDF) and let our custom ML pipeline and Llama-3 AI break it down.
+Upload your resume (PDF) and let our custom ML pipeline break it down.
 *   **ATS Score & Grading**: Get a detailed breakdown of your formatting health, action verb count, and measurable metrics.
-*   **Skill Extraction**: Automatically extracts and categorizes your Languages, Tools & Technologies, and Soft Skills.
-*   **TF-IDF Market Gaps**: Compares your skills against an internal database of current job market requirements to highlight what you're missing.
-*   **Bullet Point Inference**: Uses Llama-3 to grade your resume bullet points (Strong vs. Weak) and suggests actionable improvements.
+*   **Job Category Prediction**: Uses **Naive Bayes (MultinomialNB)** to automatically classify your resume into a specific industry domain.
+*   **TF-IDF Market Gaps**: Compares your skills against an internal database of current job market requirements using **TF-IDF Vectorization** to highlight what you're missing.
+*   **Bullet Point Inference**: Uses a lightweight integration with the Groq API (Llama-3) to grade your resume bullet points (Strong vs. Weak) and suggest actionable improvements.
 
 <p align="center">
   <img src="assets/images/preview (2).webp" width="48%" />
@@ -47,8 +47,8 @@ Don't just analyze your resume—fix it in real-time!
 ### 💼 3. Smart Job Matching
 Stop guessing what jobs you qualify for.
 *   ResumeIQ scans an internal SQLite database of thousands of jobs.
-*   It calculates an exact **Skill Overlap %** between your extracted skills and the job descriptions.
-*   Filter by location, role, and match percentage to find your perfect fit.
+*   It calculates an exact **Skill Overlap %** between your extracted skills and the job descriptions using **Cosine Similarity**.
+*   Leverages **K-Nearest Neighbors (KNN)** to cluster and recommend the closest semantic job matches.
 
 <p align="center">
   <img src="assets/images/preview (6).webp" width="48%" />
@@ -58,7 +58,7 @@ Stop guessing what jobs you qualify for.
 ### 🎯 4. Jobscan Matcher
 Have a specific Job Description (JD) you want to apply for?
 *   Paste the JD into the Jobscan tab.
-*   Instantly see your match percentage, Keyword Matches, and Missing Keywords.
+*   Instantly see your match percentage, Keyword Matches, and Missing Keywords calculated directly via **TF-IDF Vectorization** and **Cosine Similarity**.
 
 ### 🎙️ 5. AI Interview Prep & Cover Letter Generator
 Once you find a job, ResumeIQ helps you land it.
@@ -79,8 +79,13 @@ Once you find a job, ResumeIQ helps you land it.
 ## 🛠️ Tech Stack & Architecture
 
 *   **Frontend**: Streamlit + Custom Vanilla CSS (Premium Glassmorphic UI)
-*   **Backend**: Python
-*   **AI Engine**: Groq API (Llama-3.3 70B Versatile, with automatic routing fallback to Llama-3.1 8B Instant)
+*   **Backend & Data Processing**: Python, Pandas, Numpy
+*   **Core Machine Learning**: `scikit-learn` 
+    *   *TF-IDF Vectorizer* (Text extraction & keyword mapping)
+    *   *Cosine Similarity* (Job-to-Resume overlap matching)
+    *   *K-Nearest Neighbors (KNN)* (Job recommendation clustering)
+    *   *Naive Bayes (MultinomialNB)* (Industry domain prediction)
+*   **Secondary LLM API**: Groq API (Used exclusively for dynamic Interview Question generation and Bullet Point grading).
 *   **PDF Processing**: PyMuPDF (`fitz`), FPDF2, Playwright
 *   **Database**: SQLite (`data/jobs.db`)
 

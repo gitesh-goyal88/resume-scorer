@@ -361,12 +361,13 @@ def compute_health_score(features: dict) -> dict:
     section_score  = (features.get("section_count", 0) / 4) * 100
     format_score   = max(100 - features.get("formatting_penalty", 0), 0)
     
+    # ML ATS Weights: 80% Hard Skills, 10% Formatting, 10% Other (Verbs/Metrics/Sections)
     total = (
-        skill_score   * 0.30 +
-        verb_score    * 0.20 +
-        metrics_score * 0.20 +
-        section_score * 0.15 +
-        format_score  * 0.15
+        skill_score   * 0.80 +
+        format_score  * 0.10 +
+        verb_score    * 0.04 +
+        metrics_score * 0.03 +
+        section_score * 0.03
     )
     total = int(round(total))
     grade = "A" if total >= 80 else "B" if total >= 65 else "C" if total >= 50 else "D"

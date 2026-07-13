@@ -126,10 +126,13 @@ def train_job_role_classifier() -> dict:
         pickle.dump(tfidf, f)
     print("\nSaved models/tfidf_vectorizer.pkl")
 
-    # --- Compute & save P95 TF-IDF baseline for ATS skill scoring ---
-    # This runs once at training time so compute_tfidf_skill_score() can
-    # just load it at inference instead of recomputing every request.
-    print("\nComputing P95 corpus baseline for ATS skill scorer...")
+    # --- Compute & save TF-IDF baseline for ATS skill scoring ---
+    # Resumes are shorter than JDs, so using Job-to-Job P95 similarity as a baseline
+    # is mathematically flawed (it sets an impossible standard).
+    # Instead, we compute the "Global Background Noise" (mean similarity of a job
+    # to every other random job in the corpus), take the 95th percentile of that noise,
+    # and define a "Perfect Match" as 2.5x that background noise.
+    print("\nComputing Signal-to-Noise baseline for ATS skill scorer...")
     try:
         from job_matcher import load_jobs_corpus
         from text_utils import preprocess, identity_tokenizer
@@ -149,15 +152,25 @@ def train_job_role_classifier() -> dict:
             )
             _mat = _vec.fit_transform(_processed)
             _idx = np.random.RandomState(42).choice(len(_jobs), size=min(200, len(_jobs)), replace=False)
-            _all_top10 = []
+            
+            _global_noise = []
             for i in _idx:
                 s = _cs(_mat[i], _mat).flatten()
                 s[i] = 0
-                _all_top10.append(float(np.mean(np.sort(s)[::-1][:10])))
-            _baseline = float(np.percentile(_all_top10, 95))
+                non_zero = s[s > 0]
+                if len(non_zero) > 0:
+                    _global_noise.append(float(np.mean(non_zero)))
+            
+            # P95 of global background noise across the corpus
+            noise_ceiling = float(np.percentile(_global_noise, 95))
+            
+            # A "perfect" resume match is defined as 2.5x the background noise ceiling
+            _baseline = noise_ceiling * 2.5
+            
             with open(os.path.join("models", "ats_tfidf_baseline.pkl"), "wb") as f:
                 pickle.dump(_baseline, f)
-            print(f"  P95 baseline = {_baseline:.4f}  →  saved models/ats_tfidf_baseline.pkl")
+            print(f"  Noise Ceiling = {noise_ceiling:.4f}")
+            print(f"  Signal Baseline (2.5x) = {_baseline:.4f}  →  saved models/ats_tfidf_baseline.pkl")
     except Exception as e:
         print(f"  Warning: Could not compute baseline: {e}")
 
@@ -317,14 +330,15 @@ def compute_tfidf_skill_score(resume_text: str) -> float:
         # Mean of top-10 cosine similarities = resume's market alignment score
         top10_mean = float(np.mean(np.sort(sims)[::-1][:10]))
 
-        # Load the P95 baseline computed once during training.
-        # If missing (first run before training), fall back to a safe default.
+        # Load the Signal-to-Noise baseline computed once during training.
+        # This is 2.5x the P95 global background noise of the corpus.
+        # If missing (first run before training), fall back to a safe default of 0.21.
         baseline_path = os.path.join("models", "ats_tfidf_baseline.pkl")
         if os.path.exists(baseline_path):
             with open(baseline_path, "rb") as f:
                 baseline = pickle.load(f)
         else:
-            baseline = 0.67   # safe fallback until training is run
+            baseline = 0.21   # safe fallback until training is run
 
         score = min((top10_mean / baseline) * 100, 100)
         return round(score, 2)

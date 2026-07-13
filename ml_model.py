@@ -2,9 +2,12 @@
 ml_model.py — ResumeIQ Machine Learning Models
 
 Contains three models:
-1. Job Role Classifier (KNN) — predicts job category from resume text
-2. ATS Score Regressor (RandomForestRegressor) — predicts ATS compatibility score
-3. Bullet Point Impact Classifier (MultinomialNB) — classifies bullet points as Strong/Weak
+1. Job Role Classifier (KNN + Naive Bayes + Logistic Regression → Soft-Voting Ensemble)
+   — predicts job category from TF-IDF resume features across 25 industry domains
+2. ATS Health Score Engine (Multinomial scoring across skills, verbs, metrics, sections)
+   — computes a weighted ATS compatibility score and letter grade
+3. Bullet Point Evaluator (SentenceTransformers + Cosine Similarity)
+   — evaluates bullet point impact against a Gold Standard dense vector matrix
 """
 
 import os

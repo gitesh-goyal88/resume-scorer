@@ -360,7 +360,6 @@ with tab3:
             "naive_bayes":          "Naive Bayes (MultinomialNB)",
             "knn":                  "K-Nearest Neighbors (K=5)",
             "logistic_regression":  "Logistic Regression",
-            "random_forest":        "Random Forest (100 trees)",
             "ensemble":             "⭐ Soft-Voting Ensemble",
         }
 

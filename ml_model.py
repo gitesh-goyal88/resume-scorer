@@ -18,7 +18,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.ensemble import RandomForestClassifier
+
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, mean_squared_error, classification_report
@@ -72,7 +72,7 @@ def train_job_role_classifier() -> dict:
     y = df["Category"].tolist()
 
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42
+        X, y, test_size=0.4, random_state=42
     )
 
     os.makedirs("models", exist_ok=True)
@@ -81,10 +81,9 @@ def train_job_role_classifier() -> dict:
 
     # --- Train & evaluate each model ---
     models_to_train = {
-        "naive_bayes":        MultinomialNB(),
-        "knn":                KNeighborsClassifier(n_neighbors=5, metric="cosine"),
+        "naive_bayes":         MultinomialNB(),
+        "knn":                 KNeighborsClassifier(n_neighbors=5, metric="cosine"),
         "logistic_regression": LogisticRegression(max_iter=1000, random_state=42),
-        "random_forest":      RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1),
     }
 
     trained_models = {}
@@ -181,7 +180,7 @@ def predict_job_category(resume_text: str) -> dict:
     dict  {"category": str, "confidence": float, "model_scores": dict}
     """
     vectorizer_path = os.path.join("models", "tfidf_vectorizer.pkl")
-    model_names = ["naive_bayes", "knn", "logistic_regression", "random_forest"]
+    model_names = ["naive_bayes", "knn", "logistic_regression"]
 
     # Auto-retrain if any model is missing
     missing = [not os.path.exists(os.path.join("models", f"{m}_classifier.pkl")) for m in model_names]

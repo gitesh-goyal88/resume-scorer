@@ -171,7 +171,7 @@ if not st.session_state.resume_text or not st.session_state.ats_ml_score:
     uploaded_file = st.file_uploader("Upload PDF", type=["pdf"], label_visibility="collapsed")
     if uploaded_file:
         import tempfile
-        from file_utils import extract_text_from_pdf
+        from analyzer import extract_text_from_pdf
         from ml_model import (
             extract_skills, predict_job_category, classify_bullets,
             extract_bullet_points, get_market_skill_gaps, calculate_yoe,

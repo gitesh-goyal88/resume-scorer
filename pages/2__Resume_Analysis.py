@@ -143,7 +143,7 @@ def estimate_salary(role, ats_score):
     multiplier = (ats_score / 100) + 0.5 # 0.5 to 1.5 range
     low = int((base * multiplier) / 1000) * 1000
     high = int((base * multiplier * 1.3) / 1000) * 1000
-    return f"${low:,} - ${high:,}"
+    return f"₹{low:,} - ₹{high:,}"
 
 # ── Main UI ────────────────────────────────────────────────────────────────────
 # UI Customization styles are injected globally from ui_utils.py

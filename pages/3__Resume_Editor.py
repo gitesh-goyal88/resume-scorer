@@ -11,7 +11,7 @@ from ui_utils import inject_custom_css
 inject_custom_css()
 
 if not st.session_state.get("resume_text"):
-    st.warning("⚠️ No resume loaded! Please upload your resume on the Dashboard first.")
+    st.warning(" No resume loaded! Please upload your resume on the Dashboard first.")
     st.stop()
 
 # ── Initialize State ──
@@ -19,7 +19,7 @@ if not st.session_state.get("edit_state_initialized"):
     from llm_utils import extract_resume_fields_via_llm
     from resume_builder import _extract_name, _extract_section
     
-    with st.spinner("🔍 Parsing and structuring resume details using AI..."):
+    with st.spinner(" Parsing and structuring resume details using AI..."):
         extracted_fields = extract_resume_fields_via_llm(st.session_state.resume_text)
         
     if extracted_fields:
@@ -33,7 +33,7 @@ if not st.session_state.get("edit_state_initialized"):
         st.session_state.edit_achievements = extracted_fields.get("achievements", "")
         st.session_state.edit_certs_projects = extracted_fields.get("certs_projects", "")
     else:
-        st.error("⚠️ **AI Extraction Failed!** Could not connect to Groq Llama-3. Please ensure your `GROQ_API_KEY` is set in your `.env` file and that you haven't hit rate limits. Falling back to unformatted raw text...")
+        st.error(" **AI Extraction Failed!** Could not connect to Groq Llama-3. Please ensure your `GROQ_API_KEY` is set in your `.env` file and that you haven't hit rate limits. Falling back to unformatted raw text...")
         # Fallback to naive heuristics
         st.session_state.edit_name = _extract_name(st.session_state.resume_text)
         summary_text = ""
@@ -329,7 +329,7 @@ Do NOT output any markdown code blocks (```json or ```) or explanations outside 
 def render_resume_editor():
     import json
     import base64
-    st.header("✍️ Interactive Resume Editor & AI Templates")
+    st.header(" Interactive Resume Editor & AI Templates")
     st.markdown("Modify your resume details below. Any edits or styling changes will automatically update the PDF preview on the right.")
     
     role = st.session_state.predicted_role or "Professional"
@@ -360,7 +360,7 @@ def render_resume_editor():
     col_edit, col_preview = st.columns([1.1, 0.9])
     
     with col_edit:
-        st.subheader("📝 Edit Content")
+        st.subheader(" Edit Content")
         
         col_name, col_role = st.columns(2)
         with col_name:
@@ -371,17 +371,17 @@ def render_resume_editor():
         st.session_state.edit_summary = st.text_area("Professional Summary:", value=st.session_state.edit_summary or "", height=100)
         
         # 1. Expander: Skills
-        with st.expander("🛠️ Skills", expanded=True):
+        with st.expander(" Skills", expanded=True):
             st.markdown("**Languages**")
             for idx, lang in enumerate(list(st.session_state.edit_skills_languages_list)):
                 col_val, col_del = st.columns([0.85, 0.15])
                 with col_val:
                     st.session_state.edit_skills_languages_list[idx] = st.text_input(f"Language #{idx+1}", value=lang, key=f"lang_{idx}", label_visibility="collapsed")
                 with col_del:
-                    if st.button("🗑️", key=f"del_lang_{idx}"):
+                    if st.button("", key=f"del_lang_{idx}"):
                         st.session_state.edit_skills_languages_list.pop(idx)
                         st.rerun()
-            if st.button("➕ Add Language", key="add_lang"):
+            if st.button(" Add Language", key="add_lang"):
                 st.session_state.edit_skills_languages_list.append("")
                 st.rerun()
                 
@@ -391,10 +391,10 @@ def render_resume_editor():
                 with col_val:
                     st.session_state.edit_skills_tools_list[idx] = st.text_input(f"Tool #{idx+1}", value=tool, key=f"tool_{idx}", label_visibility="collapsed")
                 with col_del:
-                    if st.button("🗑️", key=f"del_tool_{idx}"):
+                    if st.button("", key=f"del_tool_{idx}"):
                         st.session_state.edit_skills_tools_list.pop(idx)
                         st.rerun()
-            if st.button("➕ Add Tool / Tech", key="add_tool"):
+            if st.button(" Add Tool / Tech", key="add_tool"):
                 st.session_state.edit_skills_tools_list.append("")
                 st.rerun()
                 
@@ -404,22 +404,22 @@ def render_resume_editor():
                 with col_val:
                     st.session_state.edit_skills_soft_list[idx] = st.text_input(f"Soft Skill #{idx+1}", value=soft, key=f"soft_{idx}", label_visibility="collapsed")
                 with col_del:
-                    if st.button("🗑️", key=f"del_soft_{idx}"):
+                    if st.button("", key=f"del_soft_{idx}"):
                         st.session_state.edit_skills_soft_list.pop(idx)
                         st.rerun()
-            if st.button("➕ Add Soft Skill", key="add_soft"):
+            if st.button(" Add Soft Skill", key="add_soft"):
                 st.session_state.edit_skills_soft_list.append("")
                 st.rerun()
 
         # 2. Expander: Work Experience
-        with st.expander("💼 Work Experience", expanded=False):
+        with st.expander(" Work Experience", expanded=False):
             for idx, entry in enumerate(list(st.session_state.edit_experience_list)):
                 st.markdown(f"---")
                 col_title, col_del = st.columns([0.85, 0.15])
                 with col_title:
                     st.markdown(f"**Role #{idx+1}: {entry.get('title') or 'New Role'}**")
                 with col_del:
-                    if st.button("🗑️ Delete", key=f"del_exp_{idx}"):
+                    if st.button(" Delete", key=f"del_exp_{idx}"):
                         st.session_state.edit_experience_list.pop(idx)
                         st.rerun()
                         
@@ -435,7 +435,7 @@ def render_resume_editor():
                 new_bullets_text = st.text_area("Description (One bullet point per line):", value=bullets_text, key=f"exp_{idx}_bullets", height=120)
                 st.session_state.edit_experience_list[idx]["bullets"] = [b.strip() for b in new_bullets_text.split("\n") if b.strip()]
                 
-            if st.button("➕ Add Work Experience", key="add_exp"):
+            if st.button(" Add Work Experience", key="add_exp"):
                 st.session_state.edit_experience_list.append({
                     "title": "",
                     "subtitle": "",
@@ -446,14 +446,14 @@ def render_resume_editor():
                 st.rerun()
 
         # 3. Expander: Education
-        with st.expander("🎓 Education", expanded=False):
+        with st.expander(" Education", expanded=False):
             for idx, entry in enumerate(list(st.session_state.edit_education_list)):
                 st.markdown(f"---")
                 col_title, col_del = st.columns([0.85, 0.15])
                 with col_title:
                     st.markdown(f"**Education #{idx+1}: {entry.get('title') or 'New Institution'}**")
                 with col_del:
-                    if st.button("🗑️ Delete", key=f"del_edu_{idx}"):
+                    if st.button(" Delete", key=f"del_edu_{idx}"):
                         st.session_state.edit_education_list.pop(idx)
                         st.rerun()
                         
@@ -478,10 +478,10 @@ def render_resume_editor():
                         st.session_state.edit_education_list[idx]["grades"][g_idx]["value"] = st.text_input("Value / Score:", value=g["value"], key=f"edu_{idx}_gval_{g_idx}")
                     with col_gdel:
                         st.write("")
-                        if st.button("🗑️", key=f"edu_{idx}_gdel_{g_idx}"):
+                        if st.button("", key=f"edu_{idx}_gdel_{g_idx}"):
                             st.session_state.edit_education_list[idx]["grades"].pop(g_idx)
                             st.rerun()
-                if st.button("➕ Add Grade / Score", key=f"edu_{idx}_gadd"):
+                if st.button(" Add Grade / Score", key=f"edu_{idx}_gadd"):
                     if "grades" not in st.session_state.edit_education_list[idx]:
                         st.session_state.edit_education_list[idx]["grades"] = []
                     st.session_state.edit_education_list[idx]["grades"].append({"type": "CGPA", "value": ""})
@@ -491,7 +491,7 @@ def render_resume_editor():
                 new_bullets_text = st.text_area("Other details/honors (One per line):", value=bullets_text, key=f"edu_{idx}_bullets", height=80)
                 st.session_state.edit_education_list[idx]["bullets"] = [b.strip() for b in new_bullets_text.split("\n") if b.strip()]
                 
-            if st.button("➕ Add Education", key="add_edu"):
+            if st.button(" Add Education", key="add_edu"):
                 st.session_state.edit_education_list.append({
                     "title": "",
                     "subtitle": "",
@@ -503,14 +503,14 @@ def render_resume_editor():
                 st.rerun()
 
         # 4. Expander: Projects & Certifications
-        with st.expander("🚀 Certifications & Projects", expanded=False):
+        with st.expander(" Certifications & Projects", expanded=False):
             for idx, entry in enumerate(list(st.session_state.edit_projects_list)):
                 st.markdown(f"---")
                 col_title, col_del = st.columns([0.85, 0.15])
                 with col_title:
                     st.markdown(f"**Project #{idx+1}: {entry.get('title') or 'New Project'}**")
                 with col_del:
-                    if st.button("🗑️ Delete", key=f"del_proj_{idx}"):
+                    if st.button(" Delete", key=f"del_proj_{idx}"):
                         st.session_state.edit_projects_list.pop(idx)
                         st.rerun()
                         
@@ -527,17 +527,17 @@ def render_resume_editor():
                 st.session_state.edit_projects_list[idx]["bullets"] = [b.strip() for b in new_bullets_text.split("\n") if b.strip()]
                 
                 # Single Project AI Enhancement Button
-                if st.button("🤖 Enhance this Project with AI", key=f"proj_{idx}_ai"):
+                if st.button(" Enhance this Project with AI", key=f"proj_{idx}_ai"):
                     with st.spinner("Optimizing project using Groq AI..."):
                         enhanced = enhance_single_project(st.session_state.edit_projects_list[idx])
                         if enhanced:
                             st.session_state.edit_projects_list[idx]["title"] = enhanced.get("title", st.session_state.edit_projects_list[idx]["title"])
                             st.session_state.edit_projects_list[idx]["subtitle"] = enhanced.get("subtitle", st.session_state.edit_projects_list[idx]["subtitle"])
                             st.session_state.edit_projects_list[idx]["bullets"] = enhanced.get("bullets", st.session_state.edit_projects_list[idx]["bullets"])
-                            st.success("✅ Project successfully enhanced!")
+                            st.success(" Project successfully enhanced!")
                             st.rerun()
                             
-            if st.button("➕ Add Project", key="add_proj"):
+            if st.button(" Add Project", key="add_proj"):
                 st.session_state.edit_projects_list.append({
                     "title": "",
                     "subtitle": "",
@@ -548,30 +548,30 @@ def render_resume_editor():
                 st.rerun()
 
         # 5. Expander: Achievements
-        with st.expander("🏆 Achievements", expanded=False):
+        with st.expander(" Achievements", expanded=False):
             for idx, bullet in enumerate(list(st.session_state.edit_achievements_list)):
                 col_val, col_ai, col_del = st.columns([0.7, 0.2, 0.1])
                 with col_val:
                     st.session_state.edit_achievements_list[idx] = st.text_input(f"Achievement #{idx+1}", value=bullet, key=f"ach_{idx}", label_visibility="collapsed")
                 with col_ai:
-                    if st.button("🤖 Enhance", key=f"ach_{idx}_ai"):
+                    if st.button(" Enhance", key=f"ach_{idx}_ai"):
                         with st.spinner("Enhancing achievement..."):
                             enhanced = enhance_single_achievement(st.session_state.edit_achievements_list[idx])
                             if enhanced:
                                 st.session_state.edit_achievements_list[idx] = enhanced
-                                st.success("✅ Enhanced!")
+                                st.success(" Enhanced!")
                                 st.rerun()
                 with col_del:
-                    if st.button("🗑️", key=f"ach_{idx}_del"):
+                    if st.button("", key=f"ach_{idx}_del"):
                         st.session_state.edit_achievements_list.pop(idx)
                         st.rerun()
-            if st.button("➕ Add Achievement", key="add_ach"):
+            if st.button(" Add Achievement", key="add_ach"):
                 st.session_state.edit_achievements_list.append("")
                 st.rerun()
 
         # AI Enhance Section
         st.markdown("---")
-        st.subheader("🤖 AI Resume Enhancement")
+        st.subheader(" AI Resume Enhancement")
         
         st.markdown("Select which sections you want the AI to enhance:")
         col_opt1, col_opt2 = st.columns(2)
@@ -592,15 +592,15 @@ def render_resume_editor():
         if enhance_projects: selected_sections.append("certs_projects")
         if enhance_achievements: selected_sections.append("achievements")
 
-        st.markdown("💡 **Optional Metrics Context** (Provide answers below to help the AI add quantifiable outcomes):")
+        st.markdown(" **Optional Metrics Context** (Provide answers below to help the AI add quantifiable outcomes):")
         q_metrics = st.text_input("1. Metrics & Outcomes: Did you improve speed, reduce cost, or increase efficiency? (e.g. 'Reduced latency by 35%')", value="", key="q_metrics")
         q_scale = st.text_input("2. Scale & Volume: How many users, servers, or data volume did you work with? (e.g. '15k daily active users')", value="", key="q_scale")
         q_tech = st.text_input("3. Tech Stack Detail: What specific languages, tools, or libraries did you use? (e.g. 'Docker, FastAPI, React')", value="", key="q_tech")
         q_ownership = st.text_input("4. Ownership & Scope: What was your specific contribution or team size? (e.g. 'Led a team of 4 to design database schema')", value="", key="q_ownership")
 
-        if st.button("🚀 Enhance with Groq AI", type="secondary", use_container_width=True):
+        if st.button(" Enhance with Groq AI", type="secondary", use_container_width=True):
             if not selected_sections:
-                st.warning("⚠️ Please select at least one section to enhance!")
+                st.warning(" Please select at least one section to enhance!")
             else:
                 with st.spinner("Analyzing feedback & generating improvements with Groq Llama-3..."):
                     # Gather weak bullets and feedback points
@@ -729,7 +729,7 @@ Do NOT output any markdown code block backticks (```json or ```), styling, or ex
                             if list_key in st.session_state:
                                 del st.session_state[list_key]
                                 
-                        st.success("✅ Selected resume sections successfully enhanced by Groq AI! Review the changes below.")
+                        st.success(" Selected resume sections successfully enhanced by Groq AI! Review the changes below.")
                         st.rerun()
                     except Exception as e:
                         st.error("Failed to parse AI response. The response was:")
@@ -737,7 +737,7 @@ Do NOT output any markdown code block backticks (```json or ```), styling, or ex
                     
         # PDF Layout & Styling Panel
         st.markdown("---")
-        st.subheader("🎨 PDF Styling & Templates")
+        st.subheader(" PDF Styling & Templates")
         with st.expander("PDF Formatting Options", expanded=True):
             col_f1, col_f2 = st.columns(2)
             with col_f1:
@@ -753,7 +753,7 @@ Do NOT output any markdown code block backticks (```json or ```), styling, or ex
         sync_lists_to_text()
 
     with col_preview:
-        st.subheader("📄 Live PDF Preview")
+        st.subheader(" Live PDF Preview")
         
         # Compile PDF on page load/interaction
         with st.spinner("Updating PDF preview..."):
@@ -788,7 +788,7 @@ Do NOT output any markdown code block backticks (```json or ```), styling, or ex
                 # Download button below the preview
                 st.markdown(" ")
                 with open(output_path, "rb") as f:
-                    st.download_button("📥 Download Styled PDF Resume", data=f.read(), file_name="enhanced_styled_resume.pdf", mime="application/pdf", use_container_width=True)
+                    st.download_button(" Download Styled PDF Resume", data=f.read(), file_name="enhanced_styled_resume.pdf", mime="application/pdf", use_container_width=True)
             except Exception as e:
                 st.error(f"Failed to generate live preview: {e}")
                 st.exception(e)

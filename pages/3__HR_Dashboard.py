@@ -25,7 +25,7 @@ if "admin_logged_in" not in st.session_state:
     st.session_state.admin_logged_in = False
 
 if not st.session_state.admin_logged_in:
-    st.title("🔒 Admin Login")
+    st.title(" Admin Login")
     with st.form("login_form"):
         pwd = st.text_input("Enter Admin Password", type="password")
         submitted = st.form_submit_button("Login")
@@ -36,7 +36,7 @@ if not st.session_state.admin_logged_in:
             else:
                 st.error("Incorrect password")
 else:
-    st.title("👔 Enterprise HR Dashboard")
+    st.title(" Enterprise HR Dashboard")
     
     if st.button("Logout", key="logout"):
         st.session_state.admin_logged_in = False
@@ -62,14 +62,14 @@ else:
         c3.markdown(f"<div class='metric-card'><h3>Top Role</h3><h1 style='color:#6C63FF;'>{df['predicted_role'].mode()[0]}</h1></div>", unsafe_allow_html=True)
         
         st.markdown("---")
-        st.markdown("### 📋 Candidate Database")
+        st.markdown("###  Candidate Database")
         
         # Format the dataframe for display
         display_df = df[['id', 'name', 'predicted_role', 'ats_score', 'health_score', 'strong_bullets', 'timestamp']]
         display_df.columns = ['ID', 'Name', 'Role', 'ATS Score', 'Health', 'Strong Bullets', 'Date']
         
         st.markdown("---")
-        st.markdown("### 📈 Business Intelligence Analytics")
+        st.markdown("###  Business Intelligence Analytics")
         
         import matplotlib
         matplotlib.use('Agg')
@@ -103,7 +103,7 @@ else:
             plt.close(fig2)
         
         st.markdown("---")
-        st.markdown("### 📋 Candidate Database")
+        st.markdown("###  Candidate Database")
         
         st.dataframe(
             display_df,

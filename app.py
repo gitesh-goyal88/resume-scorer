@@ -2,7 +2,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="ResumeIQ | AI Candidate OS",
-    page_icon="⚡",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -78,7 +78,7 @@ if st.session_state.user_id is None:
     
     col1, col2, col3 = st.columns([1,2,1])
     with col2:
-        tab1, tab2 = st.tabs(["🔑 Login", "📝 Sign Up"])
+        tab1, tab2 = st.tabs([" Login", " Sign Up"])
         
         with tab1:
             st.subheader("Login")
@@ -134,14 +134,14 @@ else:
     """, unsafe_allow_html=True)
     
     pages = [
-        st.Page("pages/1_🏠_Dashboard.py", title="Dashboard", icon="🏠"),
-        st.Page("pages/2_📊_Resume_Analysis.py", title="Resume Analysis", icon="📊"),
-        st.Page("pages/3_✍️_Resume_Editor.py", title="Resume Editor", icon="✍️"),
-        st.Page("pages/3_💼_Job_Matches.py", title="Job Matches", icon="💼"),
-        st.Page("pages/5_🎙️_Interview_Prep.py", title="Interview Prep", icon="🎙️"),
-        st.Page("pages/6_📈_Analytics.py", title="Analytics", icon="📈"),
-        st.Page("pages/7_🏆_Leaderboard.py", title="Leaderboard", icon="🏆"),
-        st.Page("pages/5_🎯_Jobscan_Matcher.py", title="Jobscan Matcher", icon="🎯")
+        st.Page("pages/1__Dashboard.py", title="Dashboard"),
+        st.Page("pages/2__Resume_Analysis.py", title="Resume Analysis"),
+        st.Page("pages/3__Resume_Editor.py", title="Resume Editor"),
+        st.Page("pages/3__Job_Matches.py", title="Job Matches"),
+        st.Page("pages/5__Interview_Prep.py", title="Interview Prep"),
+        st.Page("pages/6__Analytics.py", title="Analytics"),
+        st.Page("pages/7__Leaderboard.py", title="Leaderboard"),
+        st.Page("pages/5__Jobscan_Matcher.py", title="Jobscan Matcher")
     ]
     
     # 2. Build the Top Navigation Bar
@@ -151,7 +151,7 @@ else:
         st.markdown(f"""
         <div style='display: flex; align-items: center; gap: 12px; margin-top: 0px; margin-bottom: 10px;'>
             <div style='background-color: {accent_colors[accent]}; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px {glow_colors[accent]};'>
-                <span style='color: #000000; font-size: 18px; font-weight: bold;'>⚡</span>
+                <span style='color: #000000; font-size: 18px; font-weight: bold;'></span>
             </div>
             <div>
                 <h3 style='margin: 0; font-size: 18px; font-family: "Outfit", sans-serif; color: #F4F4F5; font-weight: 700;'>ResumeIQ</h3>
@@ -163,38 +163,38 @@ else:
         # Horizontal layout for the main pages
         st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
         c1, c2, c3, c4, c5, c6, c7, c8 = st.columns(8)
-        with c1: st.page_link(pages[0], label="Home", icon="🏠")
-        with c2: st.page_link(pages[1], label="Analyze", icon="📊")
-        with c3: st.page_link(pages[2], label="Editor", icon="✍️")
-        with c4: st.page_link(pages[3], label="Jobs", icon="💼")
-        with c5: st.page_link(pages[4], label="Prep", icon="🎙️")
-        with c6: st.page_link(pages[5], label="Stats", icon="📈")
-        with c7: st.page_link(pages[6], label="Rank", icon="🏆")
-        with c8: st.page_link(pages[7], label="Jobscan", icon="🎯")
+        with c1: st.page_link(pages[0], label="Home")
+        with c2: st.page_link(pages[1], label="Analyze")
+        with c3: st.page_link(pages[2], label="Editor")
+        with c4: st.page_link(pages[3], label="Jobs")
+        with c5: st.page_link(pages[4], label="Prep")
+        with c6: st.page_link(pages[5], label="Stats")
+        with c7: st.page_link(pages[6], label="Rank")
+        with c8: st.page_link(pages[7], label="Jobscan")
 
     with nav_col3:
         st.markdown("<div style='height: 5px;'></div>", unsafe_allow_html=True)
         tc1, tc2 = st.columns(2)
         with tc1:
-            with st.popover("🎨", help="Change Theme", use_container_width=True):
+            with st.popover("", help="Change Theme", use_container_width=True):
                 st.markdown("**Select Accent**")
-                if st.button("🔵 Blue", use_container_width=True):
+                if st.button(" Blue", use_container_width=True):
                     st.session_state.theme_accent = "Blue"
                     st.rerun()
-                if st.button("🟢 Green", use_container_width=True):
+                if st.button(" Green", use_container_width=True):
                     st.session_state.theme_accent = "Green"
                     st.rerun()
-                if st.button("🔴 Red", use_container_width=True):
+                if st.button(" Red", use_container_width=True):
                     st.session_state.theme_accent = "Red"
                     st.rerun()
-                if st.button("🟣 Purple", use_container_width=True):
+                if st.button(" Purple", use_container_width=True):
                     st.session_state.theme_accent = "Purple"
                     st.rerun()
-                if st.button("🟡 Amber", use_container_width=True):
+                if st.button(" Amber", use_container_width=True):
                     st.session_state.theme_accent = "Amber"
                     st.rerun()
         with tc2:
-            if st.button("🚪", help="Logout", use_container_width=True):
+            if st.button("", help="Logout", use_container_width=True):
                 logout_user()
                 st.rerun()
                 

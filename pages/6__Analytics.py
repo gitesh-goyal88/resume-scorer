@@ -13,10 +13,10 @@ from ui_utils import inject_custom_css
 
 inject_custom_css()
 
-st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'>📈 ML Analytics</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'> ML Analytics</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sub-heading'>Comprehensive evaluation of Search Algorithms (TF-IDF vs BM25 vs KNN) across professional domains.</p>", unsafe_allow_html=True)
 
-tab1, tab2, tab3 = st.tabs(["🌎 Global Benchmarks", "👤 Personal Resume Match", "🤖 Model Comparison"])
+tab1, tab2, tab3 = st.tabs([" Global Benchmarks", " Personal Resume Match", " Model Comparison"])
 
 # ----------------- GLOBALS -----------------
 with st.spinner("Initializing models..."):
@@ -46,7 +46,7 @@ with st.spinner("Initializing models..."):
 # TAB 1: GLOBAL BENCHMARKS
 # ==========================================
 with tab1:
-    st.markdown("### 📊 Global Search Performance")
+    st.markdown("###  Global Search Performance")
     st.markdown("We evaluate the Precision@5 of each algorithm by simulating search queries for different professional fields.")
     
     domains = ["Data Science", "Python Backend", "Frontend React", "DevOps Engineer", "Machine Learning", "HR Manager"]
@@ -280,7 +280,7 @@ with tab2:
         st.pyplot(fig6)
 
     st.markdown("---")
-    st.markdown("### 🏆 Live Metrics Summary")
+    st.markdown("###  Live Metrics Summary")
     
     # Extract the precision for the user's specific predicted role
     target_idx = -1
@@ -335,7 +335,7 @@ with tab2:
 # TAB 3: MODEL COMPARISON
 # ==========================================
 with tab3:
-    st.markdown("### 🤖 Job Role Classifier — Ensemble Model Comparison")
+    st.markdown("###  Job Role Classifier — Ensemble Model Comparison")
     st.markdown(
         "The Job Role Classifier uses a **4-model Soft-Voting Ensemble**. "
         "Each model independently predicts the job category from TF-IDF features. "
@@ -360,7 +360,7 @@ with tab3:
             "naive_bayes":          "Naive Bayes (MultinomialNB)",
             "knn":                  "K-Nearest Neighbors (K=5)",
             "logistic_regression":  "Logistic Regression",
-            "ensemble":             "⭐ Soft-Voting Ensemble",
+            "ensemble":             " Soft-Voting Ensemble",
         }
 
         rows = []
@@ -389,7 +389,7 @@ with tab3:
         # Bar chart comparison
         st.markdown("#### Test Accuracy Comparison")
         chart_data = {
-            row["Model"].replace("⭐ ", ""): float(row["Test Accuracy"].replace("%", ""))
+            row["Model"].replace(" ", ""): float(row["Test Accuracy"].replace("%", ""))
             for row in rows if row["Test Accuracy"] != "—"
         }
 

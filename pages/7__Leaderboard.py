@@ -4,7 +4,7 @@ from database import get_leaderboard_data
 from ui_utils import inject_custom_css
 inject_custom_css()
 
-st.markdown("<h1 class='gradient-title' style='font-size: 2.8rem; margin-bottom: 5px; padding-bottom: 10px;'>🏆 Global Candidate Leaderboard</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='gradient-title' style='font-size: 2.8rem; margin-bottom: 5px; padding-bottom: 10px;'> Global Candidate Leaderboard</h1>", unsafe_allow_html=True)
 st.markdown("Rankings are computed using **Industry Centroid Cosine Similarity** combined with **NLP Heuristic Health Scores**.")
 
 if 'user_id' not in st.session_state or st.session_state.user_id is None:
@@ -52,7 +52,7 @@ st.dataframe(
 
 st.markdown("---")
 st.markdown("""
-### 🧠 How is the Score Calculated?
+###  How is the Score Calculated?
 1. **Centroid Score (60%):** We take your resume and calculate its TF-IDF Vector. We then compute the Cosine Similarity against the *Industry Centroid* (the mathematical average of all job descriptions in your predicted domain).
 2. **Health Score (40%):** A rule-based NLP engine scores your formatting, bullet point length, and action verbs.
 """)

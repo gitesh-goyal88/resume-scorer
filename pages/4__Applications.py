@@ -14,11 +14,11 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'>📋 Application Tracker</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'> Application Tracker</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sub-heading'>Manage your job search pipeline just like a sales CRM. Keep track of what you've applied to and your interview progress.</p>", unsafe_allow_html=True)
 
 # 1. Add New Application
-with st.expander("➕ Track a New Job Application"):
+with st.expander(" Track a New Job Application"):
     with st.form("new_app_form"):
         c1, c2 = st.columns(2)
         with c1:
@@ -59,7 +59,7 @@ for idx, status in enumerate(status_cols):
                 st.markdown(f"""
                 <div class='job-card' style='border-left: 4px solid {border_color};'>
                     <h4 class='job-title'>{row['role']}</h4>
-                    <p class='job-company'>🏢 {row['company']}</p>
+                    <p class='job-company'> {row['company']}</p>
                 </div>
                 """, unsafe_allow_html=True)
                 

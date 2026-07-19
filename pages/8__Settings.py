@@ -3,7 +3,7 @@ from ui_utils import inject_custom_css
 
 inject_custom_css()
 
-st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'>⚙️ Settings</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'> Settings</h1>", unsafe_allow_html=True)
 st.markdown("<p class='sub-heading'>Manage your account preferences and application settings.</p>", unsafe_allow_html=True)
 
 st.markdown("<h3 style='margin-top: 24px; margin-bottom: 16px; color: #FAFAFA;'>Preferences</h3>", unsafe_allow_html=True)

@@ -1,11 +1,11 @@
-with open("pages/2_📊_Resume_Analysis.py", "r") as f:
+with open("pages/2__Resume_Analysis.py", "r") as f:
     lines = f.readlines()
 
 new_ui = """
 # ── Main UI ────────────────────────────────────────────────────────────────────
 # UI Customization styles are injected globally from ui_utils.py
 
-st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'>📊 Resume Analysis</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'> Resume Analysis</h1>", unsafe_allow_html=True)
 
 if not st.session_state.resume_text or not st.session_state.ats_ml_score:
     st.markdown('''
@@ -48,7 +48,7 @@ else:
             st.markdown("<hr>", unsafe_allow_html=True)
             st.markdown("<p style='color: #A1A1AA; font-family: Inter; font-weight: 600; font-size: 14px;'>Missing Crucial Skills:</p>", unsafe_allow_html=True)
             for m in st.session_state.market_gaps["missing_critical"][:5]:
-                st.markdown(f"<span class='skill-tag skill-miss'>⚠ {m}</span>", unsafe_allow_html=True)
+                st.markdown(f"<span class='skill-tag skill-miss'> {m}</span>", unsafe_allow_html=True)
                 
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -115,6 +115,6 @@ for i, line in enumerate(lines):
         break
 
 if start_idx > 0:
-    with open("pages/2_📊_Resume_Analysis.py", "w") as f:
+    with open("pages/2__Resume_Analysis.py", "w") as f:
         f.writelines(lines[:start_idx])
         f.write(new_ui)

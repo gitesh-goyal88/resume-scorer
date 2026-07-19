@@ -598,7 +598,7 @@ def classify_bullets(bullet_list: list) -> list:
 
 def train_all_models():
     """Train and save all three ResumeIQ ML models."""
-    print("\n🚀  ResumeIQ — Training All Models\n")
+    print("\n  ResumeIQ — Training All Models\n")
 
     results = {}
 
@@ -627,7 +627,7 @@ def train_all_models():
     for br in bullet_results:
         print(f"Bullet: '{br['text'][:60]}...' → {br['label']} ({br['confidence']:.2f})")
 
-    print("\n✅  All models trained and verified successfully!\n")
+    print("\n  All models trained and verified successfully!\n")
     return results
 
 

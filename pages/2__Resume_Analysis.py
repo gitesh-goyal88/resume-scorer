@@ -147,18 +147,18 @@ def estimate_salary(role, ats_score):
 
 # ── Main UI ────────────────────────────────────────────────────────────────────
 # UI Customization styles are injected globally from ui_utils.py
-st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'>📊 Resume Analysis</h1>", unsafe_allow_html=True)
+st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'> Resume Analysis</h1>", unsafe_allow_html=True)
 
 col_title1, col_title2 = st.columns([0.7, 0.3])
 with col_title1:
     st.markdown("<p class='sub-heading'>Your comprehensive AI analysis report, detailed metrics, and live editor.</p>", unsafe_allow_html=True)
 with col_title2:
-    if st.button("🗑️ Clear Cache & Restart", use_container_width=True, help="Click to wipe memory and force the new ML Engine to run"):
+    if st.button(" Clear Cache & Restart", use_container_width=True, help="Click to wipe memory and force the new ML Engine to run"):
         keys_to_keep = ["user_id", "logged_in", "username"]
         for key in list(st.session_state.keys()):
             if key not in keys_to_keep:
                 del st.session_state[key]
-        st.switch_page("pages/1_🏠_Dashboard.py")
+        st.switch_page("pages/1__Dashboard.py")
 
 if not st.session_state.resume_text or not st.session_state.ats_ml_score:
     st.markdown('''
@@ -180,36 +180,36 @@ if not st.session_state.resume_text or not st.session_state.ats_ml_score:
         from resume_builder import clean_resume_text_bullets
         from formatting_checker import check_formatting, compute_general_score, compute_section_scores
         
-        with st.status("🧠 Analyzing your resume pipeline...", expanded=True) as status:
+        with st.status(" Analyzing your resume pipeline...", expanded=True) as status:
             with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
                 tmp.write(uploaded_file.read())
                 tmp_path = tmp.name
             
-            st.write("📄 Parsing PDF structure...")
+            st.write(" Parsing PDF structure...")
             text = extract_text_from_pdf(tmp_path)
             text = clean_resume_text_bullets(text)
             st.session_state.resume_text = text
             st.session_state.resume_path = tmp_path
             
-            st.write("🔍 Extracting Technical Skills...")
+            st.write(" Extracting Technical Skills...")
             skills = extract_skills(text)
             st.session_state.skills = skills
             
-            st.write("📏 Checking Formatting & Grammar...")
+            st.write(" Checking Formatting & Grammar...")
             issues = check_formatting(text, tmp_path)
             st.session_state.issues = issues
             st.session_state.health_data = compute_general_score(text, issues, skills)
             st.session_state.section_scores = compute_section_scores(text)
             
-            st.write("🤖 Detecting Job Role...")
+            st.write(" Detecting Job Role...")
             prediction = predict_job_category(text)
             st.session_state.predicted_role = prediction["category"]
             
-            st.write("🤖 Llama-3 Bullet Inference...")
+            st.write(" Llama-3 Bullet Inference...")
             st.session_state.bullet_results = classify_bullets(extract_bullet_points(text))
             st.session_state.yoe = calculate_yoe(text)
             
-            st.write("📈 Computing TF-IDF Heatmaps...")
+            st.write(" Computing TF-IDF Heatmaps...")
             gaps = get_market_skill_gaps(st.session_state.predicted_role, skills)
             st.session_state.market_gaps = gaps
             
@@ -226,7 +226,7 @@ if not st.session_state.resume_text or not st.session_state.ats_ml_score:
             base_ats = health_result["total_score"]
             st.session_state.ats_ml_score = {"score": base_ats, "grade": health_result["grade"]}
                 
-            status.update(label="✅ Analysis Complete! Reloading...", state="complete", expanded=False)
+            status.update(label=" Analysis Complete! Reloading...", state="complete", expanded=False)
             
         st.rerun()
     st.stop()
@@ -265,9 +265,9 @@ if st.session_state.resume_text:
     if st.session_state.get('user_id'):
         saved_resumes = get_user_resumes(st.session_state.user_id)
         if saved_resumes:
-            with st.expander(f"📂 My Saved Resumes ({len(saved_resumes)}/4)", expanded=False):
+            with st.expander(f" My Saved Resumes ({len(saved_resumes)}/4)", expanded=False):
                 for i, res in enumerate(saved_resumes):
-                    badge = "🌟 Enhanced" if res['is_enhanced'] else "📄 Original"
+                    badge = " Enhanced" if res['is_enhanced'] else " Original"
                     rcol1, rcol2, rcol3 = st.columns([3, 1, 1])
                     with rcol1:
                         st.markdown(f"**{badge}** — {res['domain']} — Uploaded: {res['upload_date'][:10]}")
@@ -276,7 +276,7 @@ if st.session_state.resume_text:
                     with rcol3:
                         if os.path.exists(res['file_path']):
                             with open(res['file_path'], 'rb') as rf:
-                                st.download_button("⬇️", rf.read(), file_name=f"resume_{i+1}.pdf", key=f"dl_saved_{i}")
+                                st.download_button("", rf.read(), file_name=f"resume_{i+1}.pdf", key=f"dl_saved_{i}")
                     st.markdown("---")
 
     st.markdown("---")
@@ -310,14 +310,14 @@ if st.session_state.resume_text:
         st.write("Copy and paste this into your LinkedIn 'About' section:")
         st.code(bio, language="markdown")
 
-    if st.button("🔵 Generate LinkedIn Bio"):
+    if st.button(" Generate LinkedIn Bio"):
         show_linkedin_bio()
 
     st.markdown("---")
     yoe = st.session_state.get("yoe", 0.0)
-    st.markdown(f"<h2 style='color: #FAFAFA;'>📊 AI Benchmark Report: {role} ({yoe} YoE)</h2>", unsafe_allow_html=True)
+    st.markdown(f"<h2 style='color: #FAFAFA;'> AI Benchmark Report: {role} ({yoe} YoE)</h2>", unsafe_allow_html=True)
     
-    # 🎯 Role override selectbox directly in the report view
+    #  Role override selectbox directly in the report view
     from analyzer import MARKET_SKILLS
     role_options = sorted(list(MARKET_SKILLS.keys()))
     if role not in role_options:
@@ -325,7 +325,7 @@ if st.session_state.resume_text:
         role_options = sorted(role_options)
         
     selected_role = st.selectbox(
-        "🎯 Target Job Role for Skills Benchmarking (change this if the ML classification is incorrect):",
+        " Target Job Role for Skills Benchmarking (change this if the ML classification is incorrect):",
         options=role_options,
         index=role_options.index(role)
     )
@@ -371,7 +371,7 @@ if st.session_state.resume_text:
     except:
         competencies_score = 0
     
-    st.markdown("### 🏆 ATS Readiness & ML Breakdown")
+    st.markdown("###  ATS Readiness & ML Breakdown")
     col_main, col_sub = st.columns([0.4, 0.6], gap="large")
     
     with col_main:
@@ -384,7 +384,7 @@ if st.session_state.resume_text:
         <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-radius: 16px; padding: 30px; height: 100%; display: flex; flex-direction: column; justify-content: center; gap: 24px; margin-top: 15px; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);">
             <div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span style="color: #D4D4D8; font-weight: 600; font-size: 15px;">✍️ Bullet Impact Score</span>
+                    <span style="color: #D4D4D8; font-weight: 600; font-size: 15px;"> Bullet Impact Score</span>
                     <span style="color: #FAFAFA; font-weight: 700;">{impact_score}/100</span>
                 </div>
                 <div style="background: rgba(255,255,255,0.06); border-radius: 99px; width: 100%; height: 10px; overflow: hidden;">
@@ -393,7 +393,7 @@ if st.session_state.resume_text:
             </div>
             <div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span style="color: #D4D4D8; font-weight: 600; font-size: 15px;">📐 Formatting Health</span>
+                    <span style="color: #D4D4D8; font-weight: 600; font-size: 15px;"> Formatting Health</span>
                     <span style="color: #FAFAFA; font-weight: 700;">{presentation_score}/100</span>
                 </div>
                 <div style="background: rgba(255,255,255,0.06); border-radius: 99px; width: 100%; height: 10px; overflow: hidden;">
@@ -402,7 +402,7 @@ if st.session_state.resume_text:
             </div>
             <div>
                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span style="color: #D4D4D8; font-weight: 600; font-size: 15px;">🧠 Hard Skill Alignment</span>
+                    <span style="color: #D4D4D8; font-weight: 600; font-size: 15px;"> Hard Skill Alignment</span>
                     <span style="color: #FAFAFA; font-weight: 700;">{competencies_score}/100</span>
                 </div>
                 <div style="background: rgba(255,255,255,0.06); border-radius: 99px; width: 100%; height: 10px; overflow: hidden;">
@@ -412,22 +412,22 @@ if st.session_state.resume_text:
         </div>
         """, unsafe_allow_html=True)
         
-    st.markdown("### 🧠 Explainable AI (XAI) Insights")
+    st.markdown("###  Explainable AI (XAI) Insights")
     xai_bullets = []
     if impact_score > 80:
-        xai_bullets.append("✅ **High Impact:** Your Random Forest score was significantly boosted by a strong presence of Action Verbs and Metrics in your bullet points.")
+        xai_bullets.append(" **High Impact:** Your Random Forest score was significantly boosted by a strong presence of Action Verbs and Metrics in your bullet points.")
     else:
-        xai_bullets.append("⚠️ **Low Impact Penalty:** Your score was penalized due to a lack of quantifiable metrics. Adding numbers to your achievements will increase your score.")
+        xai_bullets.append(" **Low Impact Penalty:** Your score was penalized due to a lack of quantifiable metrics. Adding numbers to your achievements will increase your score.")
         
     if presentation_score > 85:
-        xai_bullets.append("✅ **Clean Presentation:** The parser easily extracted your data due to excellent formatting health.")
+        xai_bullets.append(" **Clean Presentation:** The parser easily extracted your data due to excellent formatting health.")
     else:
-        xai_bullets.append("⚠️ **Formatting Penalty:** The ML engine struggled to parse some sections. Fix your margins or font consistency to prevent ATS rejection.")
+        xai_bullets.append(" **Formatting Penalty:** The ML engine struggled to parse some sections. Fix your margins or font consistency to prevent ATS rejection.")
         
     if competencies_score > 75:
-        xai_bullets.append("✅ **Market Aligned:** You possess a high density of the hard skills expected for this specific role, boosting your Competencies score.")
+        xai_bullets.append(" **Market Aligned:** You possess a high density of the hard skills expected for this specific role, boosting your Competencies score.")
     else:
-        xai_bullets.append("⚠️ **Skill Gap Penalty:** Your resume lacks critical skills required for the current market, heavily weighing down your Resume Health Score.")
+        xai_bullets.append(" **Skill Gap Penalty:** Your resume lacks critical skills required for the current market, heavily weighing down your Resume Health Score.")
 
     for insight in xai_bullets:
         st.markdown(insight)
@@ -438,32 +438,32 @@ if st.session_state.resume_text:
     col_gaps, col_radar = st.columns([1.5, 1])
     
     with col_radar:
-        st.markdown("### 🕸️ Skill Distribution")
+        st.markdown("###  Skill Distribution")
         skill_cats = categorize_skills(active_skills)
         fig_radar = create_radar_chart(skill_cats)
         st.pyplot(fig_radar)
         plt.close(fig_radar)
         
-        st.markdown("### ☁️ Keyword Cloud")
+        st.markdown("###  Keyword Cloud")
         fig_cloud = create_word_cloud(st.session_state.resume_text)
         st.pyplot(fig_cloud)
         plt.close(fig_cloud)
 
     with col_gaps:
-        st.markdown("### 📈 Market Gap & Skills Improvement")
+        st.markdown("###  Market Gap & Skills Improvement")
         gaps = st.session_state.market_gaps
         if gaps["missing"]:
-            st.error("⚠️ **Missing In-Demand Skills:** Add these to boost your Resume Health Score for this role.")
+            st.error(" **Missing In-Demand Skills:** Add these to boost your Resume Health Score for this role.")
             missing_html = "".join([f"<span class='skill-tag skill-miss'>{s}</span>" for s in gaps["missing"]])
             st.markdown(missing_html, unsafe_allow_html=True)
         else:
-            st.success("✅ No major market gaps detected for this role!")
+            st.success(" No major market gaps detected for this role!")
             
-        st.markdown("✅ **Your Top Skills:**")
+        st.markdown(" **Your Top Skills:**")
         matched_html = "".join([f"<span class='skill-tag skill-match'>{s}</span>" for s in gaps["matched"][:10]])
         st.markdown(matched_html, unsafe_allow_html=True)
         
-        st.markdown("### 🛠️ Formatting Issues to Fix")
+        st.markdown("###  Formatting Issues to Fix")
         if not st.session_state.issues:
             st.success("No formatting issues found!")
         else:
@@ -473,7 +473,7 @@ if st.session_state.resume_text:
     st.markdown("---")
     
     # Live Upskilling Recommender
-    st.header("🎓 Automated Upskilling Recommender")
+    st.header(" Automated Upskilling Recommender")
     st.markdown("Bridge your market gap. We've scraped the web for the top real-life courses for your missing skills.")
     
     if gaps["missing"]:
@@ -488,7 +488,7 @@ if st.session_state.resume_text:
             with tabs[i]:
                 st.markdown(f"**Top recommendations for:** `{skill}`")
                 
-                with st.spinner(f"📡 Live scraping YouTube & Aggregators for '{skill}' courses..."):
+                with st.spinner(f" Live scraping YouTube & Aggregators for '{skill}' courses..."):
                     courses = fetch_courses(skill, limit=3)
                     
                 if not courses:
@@ -514,7 +514,7 @@ if st.session_state.resume_text:
                                     <span style='font-size: 10px; color: {active_color}; font-weight: 700; background: {active_bg}; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;'>{course['platform'].upper()}</span>
                                     <h5 style='color: #F4F4F5 !important; margin: 12px 0 16px 0; font-family: "Outfit", sans-serif; font-weight: 600; line-height: 1.4; font-size: 14px;'>{course['title'][:60]}{"..." if len(course['title'])>60 else ""}</h5>
                                 </div>
-                                <a href="{course['url']}" target="_blank" style='text-decoration: none; color: {active_color}; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 4px;'>Watch Course ↗</a>
+                                <a href="{course['url']}" target="_blank" style='text-decoration: none; color: {active_color}; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 4px;'>Watch Course </a>
                             </div>
                             """, unsafe_allow_html=True)
     else:
@@ -523,7 +523,7 @@ if st.session_state.resume_text:
     st.markdown("---")
     
     # Row 3: ResumeWorded Line-by-Line Breakdown
-    st.markdown("### ✍️ Line-by-Line Bullet Breakdown")
+    st.markdown("###  Line-by-Line Bullet Breakdown")
     st.markdown("We've extracted every bullet point on your resume. Here is granular, line-by-line feedback on your writing.")
     
     for b in bullets:
@@ -557,8 +557,8 @@ if st.session_state.resume_text:
                 feedback.append("Could be stronger. Detail the final outcome or scale of your contribution.")
                 
         if ml_label == "Strong" and not feedback:
-            st.markdown(f"<div class='bullet-card b-strong'>✅ <strong>Perfect Impact</strong><br><i>\"{text}\"</i></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='bullet-card b-strong'> <strong>Perfect Impact</strong><br><i>\"{text}\"</i></div>", unsafe_allow_html=True)
         else:
             feedback_str = " | ".join(feedback)
-            st.markdown(f"<div class='bullet-card b-weak'>⚠️ <strong>Needs Work</strong><br><i>\"{text}\"</i><br><span class='b-sugg'>💡 Feedback: {feedback_str}</span></div>", unsafe_allow_html=True)
+            st.markdown(f"<div class='bullet-card b-weak'> <strong>Needs Work</strong><br><i>\"{text}\"</i><br><span class='b-sugg'> Feedback: {feedback_str}</span></div>", unsafe_allow_html=True)
 

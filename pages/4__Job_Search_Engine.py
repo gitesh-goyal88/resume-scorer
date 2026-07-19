@@ -36,7 +36,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🔍 Academic Job Search Engine")
+st.title(" Academic Job Search Engine")
 st.markdown("Evaluate core Information Retrieval algorithms (TF-IDF vs BM25) on the real-world dataset.")
 
 @st.cache_data

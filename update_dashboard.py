@@ -1,4 +1,4 @@
-with open("pages/1_🏠_Dashboard.py", "r") as f:
+with open("pages/1__Dashboard.py", "r") as f:
     lines = f.readlines()
 
 new_ui = """
@@ -8,7 +8,7 @@ new_ui = """
 # Global Search
 st.markdown('''
 <div style='margin-bottom: 30px; display: flex; gap: 10px; align-items: center;'>
-    <h2 style='margin: 0; color: #FAFAFA; font-weight: 700; flex-grow: 1;'>Hello Gitesh 👋</h2>
+    <h2 style='margin: 0; color: #FAFAFA; font-weight: 700; flex-grow: 1;'>Hello Gitesh </h2>
     <input type='text' placeholder='Search jobs, resumes, reports...' style='padding: 10px 16px; border-radius: 99px; background: #18181B; border: 1px solid rgba(255,255,255,0.08); color: #FAFAFA; width: 300px; font-family: Inter; outline: none;' disabled>
 </div>
 ''', unsafe_allow_html=True)
@@ -34,7 +34,7 @@ if st.session_state.ats_ml_score:
             <div style='display: flex; align-items: center; gap: 8px;'><span style='color: #22C55E;'>✓</span><span style='color: #FAFAFA; font-size: 14px; font-family: Inter;'>ATS Friendly</span></div>
             <div style='display: flex; align-items: center; gap: 8px;'><span style='color: #22C55E;'>✓</span><span style='color: #FAFAFA; font-size: 14px; font-family: Inter;'>Grammar</span></div>
             <div style='display: flex; align-items: center; gap: 8px;'><span style='color: #22C55E;'>✓</span><span style='color: #FAFAFA; font-size: 14px; font-family: Inter;'>Skills</span></div>
-            <div style='display: flex; align-items: center; gap: 8px;'><span style='color: #F59E0B;'>⚠</span><span style='color: #FAFAFA; font-size: 14px; font-family: Inter;'>Missing Keywords</span></div>
+            <div style='display: flex; align-items: center; gap: 8px;'><span style='color: #F59E0B;'></span><span style='color: #FAFAFA; font-size: 14px; font-family: Inter;'>Missing Keywords</span></div>
             <div style='display: flex; align-items: center; gap: 8px;'><span style='color: #22C55E;'>✓</span><span style='color: #FAFAFA; font-size: 14px; font-family: Inter;'>Formatting</span></div>
         </div>
     </div>
@@ -79,11 +79,11 @@ with col_left:
         st.markdown("<br>", unsafe_allow_html=True)
         col_btn1, col_btn2 = st.columns(2)
         with col_btn1:
-            if st.button("📊 View Full ATS Report", use_container_width=True, type="primary"):
-                st.switch_page("pages/2_📊_Resume_Analysis.py")
+            if st.button(" View Full ATS Report", use_container_width=True, type="primary"):
+                st.switch_page("pages/2__Resume_Analysis.py")
         with col_btn2:
-            if st.button("💼 View Job Matches", use_container_width=True, type="secondary"):
-                st.switch_page("pages/3_💼_Job_Matches.py")
+            if st.button(" View Job Matches", use_container_width=True, type="secondary"):
+                st.switch_page("pages/3__Job_Matches.py")
 
 with col_right:
     st.markdown("<h3 style='margin-bottom: 16px; font-size: 18px;'>Recent Activity</h3>", unsafe_allow_html=True)
@@ -124,7 +124,7 @@ with col_right:
         ''', unsafe_allow_html=True)
         
     st.markdown("<h3 style='margin-top: 24px; margin-bottom: 16px; font-size: 18px;'>Quick Actions</h3>", unsafe_allow_html=True)
-    if st.button("🗑️ Clear Data & Reset", use_container_width=True, type="secondary"):
+    if st.button(" Clear Data & Reset", use_container_width=True, type="secondary"):
         keys_to_clear = ["resume_text", "ats_ml_score", "resume_path", "skills", "health_data", "predicted_role"]
         for key in keys_to_clear:
             if key in st.session_state:
@@ -133,37 +133,37 @@ with col_right:
 
 # Execution of upload logic:
 if uploaded_file and not st.session_state.resume_text:
-    with st.status("🧠 Analyzing your resume...", expanded=True) as status:
+    with st.status(" Analyzing your resume...", expanded=True) as status:
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
             tmp.write(uploaded_file.read())
             tmp_path = tmp.name
         
-        st.write("📄 Parsing text...")
+        st.write(" Parsing text...")
         text = extract_text_from_pdf(tmp_path)
         from resume_builder import clean_resume_text_bullets
         text = clean_resume_text_bullets(text)
         st.session_state.resume_text = text
         st.session_state.resume_path = tmp_path
         
-        st.write("🔍 Extracting Skills...")
+        st.write(" Extracting Skills...")
         skills = extract_skills(text)
         st.session_state.skills = skills
         
-        st.write("📏 Checking Formatting & Health...")
+        st.write(" Checking Formatting & Health...")
         issues = check_formatting(text, tmp_path)
         st.session_state.issues = issues
         st.session_state.health_data = compute_general_score(text, issues, skills)
         st.session_state.section_scores = compute_section_scores(text)
         
-        st.write("🤖 Predicting Job Role...")
+        st.write(" Predicting Job Role...")
         prediction = predict_job_category(text)
         st.session_state.predicted_role = prediction["category"]
         
-        st.write("🤖 Analyzing Bullets & Experience...")
+        st.write(" Analyzing Bullets & Experience...")
         st.session_state.bullet_results = classify_bullets(extract_bullet_points(text))
         st.session_state.yoe = calculate_yoe(text)
         
-        st.write("📈 Computing Market Gaps & Alignment...")
+        st.write(" Computing Market Gaps & Alignment...")
         gaps = get_market_skill_gaps(st.session_state.predicted_role, skills)
         st.session_state.market_gaps = gaps
         
@@ -181,7 +181,7 @@ if uploaded_file and not st.session_state.resume_text:
         base_ats = health_result["total_score"]
         st.session_state.ats_ml_score = {"score": base_ats, "grade": health_result["grade"]}
             
-        status.update(label="✅ Analysis Complete!", state="complete", expanded=False)
+        status.update(label=" Analysis Complete!", state="complete", expanded=False)
         st.rerun()
 """
 
@@ -193,6 +193,6 @@ for i, line in enumerate(lines):
         break
 
 if start_idx > 0:
-    with open("pages/1_🏠_Dashboard.py", "w") as f:
+    with open("pages/1__Dashboard.py", "w") as f:
         f.writelines(lines[:start_idx])
         f.write(new_ui)

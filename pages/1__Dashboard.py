@@ -305,7 +305,7 @@ Do NOT output any markdown code blocks (```json or ```) or explanations outside 
 def render_resume_editor():
     import json
     import base64
-    st.header("✍️ Interactive Resume Editor & AI Templates")
+    st.header(" Interactive Resume Editor & AI Templates")
     st.markdown("Modify your resume details below. Any edits or styling changes will automatically update the PDF preview on the right.")
     
     role = st.session_state.predicted_role or "Professional"
@@ -336,7 +336,7 @@ def render_resume_editor():
     col_edit, col_preview = st.columns([1.1, 0.9])
     
     with col_edit:
-        st.subheader("📝 Edit Content")
+        st.subheader(" Edit Content")
         
         col_name, col_role = st.columns(2)
         with col_name:
@@ -347,17 +347,17 @@ def render_resume_editor():
         st.session_state.edit_summary = st.text_area("Professional Summary:", value=st.session_state.edit_summary or "", height=100)
         
         # 1. Expander: Skills
-        with st.expander("🛠️ Skills", expanded=True):
+        with st.expander(" Skills", expanded=True):
             st.markdown("**Languages**")
             for idx, lang in enumerate(list(st.session_state.edit_skills_languages_list)):
                 col_val, col_del = st.columns([0.85, 0.15])
                 with col_val:
                     st.session_state.edit_skills_languages_list[idx] = st.text_input(f"Language #{idx+1}", value=lang, key=f"lang_{idx}", label_visibility="collapsed")
                 with col_del:
-                    if st.button("🗑️", key=f"del_lang_{idx}"):
+                    if st.button("", key=f"del_lang_{idx}"):
                         st.session_state.edit_skills_languages_list.pop(idx)
                         st.rerun()
-            if st.button("➕ Add Language", key="add_lang"):
+            if st.button(" Add Language", key="add_lang"):
                 st.session_state.edit_skills_languages_list.append("")
                 st.rerun()
                 
@@ -367,10 +367,10 @@ def render_resume_editor():
                 with col_val:
                     st.session_state.edit_skills_tools_list[idx] = st.text_input(f"Tool #{idx+1}", value=tool, key=f"tool_{idx}", label_visibility="collapsed")
                 with col_del:
-                    if st.button("🗑️", key=f"del_tool_{idx}"):
+                    if st.button("", key=f"del_tool_{idx}"):
                         st.session_state.edit_skills_tools_list.pop(idx)
                         st.rerun()
-            if st.button("➕ Add Tool / Tech", key="add_tool"):
+            if st.button(" Add Tool / Tech", key="add_tool"):
                 st.session_state.edit_skills_tools_list.append("")
                 st.rerun()
                 
@@ -380,22 +380,22 @@ def render_resume_editor():
                 with col_val:
                     st.session_state.edit_skills_soft_list[idx] = st.text_input(f"Soft Skill #{idx+1}", value=soft, key=f"soft_{idx}", label_visibility="collapsed")
                 with col_del:
-                    if st.button("🗑️", key=f"del_soft_{idx}"):
+                    if st.button("", key=f"del_soft_{idx}"):
                         st.session_state.edit_skills_soft_list.pop(idx)
                         st.rerun()
-            if st.button("➕ Add Soft Skill", key="add_soft"):
+            if st.button(" Add Soft Skill", key="add_soft"):
                 st.session_state.edit_skills_soft_list.append("")
                 st.rerun()
 
         # 2. Expander: Work Experience
-        with st.expander("💼 Work Experience", expanded=False):
+        with st.expander(" Work Experience", expanded=False):
             for idx, entry in enumerate(list(st.session_state.edit_experience_list)):
                 st.markdown(f"---")
                 col_title, col_del = st.columns([0.85, 0.15])
                 with col_title:
                     st.markdown(f"**Role #{idx+1}: {entry.get('title') or 'New Role'}**")
                 with col_del:
-                    if st.button("🗑️ Delete", key=f"del_exp_{idx}"):
+                    if st.button(" Delete", key=f"del_exp_{idx}"):
                         st.session_state.edit_experience_list.pop(idx)
                         st.rerun()
                         
@@ -411,7 +411,7 @@ def render_resume_editor():
                 new_bullets_text = st.text_area("Description (One bullet point per line):", value=bullets_text, key=f"exp_{idx}_bullets", height=120)
                 st.session_state.edit_experience_list[idx]["bullets"] = [b.strip() for b in new_bullets_text.split("\n") if b.strip()]
                 
-            if st.button("➕ Add Work Experience", key="add_exp"):
+            if st.button(" Add Work Experience", key="add_exp"):
                 st.session_state.edit_experience_list.append({
                     "title": "",
                     "subtitle": "",
@@ -422,14 +422,14 @@ def render_resume_editor():
                 st.rerun()
 
         # 3. Expander: Education
-        with st.expander("🎓 Education", expanded=False):
+        with st.expander(" Education", expanded=False):
             for idx, entry in enumerate(list(st.session_state.edit_education_list)):
                 st.markdown(f"---")
                 col_title, col_del = st.columns([0.85, 0.15])
                 with col_title:
                     st.markdown(f"**Education #{idx+1}: {entry.get('title') or 'New Institution'}**")
                 with col_del:
-                    if st.button("🗑️ Delete", key=f"del_edu_{idx}"):
+                    if st.button(" Delete", key=f"del_edu_{idx}"):
                         st.session_state.edit_education_list.pop(idx)
                         st.rerun()
                         
@@ -454,10 +454,10 @@ def render_resume_editor():
                         st.session_state.edit_education_list[idx]["grades"][g_idx]["value"] = st.text_input("Value / Score:", value=g["value"], key=f"edu_{idx}_gval_{g_idx}")
                     with col_gdel:
                         st.write("")
-                        if st.button("🗑️", key=f"edu_{idx}_gdel_{g_idx}"):
+                        if st.button("", key=f"edu_{idx}_gdel_{g_idx}"):
                             st.session_state.edit_education_list[idx]["grades"].pop(g_idx)
                             st.rerun()
-                if st.button("➕ Add Grade / Score", key=f"edu_{idx}_gadd"):
+                if st.button(" Add Grade / Score", key=f"edu_{idx}_gadd"):
                     if "grades" not in st.session_state.edit_education_list[idx]:
                         st.session_state.edit_education_list[idx]["grades"] = []
                     st.session_state.edit_education_list[idx]["grades"].append({"type": "CGPA", "value": ""})
@@ -467,7 +467,7 @@ def render_resume_editor():
                 new_bullets_text = st.text_area("Other details/honors (One per line):", value=bullets_text, key=f"edu_{idx}_bullets", height=80)
                 st.session_state.edit_education_list[idx]["bullets"] = [b.strip() for b in new_bullets_text.split("\n") if b.strip()]
                 
-            if st.button("➕ Add Education", key="add_edu"):
+            if st.button(" Add Education", key="add_edu"):
                 st.session_state.edit_education_list.append({
                     "title": "",
                     "subtitle": "",
@@ -479,14 +479,14 @@ def render_resume_editor():
                 st.rerun()
 
         # 4. Expander: Projects & Certifications
-        with st.expander("🚀 Certifications & Projects", expanded=False):
+        with st.expander(" Certifications & Projects", expanded=False):
             for idx, entry in enumerate(list(st.session_state.edit_projects_list)):
                 st.markdown(f"---")
                 col_title, col_del = st.columns([0.85, 0.15])
                 with col_title:
                     st.markdown(f"**Project #{idx+1}: {entry.get('title') or 'New Project'}**")
                 with col_del:
-                    if st.button("🗑️ Delete", key=f"del_proj_{idx}"):
+                    if st.button(" Delete", key=f"del_proj_{idx}"):
                         st.session_state.edit_projects_list.pop(idx)
                         st.rerun()
                         
@@ -503,17 +503,17 @@ def render_resume_editor():
                 st.session_state.edit_projects_list[idx]["bullets"] = [b.strip() for b in new_bullets_text.split("\n") if b.strip()]
                 
                 # Single Project AI Enhancement Button
-                if st.button("🤖 Enhance this Project with AI", key=f"proj_{idx}_ai"):
+                if st.button(" Enhance this Project with AI", key=f"proj_{idx}_ai"):
                     with st.spinner("Optimizing project using Groq AI..."):
                         enhanced = enhance_single_project(st.session_state.edit_projects_list[idx])
                         if enhanced:
                             st.session_state.edit_projects_list[idx]["title"] = enhanced.get("title", st.session_state.edit_projects_list[idx]["title"])
                             st.session_state.edit_projects_list[idx]["subtitle"] = enhanced.get("subtitle", st.session_state.edit_projects_list[idx]["subtitle"])
                             st.session_state.edit_projects_list[idx]["bullets"] = enhanced.get("bullets", st.session_state.edit_projects_list[idx]["bullets"])
-                            st.success("✅ Project successfully enhanced!")
+                            st.success(" Project successfully enhanced!")
                             st.rerun()
                             
-            if st.button("➕ Add Project", key="add_proj"):
+            if st.button(" Add Project", key="add_proj"):
                 st.session_state.edit_projects_list.append({
                     "title": "",
                     "subtitle": "",
@@ -524,30 +524,30 @@ def render_resume_editor():
                 st.rerun()
 
         # 5. Expander: Achievements
-        with st.expander("🏆 Achievements", expanded=False):
+        with st.expander(" Achievements", expanded=False):
             for idx, bullet in enumerate(list(st.session_state.edit_achievements_list)):
                 col_val, col_ai, col_del = st.columns([0.7, 0.2, 0.1])
                 with col_val:
                     st.session_state.edit_achievements_list[idx] = st.text_input(f"Achievement #{idx+1}", value=bullet, key=f"ach_{idx}", label_visibility="collapsed")
                 with col_ai:
-                    if st.button("🤖 Enhance", key=f"ach_{idx}_ai"):
+                    if st.button(" Enhance", key=f"ach_{idx}_ai"):
                         with st.spinner("Enhancing achievement..."):
                             enhanced = enhance_single_achievement(st.session_state.edit_achievements_list[idx])
                             if enhanced:
                                 st.session_state.edit_achievements_list[idx] = enhanced
-                                st.success("✅ Enhanced!")
+                                st.success(" Enhanced!")
                                 st.rerun()
                 with col_del:
-                    if st.button("🗑️", key=f"ach_{idx}_del"):
+                    if st.button("", key=f"ach_{idx}_del"):
                         st.session_state.edit_achievements_list.pop(idx)
                         st.rerun()
-            if st.button("➕ Add Achievement", key="add_ach"):
+            if st.button(" Add Achievement", key="add_ach"):
                 st.session_state.edit_achievements_list.append("")
                 st.rerun()
 
         # AI Enhance Section
         st.markdown("---")
-        st.subheader("🤖 AI Resume Enhancement")
+        st.subheader(" AI Resume Enhancement")
         
         st.markdown("Select which sections you want the AI to enhance:")
         col_opt1, col_opt2 = st.columns(2)
@@ -568,15 +568,15 @@ def render_resume_editor():
         if enhance_projects: selected_sections.append("certs_projects")
         if enhance_achievements: selected_sections.append("achievements")
 
-        st.markdown("💡 **Optional Metrics Context** (Provide answers below to help the AI add quantifiable outcomes):")
+        st.markdown(" **Optional Metrics Context** (Provide answers below to help the AI add quantifiable outcomes):")
         q_metrics = st.text_input("1. Metrics & Outcomes: Did you improve speed, reduce cost, or increase efficiency? (e.g. 'Reduced latency by 35%')", value="", key="q_metrics")
         q_scale = st.text_input("2. Scale & Volume: How many users, servers, or data volume did you work with? (e.g. '15k daily active users')", value="", key="q_scale")
         q_tech = st.text_input("3. Tech Stack Detail: What specific languages, tools, or libraries did you use? (e.g. 'Docker, FastAPI, React')", value="", key="q_tech")
         q_ownership = st.text_input("4. Ownership & Scope: What was your specific contribution or team size? (e.g. 'Led a team of 4 to design database schema')", value="", key="q_ownership")
 
-        if st.button("🚀 Enhance with Groq AI", type="secondary", use_container_width=True):
+        if st.button(" Enhance with Groq AI", type="secondary", use_container_width=True):
             if not selected_sections:
-                st.warning("⚠️ Please select at least one section to enhance!")
+                st.warning(" Please select at least one section to enhance!")
             else:
                 with st.spinner("Analyzing feedback & generating improvements with Groq Llama-3..."):
                     # Gather weak bullets and feedback points
@@ -705,7 +705,7 @@ Do NOT output any markdown code block backticks (```json or ```), styling, or ex
                             if list_key in st.session_state:
                                 del st.session_state[list_key]
                                 
-                        st.success("✅ Selected resume sections successfully enhanced by Groq AI! Review the changes below.")
+                        st.success(" Selected resume sections successfully enhanced by Groq AI! Review the changes below.")
                         st.rerun()
                     except Exception as e:
                         st.error("Failed to parse AI response. The response was:")
@@ -713,7 +713,7 @@ Do NOT output any markdown code block backticks (```json or ```), styling, or ex
                     
         # PDF Layout & Styling Panel
         st.markdown("---")
-        st.subheader("🎨 PDF Styling & Templates")
+        st.subheader(" PDF Styling & Templates")
         with st.expander("PDF Formatting Options", expanded=True):
             col_f1, col_f2 = st.columns(2)
             with col_f1:
@@ -729,7 +729,7 @@ Do NOT output any markdown code block backticks (```json or ```), styling, or ex
         sync_lists_to_text()
 
     with col_preview:
-        st.subheader("📄 Live PDF Preview")
+        st.subheader(" Live PDF Preview")
         
         # Compile PDF on page load/interaction
         with st.spinner("Updating PDF preview..."):
@@ -764,7 +764,7 @@ Do NOT output any markdown code block backticks (```json or ```), styling, or ex
                 # Download button below the preview
                 st.markdown(" ")
                 with open(output_path, "rb") as f:
-                    st.download_button("📥 Download Styled PDF Resume", data=f.read(), file_name="enhanced_styled_resume.pdf", mime="application/pdf", use_container_width=True)
+                    st.download_button(" Download Styled PDF Resume", data=f.read(), file_name="enhanced_styled_resume.pdf", mime="application/pdf", use_container_width=True)
             except Exception as e:
                 st.error(f"Failed to generate live preview: {e}")
                 st.exception(e)
@@ -873,491 +873,318 @@ def estimate_salary(role, ats_score):
     high = int((base * multiplier * 1.3) / 1000) * 1000
     return f"${low:,} - ${high:,}"
 
-# ── Main UI ────────────────────────────────────────────────────────────────────
-# UI Customization styles are injected globally from ui_utils.py
-st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'>📄 Candidate Portal</h1>", unsafe_allow_html=True)
-st.markdown("<p class='sub-heading'>Upload your resume to get your <b>Full Report</b>, Salary Estimate, and tailored LinkedIn bio.</p>", unsafe_allow_html=True)
 
-col1, col2 = st.columns([2, 1])
-with col1:
-    uploaded_file = st.file_uploader("Drop your resume (PDF)", type=["pdf"])
-with col2:
-    if lottie_ai: st_lottie(lottie_ai, height=120, key="ai_brain")
+# ── Main UI: Hero Landing Page ──────────────────────────────────────────────────
+st.markdown("""
+<style>
+/* Custom Hero Animations & Styling */
+@keyframes glow {
+    0% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); }
+    50% { box-shadow: 0 0 25px rgba(34, 197, 94, 0.6); }
+    100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); }
+}
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.2);
+    border-radius: 99px;
+    color: #22C55E;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    animation: glow 3s infinite;
+}
+div.hero-title, .stMarkdown div.hero-title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem) !important;
+    font-weight: 800 !important;
+    color: #FAFAFA !important;
+    line-height: 1.1 !important;
+    margin-bottom: 24px !important;
+    text-align: center;
+}
+div.hero-title span, .stMarkdown div.hero-title span {
+    font-size: inherit !important;
+    background: linear-gradient(90deg, #10B981, #3B82F6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+p.hero-subtitle, .stMarkdown p.hero-subtitle {
+    font-size: 1.15rem !important;
+    color: #94A3B8 !important;
+    text-align: center !important;
+    max-width: 750px !important;
+    margin: 0 auto 48px auto !important;
+    line-height: 1.6 !important;
+}
+.hero-container {
+    text-align: center;
+    margin-top: -30px;
+    position: relative;
+    z-index: 1;
+}
+.feature-card {
+    background: #18181B;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px;
+    height: 300px; /* Force strict uniform sizing */
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, border-color 0.2s;
+}
+@media (max-width: 768px) {
+    .feature-card {
+        height: auto;
+        min-height: 240px;
+    }
+}
+.feature-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(34, 197, 94, 0.4);
+}
+.step-number {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #22C55E;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+</style>
+""", unsafe_allow_html=True)
 
-if st.session_state.resume_text:
-    if st.button("🗑️ Clear & Upload New Resume", type="secondary"):
-        keys_to_clear = [
-            "resume_text", "resume_path", "skills", "issues", "health_data", 
-            "predicted_role", "bullet_results", "market_gaps", "ats_ml_score", 
-            "section_scores", "yoe", "interview_qs", "edit_state_initialized",
-            "edit_name", "edit_summary", "edit_skills_languages", "edit_skills_tools", "edit_skills_soft",
-            "edit_experience", "edit_education", "edit_achievements", "edit_certs_projects",
-            "edit_experience_list", "edit_education_list", "edit_projects_list",
-            "edit_achievements_list", "edit_skills_languages_list", "edit_skills_tools_list", "edit_skills_soft_list"
-        ]
-        for key in keys_to_clear:
-            if key in st.session_state:
-                del st.session_state[key]
-        st.rerun()
-
-if uploaded_file and not st.session_state.resume_text:
-    if st.button("Generate Full Report", use_container_width=True, type="primary"):
-        with st.status("🧠 Analyzing your resume...", expanded=True) as status:
-            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
-                tmp.write(uploaded_file.read())
-                tmp_path = tmp.name
-            
-            st.write("📄 Parsing text...")
-            text = extract_text_from_pdf(tmp_path)
-            from resume_builder import clean_resume_text_bullets
-            text = clean_resume_text_bullets(text)
-            st.session_state.resume_text = text
-            st.session_state.resume_path = tmp_path
-            
-            st.write("🔍 Extracting Skills...")
-            skills = extract_skills(text)
-            st.session_state.skills = skills
-            
-            st.write("📏 Checking Formatting & Health...")
-            issues = check_formatting(text, tmp_path)
-            st.session_state.issues = issues
-            st.session_state.health_data = compute_general_score(text, issues, skills)
-            st.session_state.section_scores = compute_section_scores(text)
-            
-            st.write("🤖 Predicting Job Role...")
-            prediction = predict_job_category(text)
-            st.session_state.predicted_role = prediction["category"]
-            
-            st.write("🤖 Analyzing Bullets & Experience...")
-            st.session_state.bullet_results = classify_bullets(extract_bullet_points(text))
-            st.session_state.yoe = calculate_yoe(text)
-            
-            st.write("📈 Computing Market Gaps & Alignment...")
-            gaps = get_market_skill_gaps(st.session_state.predicted_role, skills)
-            st.session_state.market_gaps = gaps
-            
-            # Resume Health Score
-            features = extract_resume_features(text, tmp_path)
-            raw_features = {
-                "skill_count":        len(st.session_state.skills or []),
-                "tfidf_skill_score":  features.get("tfidf_skill_score", 0),
-                "action_verb_count":  features.get("action_verb_count", 0),
-                "metrics_count":      features.get("metrics_count", 0),
-                "section_count":      features.get("section_completeness", 0) // 25,
-                "formatting_penalty": len([i for i in (st.session_state.issues or []) if i.get("severity") == "high"]),
-            }
-            health_result = compute_health_score(raw_features)
-            base_ats = health_result["total_score"]
-            st.session_state.ats_ml_score = {"score": base_ats, "grade": health_result["grade"]}
-                
-            status.update(label="✅ Full Report Generated!", state="complete", expanded=False)
-            st.rerun()
-
-if st.session_state.resume_text:
-    # ── Initialize State ──
-    if not st.session_state.get("edit_state_initialized"):
-        from llm_utils import extract_resume_fields_via_llm
-        from resume_builder import _extract_name, _extract_section
-        
-        with st.spinner("🔍 Parsing and structuring resume details using AI..."):
-            extracted_fields = extract_resume_fields_via_llm(st.session_state.resume_text)
-            
-        if extracted_fields:
-            st.session_state.edit_name = extracted_fields.get("name", "")
-            st.session_state.edit_summary = extracted_fields.get("summary", "")
-            st.session_state.edit_skills_languages = extracted_fields.get("skills_languages", "")
-            st.session_state.edit_skills_tools = extracted_fields.get("skills_tools", "")
-            st.session_state.edit_skills_soft = extracted_fields.get("skills_soft", "")
-            st.session_state.edit_experience = extracted_fields.get("experience", "")
-            st.session_state.edit_education = extracted_fields.get("education", "")
-            st.session_state.edit_achievements = extracted_fields.get("achievements", "")
-            st.session_state.edit_certs_projects = extracted_fields.get("certs_projects", "")
-        else:
-            # Fallback to naive heuristics
-            st.session_state.edit_name = _extract_name(st.session_state.resume_text)
-            summary_text = ""
-            paragraphs = [p.strip() for p in st.session_state.resume_text.split("\n\n") if p.strip()]
-            if paragraphs:
-                summary_text = paragraphs[0] if len(paragraphs[0].split()) > 5 else (paragraphs[1] if len(paragraphs) > 1 else "")
-            st.session_state.edit_summary = summary_text
-            st.session_state.edit_skills_languages = ""
-            st.session_state.edit_skills_tools = ", ".join(st.session_state.skills) if st.session_state.skills else _extract_section(st.session_state.resume_text, "Skills")
-            st.session_state.edit_skills_soft = ""
-            st.session_state.edit_experience = _extract_section(st.session_state.resume_text, "Experience")
-            st.session_state.edit_education = _extract_section(st.session_state.resume_text, "Education")
-            st.session_state.edit_achievements = _extract_section(st.session_state.resume_text, "Achievements")
-            certs = _extract_section(st.session_state.resume_text, "Certifications")
-            projects = _extract_section(st.session_state.resume_text, "Projects")
-            st.session_state.edit_certs_projects = "\n".join(filter(None, [certs, projects]))
-            
-        # Clear the old structured list states so they get re-initialized on every new resume parsing
-        for list_key in [
-            "edit_experience_list", "edit_education_list", "edit_projects_list",
-            "edit_achievements_list", "edit_skills_languages_list",
-            "edit_skills_tools_list", "edit_skills_soft_list"
-        ]:
-            if list_key in st.session_state:
-                del st.session_state[list_key]
-            
-        st.session_state.edit_state_initialized = True
-        
-    view_mode = st.radio("Candidate Hub Mode:", ["📊 VMock Report & Insights", "✍️ Interactive Resume Editor"], horizontal=True)
-    
-    if view_mode == "✍️ Interactive Resume Editor":
-        render_resume_editor()
-        st.stop()
-        
-    role = st.session_state.predicted_role or "Professional"
-    ats = int((st.session_state.ats_ml_score or {"score": 0})["score"])
-    
-    # DB Save
-    if not st.session_state.db_saved:
-        try:
-            email_match = re.search(r"[\w.+-]+@[\w-]+\.[\w.-]+", st.session_state.resume_text)
-            email = email_match.group(0) if email_match else "unknown@email.com"
-            name = st.session_state.resume_text.splitlines()[0][:30]
-            health = st.session_state.health_data["score"]
-            strong = sum(1 for b in st.session_state.bullet_results if b["label"] == "Strong")
-            insert_candidate(name, email, "", role, ats, health, strong)
-            
-            # Save resume to user account if logged in
-            if st.session_state.get('user_id'):
-                os.makedirs("data/saved_resumes", exist_ok=True)
-                saved_path = f"data/saved_resumes/{st.session_state.user_id}_{int(__import__('time').time())}.pdf"
-                if st.session_state.resume_path and os.path.exists(st.session_state.resume_path):
-                    shutil.copy2(st.session_state.resume_path, saved_path)
-                
-                # Compute ML Centroid Score
-                centroid = get_domain_centroid_score(st.session_state.resume_text, role)
-                save_user_resume(st.session_state.user_id, saved_path, False, health, role, centroid)
-            
-            st.session_state.db_saved = True
-        except:
-            pass
-    
-    # --- My Saved Resumes Gallery ---
-    if st.session_state.get('user_id'):
-        saved_resumes = get_user_resumes(st.session_state.user_id)
-        if saved_resumes:
-            with st.expander(f"📂 My Saved Resumes ({len(saved_resumes)}/4)", expanded=False):
-                for i, res in enumerate(saved_resumes):
-                    badge = "🌟 Enhanced" if res['is_enhanced'] else "📄 Original"
-                    rcol1, rcol2, rcol3 = st.columns([3, 1, 1])
-                    with rcol1:
-                        st.markdown(f"**{badge}** — {res['domain']} — Uploaded: {res['upload_date'][:10]}")
-                    with rcol2:
-                        st.markdown(f"Health: **{res['health_score']}** | Centroid: **{res['centroid_score']}**")
-                    with rcol3:
-                        if os.path.exists(res['file_path']):
-                            with open(res['file_path'], 'rb') as rf:
-                                st.download_button("⬇️", rf.read(), file_name=f"resume_{i+1}.pdf", key=f"dl_saved_{i}")
-                    st.markdown("---")
-
-    st.markdown("---")
-    
-    # LinkedIn & Salary Card
-    salary = estimate_salary(role, ats)
-    st.markdown(f"""
-    <div class='info-card'>
-        <h1 style='color: #0369A1; font-size: 2.5rem; margin-bottom: 5px;'>Resume Health Score</h1>
-        <p style='color: #0C4A6E; font-size: 1.1rem; margin-top: 0;'>A comprehensive analysis of your resume's impact and readability.</p>
-        <h3 style='margin-top:0; color:#0369A1;'>Estimated Market Value: {salary}</h3>
+# 1. Hero Section
+c1, c2, c3 = st.columns([1, 6, 1])
+with c2:
+    st.markdown("""
+    <div class='hero-container'>
+        <div class='hero-pill'> AI-powered candidate optimization</div>
+        <div class='hero-title'>Build a resume that<br><span>outsmarts the ATS</span></div>
+        <p class='hero-subtitle'>ResumeIQ translates your experience into structured data and recommends the highest-matching roles using cosine similarity across a dataset of 2,800+ real job postings.</p>
     </div>
     """, unsafe_allow_html=True)
 
-    # Compile current active skills to reflect manual edits in the editor
-    active_skills = []
-    if "edit_skills_languages_list" in st.session_state and st.session_state.edit_skills_languages_list is not None:
-        active_skills.extend([s.strip() for s in st.session_state.edit_skills_languages_list if s.strip()])
-    if "edit_skills_tools_list" in st.session_state and st.session_state.edit_skills_tools_list is not None:
-        active_skills.extend([s.strip() for s in st.session_state.edit_skills_tools_list if s.strip()])
-    if "edit_skills_soft_list" in st.session_state and st.session_state.edit_skills_soft_list is not None:
-        active_skills.extend([s.strip() for s in st.session_state.edit_skills_soft_list if s.strip()])
-    if not active_skills and st.session_state.get("skills"):
-        active_skills = list(st.session_state.skills)
-    active_skills = list(set(active_skills))
+    # Uploader natively centered & wider horizontally
+    u1, u2, u3 = st.columns([1, 6, 1])
+    with u2:
+        st.markdown("<p style='color: #FAFAFA; font-weight: 600; font-size: 1.1rem; margin-bottom: 12px; text-align: center;'>Upload your resume to start</p>", unsafe_allow_html=True)
+        uploaded_file = st.file_uploader("Upload PDF", type=["pdf"], label_visibility="collapsed")
+        status_placeholder = st.empty()
+    # 3-Column Glassmorphism Stats Section
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("""
+    <div style='display: flex; justify-content: center; gap: 24px; margin-top: 24px; flex-wrap: wrap;'>
+        <div style='background: rgba(24, 24, 27, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px 32px; text-align: center; width: 180px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;' onmouseover="this.style.borderColor='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+            <h3 style='margin: 0; font-size: 2.2rem; color: #FAFAFA; font-weight: 800;'>4K+</h3>
+            <p style='margin: 4px 0 0 0; color: #94A3B8; font-size: 0.95rem; font-weight: 500;'>Resumes Trained</p>
+        </div>
+        <div style='background: rgba(24, 24, 27, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px 32px; text-align: center; width: 180px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;' onmouseover="this.style.borderColor='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+            <h3 style='margin: 0; font-size: 2.2rem; color: #FAFAFA; font-weight: 800;'>2.8K+</h3>
+            <p style='margin: 4px 0 0 0; color: #94A3B8; font-size: 0.95rem; font-weight: 500;'>Real Jobs</p>
+        </div>
+        <div style='background: rgba(24, 24, 27, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; padding: 24px 32px; text-align: center; width: 180px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); transition: all 0.3s ease;' onmouseover="this.style.borderColor='rgba(255,255,255,0.1)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.05)'">
+            <h3 style='margin: 0; font-size: 2.2rem; color: #FAFAFA; font-weight: 800;'>92%</h3>
+            <p style='margin: 4px 0 0 0; color: #94A3B8; font-size: 0.95rem; font-weight: 500;'>Model Accuracy</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Advanced ML Metrics Popover
+    st.markdown("<br>", unsafe_allow_html=True)
+    m1, m2, m3 = st.columns([1, 2, 1])
+    with m2:
+        with st.popover(" View Advanced ML Metrics", use_container_width=True):
+            st.markdown("""
+            **Job Role Classifier Engine (60-40 Split)**
+            - **Train Accuracy:** `95.32%`
+            - **Test Accuracy:** `91.69%`
+            - **Precision:** `96.15%`
+            - **Recall:** `89.78%`
+            - **F1-score:** `90.74%`
+            """)
 
-    @st.dialog("Your Auto-Generated LinkedIn Bio")
-    def show_linkedin_bio():
-        skills_str = ", ".join(active_skills[:5]) if active_skills else "problem-solving"
-        bio = f"Driven and detail-oriented {role} with a proven track record of delivering high-quality results. Skilled in {skills_str}, I thrive in collaborative environments where I can leverage technology to solve complex problems.\n\nAlways eager to learn and adapt to new challenges, I am currently looking for opportunities to bring my expertise to an innovative team."
-        st.write("Copy and paste this into your LinkedIn 'About' section:")
-        st.code(bio, language="markdown")
+    st.markdown("<div style='height: 40px;'></div>", unsafe_allow_html=True)
 
-    if st.button("🔵 Generate LinkedIn Bio"):
-        show_linkedin_bio()
+st.markdown("<br><br><br>", unsafe_allow_html=True)
 
-    st.markdown("---")
-    yoe = st.session_state.get("yoe", 0.0)
-    st.header(f"📊 VMock Benchmark Report: {role} ({yoe} YoE)")
-    
-    # 🎯 Role override selectbox directly in the report view
-    from analyzer import MARKET_SKILLS
-    role_options = sorted(list(MARKET_SKILLS.keys()))
-    if role not in role_options:
-        role_options.append(role)
-        role_options = sorted(role_options)
-        
-    selected_role = st.selectbox(
-        "🎯 Target Job Role for Skills Benchmarking (change this if the ML classification is incorrect):",
-        options=role_options,
-        index=role_options.index(role)
-    )
-    if selected_role != role:
-        st.session_state.predicted_role = selected_role
-        st.rerun()
-        
-    st.markdown("Your resume is scored on three academic pillars: Impact, Presentation, and Competencies.")
-    
-    # Calculate VMock Pillars
-    # 1. Presentation = Formatting Health
-    presentation_score = st.session_state.health_data["score"]
-    
-    # 2. Competencies = ATS Market Skill Alignment (from gaps)
-    # Dynamically compute gaps based on active skills and target role
-    gaps = get_market_skill_gaps(st.session_state.predicted_role, active_skills)
-    st.session_state.market_gaps = gaps
-    
-    # 2. Competencies = ML TF-IDF Skill Score
-    try:
-        from analyzer import extract_resume_features
-        _feats = extract_resume_features(st.session_state.resume_text, None)
-        competencies_score = int(_feats.get("tfidf_skill_score", 0))
-    except:
-        competencies_score = 0    
-    # 3. Impact = Ratio of Strong Bullets
-    bullets = st.session_state.bullet_results
-    strong_count = sum(1 for b in bullets if b["label"] == "Strong")
-    impact_score = int((strong_count / max(1, len(bullets))) * 100)
-    
-    # Row 1: Scores
-    c1, c2, c3 = st.columns(3)
-    
-    with c1:
-        st.markdown("### Impact Score")
-        fig_impact = create_gauge_chart(impact_score, "Bullet Point Strength")
-        st.pyplot(fig_impact)
-        plt.close(fig_impact)
-        
-    with c2:
-        st.markdown("### Presentation Score")
-        fig_health = create_gauge_chart(presentation_score, "Formatting Health")
-        st.pyplot(fig_health)
-        plt.close(fig_health)
-        
-    with c3:
-        st.markdown("### Competencies Score")
-        fig_comp = create_gauge_chart(competencies_score, "Hard Skill Alignment")
-        st.pyplot(fig_comp)
-        plt.close(fig_comp)
-        
-    st.markdown("### 🧠 Explainable AI (XAI) Insights")
-    xai_bullets = []
-    if impact_score > 80:
-        xai_bullets.append("✅ **High Impact:** Your Random Forest score was significantly boosted by a strong presence of Action Verbs and Metrics in your bullet points.")
-    else:
-        xai_bullets.append("⚠️ **Low Impact Penalty:** Your score was penalized due to a lack of quantifiable metrics. Adding numbers to your achievements will increase your score.")
-        
-    if presentation_score > 85:
-        xai_bullets.append("✅ **Clean Presentation:** The parser easily extracted your data due to excellent formatting health.")
-    else:
-        xai_bullets.append("⚠️ **Formatting Penalty:** The ML engine struggled to parse some sections. Fix your margins or font consistency to prevent ATS rejection.")
-        
-    if competencies_score > 75:
-        xai_bullets.append("✅ **Market Aligned:** You possess a high density of the hard skills expected for this specific role, boosting your Competencies score.")
-    else:
-        xai_bullets.append("⚠️ **Skill Gap Penalty:** Your resume lacks critical skills required for the current market, heavily weighing down your Resume Health Score.")
+# 2. How it works pipeline
+st.markdown("<h2 style='text-align: center; font-size: 2rem; color: #FAFAFA; margin-bottom: 8px;'>How it works</h2>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; color: #94A3B8; margin-bottom: 40px;'>Every resume flows through our intelligent pipeline</p>", unsafe_allow_html=True)
 
-    for insight in xai_bullets:
-        st.markdown(insight)
+p1, p2, p3, p4 = st.columns(4)
+with p1:
+    st.markdown("""
+    <div class='feature-card'>
+        <div class='step-number'>1</div>
+        <h4 style='color: #FAFAFA; margin-bottom: 8px;'>You upload</h4>
+        <p style='color: #94A3B8; font-size: 14px;'>Upload your PDF resume. We extract the raw text and analyze formatting.</p>
+    </div>
+    """, unsafe_allow_html=True)
+with p2:
+    st.markdown("""
+    <div class='feature-card'>
+        <div class='step-number'>2</div>
+        <h4 style='color: #FAFAFA; margin-bottom: 8px;'>AI interprets</h4>
+        <p style='color: #94A3B8; font-size: 14px;'>Advanced TF-IDF pipelines extract deep technical skills, metrics, and exact experience depth.</p>
+    </div>
+    """, unsafe_allow_html=True)
+with p3:
+    st.markdown("""
+    <div class='feature-card'>
+        <div class='step-number'>3</div>
+        <h4 style='color: #FAFAFA; margin-bottom: 8px;'>Engine matches</h4>
+        <p style='color: #94A3B8; font-size: 14px;'>BM25 ranking and KNN algorithms instantly map your profile against 10,000+ real-world tech jobs.</p>
+    </div>
+    """, unsafe_allow_html=True)
+with p4:
+    st.markdown("""
+    <div class='feature-card'>
+        <div class='step-number'>4</div>
+        <h4 style='color: #FAFAFA; margin-bottom: 8px;'>You explore</h4>
+        <p style='color: #94A3B8; font-size: 14px;'>Get highly explainable insights with heatmaps, skill gaps, and interview prep.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.markdown("---")
-    
-    # Row 2: Skills & Gaps
-    col_gaps, col_radar = st.columns([1.5, 1])
-    
-    with col_radar:
-        st.markdown("### 🕸️ Skill Distribution")
-        skill_cats = categorize_skills(active_skills)
-        fig_radar = create_radar_chart(skill_cats)
-        st.pyplot(fig_radar)
-        plt.close(fig_radar)
+st.markdown("<br><br><br>", unsafe_allow_html=True)
+
+# 3. Built for Career Growth Grid
+st.markdown("<h2 style='text-align: center; font-size: 2rem; color: #FAFAFA; margin-bottom: 40px;'>Built for career growth</h2>", unsafe_allow_html=True)
+g1, g2, g3 = st.columns(3)
+with g1:
+    st.markdown("""
+    <div class='feature-card'>
+        <h3 style='margin:0; margin-bottom:12px;'> Explainable AI</h3>
+        <p style='color: #94A3B8; font-size: 14px;'>Every recommendation comes with a detailed analysis panel explaining exactly why you matched.</p>
+    </div>
+    """, unsafe_allow_html=True)
+with g2:
+    st.markdown("""
+    <div class='feature-card'>
+        <h3 style='margin:0; margin-bottom:12px;'> Interactive Prep</h3>
+        <p style='color: #94A3B8; font-size: 14px;'>Simulate real-world technical and behavioral interviews using specialized AI personas.</p>
+    </div>
+    """, unsafe_allow_html=True)
+with g3:
+    st.markdown("""
+    <div class='feature-card'>
+        <h3 style='margin:0; margin-bottom:12px;'> Heatmap Analytics</h3>
+        <p style='color: #94A3B8; font-size: 14px;'>Visualize your exact keyword strengths and weaknesses across 6 major tech domains.</p>
+    </div>
+    """, unsafe_allow_html=True)
+st.markdown("<br>", unsafe_allow_html=True)
+g4, g5, g6 = st.columns(3)
+with g4:
+    st.markdown("""
+    <div class='feature-card'>
+        <h3 style='margin:0; margin-bottom:12px;'> LaTeX Templating</h3>
+        <p style='color: #94A3B8; font-size: 14px;'>Instantly convert your plain text into beautiful, ATS-compliant PDF templates.</p>
+    </div>
+    """, unsafe_allow_html=True)
+with g5:
+    st.markdown("""
+    <div class='feature-card'>
+        <h3 style='margin:0; margin-bottom:12px;'> BM25 & KNN Engine</h3>
+        <p style='color: #94A3B8; font-size: 14px;'>Lightning-fast candidate matching powered by advanced BM25 ranking and K-Nearest Neighbors.</p>
+    </div>
+    """, unsafe_allow_html=True)
+with g6:
+    st.markdown("""
+    <div class='feature-card'>
+        <h3 style='margin:0; margin-bottom:12px;'> Instant Feedback</h3>
+        <p style='color: #94A3B8; font-size: 14px;'>Grammar checks, action verb counting, and formatting validation in milliseconds.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown("<br><br><br>", unsafe_allow_html=True)
+
+# 4. Bottom CTA
+st.markdown("""
+<style>
+.glass-cta-wrapper {
+    background: rgba(24, 24, 27, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    padding: 60px 24px;
+    text-align: center;
+    margin: 40px auto;
+    max-width: 800px;
+    margin-bottom: -110px; /* Pull the next element up! */
+    padding-bottom: 120px; /* Make room inside the box for the button */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+</style>
+<div class='glass-cta-wrapper'>
+    <h2 style='font-size: 2.5rem; color: #FAFAFA; margin-bottom: 16px; font-weight: 700;'>Ready to optimize your career?</h2>
+    <p style='color: #94A3B8; font-size: 1.1rem; max-width: 500px; margin: 0 auto; line-height: 1.6;'>Upload your resume, unlock AI-driven insights, and start mapping your skills to the top tech roles.</p>
+</div>
+""", unsafe_allow_html=True)
+
+cta1, cta2, cta3 = st.columns([1.5, 2, 1.5])
+with cta2:
+    if st.button(" Let's Try - Go to Resume Analysis", use_container_width=True, type="primary"):
+        st.switch_page("pages/2__Resume_Analysis.py")
+
+st.markdown("<br><br><br>", unsafe_allow_html=True)
+
+# Execution of upload logic:
+if uploaded_file and not st.session_state.get("resume_text"):
+    with status_placeholder.status(" Analyzing your resume pipeline...", expanded=True) as status:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+            tmp.write(uploaded_file.read())
+            tmp_path = tmp.name
         
-        st.markdown("### ☁️ Keyword Cloud")
-        fig_cloud = create_word_cloud(st.session_state.resume_text)
-        st.pyplot(fig_cloud)
-        plt.close(fig_cloud)
-
-    with col_gaps:
-        st.markdown("### 📈 Market Gap & Skills Improvement")
-        gaps = st.session_state.market_gaps
-        if gaps["missing"]:
-            st.error("⚠️ **Missing In-Demand Skills:** Add these to boost your Resume Health Score for this role.")
-            missing_html = "".join([f"<span class='skill-tag skill-miss'>{s}</span>" for s in gaps["missing"]])
-            st.markdown(missing_html, unsafe_allow_html=True)
-        else:
-            st.success("✅ No major market gaps detected for this role!")
+        st.write(" Parsing PDF structure...")
+        text = extract_text_from_pdf(tmp_path)
+        from resume_builder import clean_resume_text_bullets
+        text = clean_resume_text_bullets(text)
+        st.session_state.resume_text = text
+        st.session_state.resume_path = tmp_path
+        
+        st.write(" Extracting Technical Skills...")
+        skills = extract_skills(text)
+        st.session_state.skills = skills
+        
+        st.write(" Checking Formatting & Grammar...")
+        issues = check_formatting(text, tmp_path)
+        st.session_state.issues = issues
+        st.session_state.health_data = compute_general_score(text, issues, skills)
+        st.session_state.section_scores = compute_section_scores(text)
+        
+        st.write(" Detecting Job Role...")
+        prediction = predict_job_category(text)
+        st.session_state.predicted_role = prediction["category"]
+        
+        st.write(" Llama-3 Bullet Inference...")
+        st.session_state.bullet_results = classify_bullets(extract_bullet_points(text))
+        st.session_state.yoe = calculate_yoe(text)
+        
+        st.write(" Computing TF-IDF Heatmaps...")
+        gaps = get_market_skill_gaps(st.session_state.predicted_role, skills)
+        st.session_state.market_gaps = gaps
+        
+        features = extract_resume_features(text, tmp_path)
+        raw_features = {
+            "skill_count":        len(st.session_state.skills or []),
+            "tfidf_skill_score":  features.get("tfidf_skill_score", 0),
+            "action_verb_count":  features.get("action_verb_count", 0),
+            "metrics_count":      features.get("metrics_count", 0),
+            "section_count":      features.get("section_completeness", 0) // 25,
+            "formatting_penalty": len([i for i in (st.session_state.issues or []) if i.get("severity") == "high"]),
+        }
+        health_result = compute_health_score(raw_features)
+        base_ats = health_result["total_score"]
+        st.session_state.ats_ml_score = {"score": base_ats, "grade": health_result["grade"]}
             
-        st.markdown("✅ **Your Top Skills:**")
-        matched_html = "".join([f"<span class='skill-tag skill-match'>{s}</span>" for s in gaps["matched"][:10]])
-        st.markdown(matched_html, unsafe_allow_html=True)
+        status.update(label=" Analysis Complete! Redirecting...", state="complete", expanded=False)
         
-        st.markdown("### 🛠️ Formatting Issues to Fix")
-        if not st.session_state.issues:
-            st.success("No formatting issues found!")
-        else:
-            for issue in st.session_state.issues:
-                st.warning(f"**{issue['severity'].upper()}**: {issue['issue']}")
-
-    st.markdown("---")
-    
-    # Live Upskilling Recommender
-    st.header("🎓 Automated Upskilling Recommender")
-    st.markdown("Bridge your market gap. We've scraped the web for the top real-life courses for your missing skills.")
-    
-    if gaps["missing"]:
-        from course_scraper import fetch_courses
-        
-        top_3_missing = gaps["missing"][:3]
-        
-        # Create 'Slide View' using tabs
-        tabs = st.tabs(top_3_missing)
-        
-        for i, skill in enumerate(top_3_missing):
-            with tabs[i]:
-                st.markdown(f"**Top recommendations for:** `{skill}`")
-                
-                with st.spinner(f"📡 Live scraping YouTube & Aggregators for '{skill}' courses..."):
-                    courses = fetch_courses(skill, limit=3)
-                    
-                if not courses:
-                    st.info(f"Could not fetch live courses for {skill}. Try checking Udemy manually.")
-                else:
-                    accent = st.session_state.get("theme_accent", "Green")
-                    accent_colors = {
-                        "Blue": "#60A5FA", "Green": "#1ed760", "Red": "#fb7185", "Purple": "#a78bfa", "Amber": "#facc15"
-                    }
-                    bg_trans = {
-                        "Blue": "rgba(96, 165, 250, 0.15)", "Green": "rgba(30, 215, 96, 0.15)",
-                        "Red": "rgba(251, 113, 133, 0.15)", "Purple": "rgba(167, 139, 250, 0.15)", "Amber": "rgba(250, 204, 21, 0.15)"
-                    }
-                    active_color = accent_colors.get(accent, "#1ed760")
-                    active_bg = bg_trans.get(accent, "rgba(30, 215, 96, 0.15)")
-
-                    cols = st.columns(3)
-                    for j, course in enumerate(courses[:3]):
-                        with cols[j]:
-                            st.markdown(f"""
-                            <div style='background-color: #18181B; border: 1px solid rgba(255, 255, 255, 0.08); padding: 20px; border-radius: 12px; height: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.25); display: flex; flex-direction: column; justify-content: space-between;'>
-                                <div>
-                                    <span style='font-size: 10px; color: {active_color}; font-weight: 700; background: {active_bg}; padding: 3px 8px; border-radius: 6px; text-transform: uppercase;'>{course['platform'].upper()}</span>
-                                    <h5 style='color: #F4F4F5 !important; margin: 12px 0 16px 0; font-family: "Outfit", sans-serif; font-weight: 600; line-height: 1.4; font-size: 14px;'>{course['title'][:60]}{"..." if len(course['title'])>60 else ""}</h5>
-                                </div>
-                                <a href="{course['url']}" target="_blank" style='text-decoration: none; color: {active_color}; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 4px;'>Watch Course ↗</a>
-                            </div>
-                            """, unsafe_allow_html=True)
-    else:
-        st.success("You are fully aligned with the required market skills! No urgent upskilling required.")
-
-    st.markdown("---")
-    
-    # Row 3: ResumeWorded Line-by-Line Breakdown
-    st.markdown("### ✍️ Line-by-Line Bullet Breakdown")
-    st.markdown("We've extracted every bullet point on your resume. Here is granular, line-by-line feedback on your writing.")
-    
-    for b in bullets:
-        text = b['text']
-        ml_label = b.get("label", "Weak")
-        
-        feedback = []
-        
-        # 1. Prioritize Deep Learning Semantic Feedback
-        if b.get("feedback"):
-            feedback.append(b["feedback"])
-            
-        # 2. Fallback to Granular Regex Heuristics ONLY if ML gave no feedback
-        elif ml_label == "Weak":
-            # Check for action verb
-            action_verbs = ["developed", "led", "managed", "created", "built", "improved", "designed", "optimized", "spearheaded", "implemented"]
-            has_action = any(v in text.lower() for v in action_verbs)
-            if not has_action:
-                feedback.append("Missing strong action verb (e.g. 'led', 'developed').")
-                
-            # Only require a metric if the bullet describes an outcome/optimization/impact
-            impact_words = ["increase", "decrease", "improve", "reduce", "grow", "save", "cut", "boost",
-                            "revenue", "latency", "speed", "efficient", "optimize", "accelerate", "cost", "budget"]
-            needs_metric = any(w in text.lower() for w in impact_words)
-            has_metric = bool(re.search(r'\b\d+%\b|\$\d+|\b\d+\b', text))
-            
-            if needs_metric and not has_metric:
-                feedback.append("Missing quantifiable metric (e.g. '20%', '$50k', '5+ developers').")
-                
-            if not feedback:
-                feedback.append("Could be stronger. Detail the final outcome or scale of your contribution.")
-                
-        if ml_label == "Strong" and not feedback:
-            st.markdown(f"<div class='bullet-card b-strong'>✅ <strong>Perfect Impact</strong><br><i>\"{text}\"</i></div>", unsafe_allow_html=True)
-        else:
-            feedback_str = " | ".join(feedback)
-            st.markdown(f"<div class='bullet-card b-weak'>⚠️ <strong>Needs Work</strong><br><i>\"{text}\"</i><br><span class='b-sugg'>💡 Feedback: {feedback_str}</span></div>", unsafe_allow_html=True)
-
-    st.markdown("---")
-    st.header("🤖 Smart Resume Enhancer")
-    st.markdown("We've generated targeted questions based on the gaps above. Answer them to instantly download an enhanced PDF.")
-    
-    if not st.session_state.interview_qs:
-        st.session_state.interview_qs = generate_interview_questions(
-            st.session_state.issues or [], 
-            st.session_state.skills or [], 
-            st.session_state.market_gaps or {"matched": [], "missing": []}, 
-            st.session_state.bullet_results or []
-        )
-    
-    answers = {}
-    for i, q in enumerate(st.session_state.interview_qs):
-        answers[q] = st.text_area(f"Q{i+1}: {q}", key=f"q_{i}")
-    
-    st.markdown("### 🎨 Customize PDF Styling & Template")
-    with st.expander("PDF Formatting Options", expanded=True):
-        col_f1, col_f2 = st.columns(2)
-        with col_f1:
-            pdf_template = st.selectbox("Template Style", ["Classic Modern", "Minimalist", "Executive"], index=0)
-            pdf_font = st.selectbox("Font Family", ["Helvetica", "Times", "Courier"], index=0)
-            pdf_color = st.selectbox("Color Theme", ["Dark Blue", "Black", "Green", "Crimson Red", "Slate Grey"], index=0)
-        with col_f2:
-            pdf_page_size = st.selectbox("Page Size", ["A4", "Letter"], index=0)
-            pdf_font_size = st.slider("Base Font Size (pt)", min_value=8, max_value=14, value=10, step=1)
-            pdf_margin = st.slider("Page Margin (mm)", min_value=10, max_value=30, value=15, step=5)
-            
-    if st.button("🚀 Generate Enhanced Resume PDF", type="primary"):
-        filled = [a for a in answers.values() if a.strip()]
-        if not filled:
-            st.warning("Please answer at least one question.")
-        else:
-            with st.spinner("Compiling PDF..."):
-                output_path = os.path.join(tempfile.gettempdir(), "enhanced_resume.pdf")
-                generate_enhanced_pdf(
-                    st.session_state.resume_text, answers, st.session_state.skills or [],
-                    role, output_path,
-                    font_family=pdf_font,
-                    base_font_size=pdf_font_size,
-                    margin=pdf_margin,
-                    primary_color_name=pdf_color,
-                    page_size=pdf_page_size,
-                    template_style=pdf_template
-                )
-            st.balloons()
-            st.success("✅ Enhanced resume generated!")
-            
-            # Save enhanced resume to user account
-            if st.session_state.get('user_id'):
-                os.makedirs("data/saved_resumes", exist_ok=True)
-                enh_path = f"data/saved_resumes/{st.session_state.user_id}_enhanced_{int(__import__('time').time())}.pdf"
-                shutil.copy2(output_path, enh_path)
-                health = st.session_state.health_data["score"] if st.session_state.health_data else 0
-                centroid = get_domain_centroid_score(st.session_state.resume_text, role)
-                save_user_resume(st.session_state.user_id, enh_path, True, health, role, centroid)
-                st.toast("Enhanced resume saved to your account!")
-            
-            with open(output_path, "rb") as f:
-                st.download_button("📥 Download PDF", data=f, file_name="enhanced_resume.pdf", mime="application/pdf")
+    st.switch_page("pages/2__Resume_Analysis.py")

@@ -50,15 +50,15 @@ def highlight_keywords(text, matched_list):
     return highlighted
 
 if "resume_text" not in st.session_state or not st.session_state.resume_text:
-    st.warning("⚠️ Please upload your resume in the Candidate Portal first.")
+    st.warning(" Please upload your resume in the Candidate Portal first.")
     st.stop()
 
-st.title("🎯 Custom Job Scanner")
+st.title(" Custom Job Scanner")
 st.markdown("Paste a Job Description (JD) below to see exactly how well your resume matches the required keywords.")
 
 jd_text = st.text_area("Paste Job Description here:", height=250, placeholder="E.g. We are looking for a Software Engineer with experience in Python, AWS, and Docker...")
 
-if st.button("🔍 Scan Resume vs JD", type="primary"):
+if st.button(" Scan Resume vs JD", type="primary"):
     if len(jd_text.split()) < 20:
         st.error("Please paste a longer job description for an accurate scan.")
     else:
@@ -120,7 +120,7 @@ if st.button("🔍 Scan Resume vs JD", type="primary"):
             col1, col2 = st.columns(2)
             
             with col1:
-                st.markdown("### ❌ Missing Keywords")
+                st.markdown("###  Missing Keywords")
                 st.markdown("Add these exact words to your resume to beat the ATS:")
                 if not missing:
                     st.success("You have all the required skills!")
@@ -129,7 +129,7 @@ if st.button("🔍 Scan Resume vs JD", type="primary"):
                     st.markdown(missing_html, unsafe_allow_html=True)
             
             with col2:
-                st.markdown("### ✅ Matched Keywords")
+                st.markdown("###  Matched Keywords")
                 st.markdown("You already have these required skills:")
                 if not matched:
                     st.error("No keywords matched.")
@@ -139,7 +139,7 @@ if st.button("🔍 Scan Resume vs JD", type="primary"):
 
             # --- Visual Keyword Match Highlighter ---
             st.markdown("---")
-            st.markdown("### 📝 Highlighted Resume (Visual Keyword Matcher)")
+            st.markdown("###  Highlighted Resume (Visual Keyword Matcher)")
             st.markdown("Below is your original resume text with matched keywords highlighted in yellow:")
             with st.expander("View Highlighted Resume Text", expanded=True):
                 highlighted_resume = highlight_keywords(st.session_state.resume_text, matched)
@@ -148,7 +148,7 @@ if st.button("🔍 Scan Resume vs JD", type="primary"):
 
             # --- Cold Outreach & Cover Letter generation ---
             st.markdown("---")
-            st.markdown("### ✉️ Generate Outreach Assets & Cover Letter")
+            st.markdown("###  Generate Outreach Assets & Cover Letter")
             st.markdown("Create cold outreach emails and custom cover letters tailored specifically to this job description.")
             
             c_out1, c_out2 = st.columns(2)
@@ -157,7 +157,7 @@ if st.button("🔍 Scan Resume vs JD", type="primary"):
             with c_out2:
                 company_input = st.text_input("Target Company Name:", value="Google")
                 
-            tab_email, tab_cl = st.tabs(["✉️ Cold Outreach Email", "📄 Cover Letter PDF"])
+            tab_email, tab_cl = st.tabs([" Cold Outreach Email", " Cover Letter PDF"])
             
             with tab_email:
                 st.write("Generate a short, high-impact cold message for LinkedIn or Email.")
@@ -189,10 +189,10 @@ Candidate Resume: {st.session_state.resume_text[:2000]}"""
                             company_input,
                             cl_output_path
                         )
-                        st.success(f"✅ Cover Letter generated for {company_input}!")
+                        st.success(f" Cover Letter generated for {company_input}!")
                         with open(cl_output_path, "rb") as f:
                             st.download_button(
-                                label="📥 Download Cover Letter PDF",
+                                label=" Download Cover Letter PDF",
                                 data=f.read(),
                                 file_name=f"cover_letter_{company_input}.pdf",
                                 mime="application/pdf"

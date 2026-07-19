@@ -16,7 +16,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 if "resume_text" not in st.session_state or not st.session_state.resume_text:
-    st.warning("⚠️ Please upload a resume in the Candidate Portal first to activate the Interview Grader.")
+    st.warning(" Please upload a resume in the Candidate Portal first to activate the Interview Grader.")
     st.stop()
 
 if not st.session_state.interview_qs:
@@ -31,29 +31,29 @@ else:
     if "active_q" not in st.session_state:
         st.session_state.active_q = random.choice(st.session_state.interview_qs)
         
-    st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'>🎙️ Interview Copilot</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 class='gradient-title' style='font-size: 3rem; margin-bottom: 5px; padding-bottom: 5px;'> Interview Copilot</h1>", unsafe_allow_html=True)
     st.markdown("<p class='sub-heading'>Practice your interview skills. The NLP engine uses the **STAR Method** to verify your answer contains Context, Action Verbs, and Metrics/Results.</p>", unsafe_allow_html=True)
         
     col1, col2 = st.columns([4, 1])
     with col2:
-        if st.button("🔄 Next Question", use_container_width=True, type="secondary"):
+        if st.button(" Next Question", use_container_width=True, type="secondary"):
             st.session_state.active_q = random.choice(st.session_state.interview_qs)
             st.rerun()
             
     st.markdown("<br>", unsafe_allow_html=True)
             
-    with st.chat_message("ai", avatar="🤖"):
+    with st.chat_message("ai", avatar=""):
         st.markdown(f"**Here is your question:**\n\n{st.session_state.active_q}")
         
     answer = st.chat_input("Type your answer using the STAR method (Situation, Task, Action, Result)...")
     
     if answer:
-        with st.chat_message("user", avatar="👤"):
+        with st.chat_message("user", avatar=""):
             st.markdown(answer)
             
         with st.spinner("Grading response..."):
             if len(answer.split()) < 20:
-                with st.chat_message("ai", avatar="🤖"):
+                with st.chat_message("ai", avatar=""):
                     st.markdown("<div style='background: #3F1D1D; border-left: 4px solid #EF4444; padding: 16px; border-radius: 8px; color: #FAFAFA;'><strong>FAIL (Too Short)</strong><br>Your answer is too short. A good interview response should be at least 3-4 sentences long. Provide more context.</div>", unsafe_allow_html=True)
             else:
                 ans_lower = answer.lower()
@@ -69,23 +69,23 @@ else:
                 
                 if has_action:
                     score += 15
-                    feedback.append("✅ **Action:** Used strong action verbs.")
+                    feedback.append(" **Action:** Used strong action verbs.")
                 else:
-                    feedback.append("❌ **Action:** Missing strong action verbs (e.g., 'led', 'developed').")
+                    feedback.append(" **Action:** Missing strong action verbs (e.g., 'led', 'developed').")
                     
                 if has_metric:
                     score += 15
-                    feedback.append("✅ **Result:** Included numbers/metrics to quantify your impact.")
+                    feedback.append(" **Result:** Included numbers/metrics to quantify your impact.")
                 else:
-                    feedback.append("❌ **Result:** Missing quantifiable metrics (e.g., 'increased by 20%').")
+                    feedback.append(" **Result:** Missing quantifiable metrics (e.g., 'increased by 20%').")
                     
                 if has_i:
                     score += 10
-                    feedback.append("✅ **Ownership:** Used 'I' statements to show ownership.")
+                    feedback.append(" **Ownership:** Used 'I' statements to show ownership.")
                 else:
-                    feedback.append("❌ **Ownership:** Avoid saying 'we' too much. Use 'I'.")
+                    feedback.append(" **Ownership:** Avoid saying 'we' too much. Use 'I'.")
                 
-                with st.chat_message("ai", avatar="🤖"):
+                with st.chat_message("ai", avatar=""):
                     if score >= 85:
                         st.markdown(f"<div style='background: #064E3B; border-left: 4px solid #10B981; padding: 16px; border-radius: 8px; color: #FAFAFA;'><strong>PASS ({score}/100)</strong><br><br>{'<br>'.join(feedback)}</div>", unsafe_allow_html=True)
                     else:

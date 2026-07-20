@@ -151,7 +151,7 @@ else:
         st.markdown(f"""
         <div style='display: flex; align-items: center; gap: 12px; margin-top: 0px; margin-bottom: 10px;'>
             <div style='background-color: {accent_colors[accent]}; width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px {glow_colors[accent]};'>
-                <span style='color: #000000; font-size: 18px; font-weight: bold;'></span>
+                <span style='color: #000000; font-size: 15px; font-weight: 900; font-family: "Outfit", sans-serif; letter-spacing: -0.5px;'>IQ</span>
             </div>
             <div>
                 <h3 style='margin: 0; font-size: 18px; font-family: "Outfit", sans-serif; color: #F4F4F5; font-weight: 700;'>ResumeIQ</h3>

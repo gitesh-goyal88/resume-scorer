@@ -20,13 +20,24 @@ if "resume_text" not in st.session_state or not st.session_state.resume_text:
     st.stop()
 
 if not st.session_state.interview_qs:
-    st.markdown('''
-    <div style='background: #18181B; border: 1px dashed rgba(255,255,255,0.15); border-radius: 18px; padding: 40px; text-align: center; margin-top: 20px;'>
-        <h3 style='color: #FAFAFA; margin-bottom: 8px;'>Copilot Locked</h3>
-        <p style='color: #A1A1AA; font-family: Inter; margin-bottom: 24px;'>Please generate your Full Report on the Dashboard to unlock tailored interview questions.</p>
-        <a href='/' target='_self' style='text-decoration: none;'><button style='background-color: #22C55E; color: #000000; border: none; border-radius: 99px; font-weight: 700; padding: 10px 24px; cursor: pointer;'>Go to Dashboard</button></a>
-    </div>
-    ''', unsafe_allow_html=True)
+    if getattr(st.session_state, "issues", None) is None:
+        st.markdown('''
+        <div style='background: #18181B; border: 1px dashed rgba(255,255,255,0.15); border-radius: 18px; padding: 40px; text-align: center; margin-top: 20px;'>
+            <h3 style='color: #FAFAFA; margin-bottom: 8px;'>Copilot Locked</h3>
+            <p style='color: #A1A1AA; font-family: Inter; margin-bottom: 24px;'>Please generate your Full Report on the Dashboard to unlock tailored interview questions.</p>
+            <a href='/' target='_self' style='text-decoration: none;'><button style='background-color: #22C55E; color: #000000; border: none; border-radius: 99px; font-weight: 700; padding: 10px 24px; cursor: pointer;'>Go to Dashboard</button></a>
+        </div>
+        ''', unsafe_allow_html=True)
+    else:
+        from resume_builder import generate_interview_questions
+        with st.spinner("Generating tailored interview questions..."):
+            st.session_state.interview_qs = generate_interview_questions(
+                st.session_state.issues or [], 
+                st.session_state.skills or [], 
+                st.session_state.market_gaps or {"matched": [], "missing": []}, 
+                st.session_state.bullet_results or []
+            )
+            st.rerun()
 else:
     if "active_q" not in st.session_state:
         st.session_state.active_q = random.choice(st.session_state.interview_qs)
@@ -42,18 +53,18 @@ else:
             
     st.markdown("<br>", unsafe_allow_html=True)
             
-    with st.chat_message("ai", avatar=""):
+    with st.chat_message("ai"):
         st.markdown(f"**Here is your question:**\n\n{st.session_state.active_q}")
         
     answer = st.chat_input("Type your answer using the STAR method (Situation, Task, Action, Result)...")
     
     if answer:
-        with st.chat_message("user", avatar=""):
+        with st.chat_message("user"):
             st.markdown(answer)
             
         with st.spinner("Grading response..."):
             if len(answer.split()) < 20:
-                with st.chat_message("ai", avatar=""):
+                with st.chat_message("ai"):
                     st.markdown("<div style='background: #3F1D1D; border-left: 4px solid #EF4444; padding: 16px; border-radius: 8px; color: #FAFAFA;'><strong>FAIL (Too Short)</strong><br>Your answer is too short. A good interview response should be at least 3-4 sentences long. Provide more context.</div>", unsafe_allow_html=True)
             else:
                 ans_lower = answer.lower()
@@ -85,7 +96,7 @@ else:
                 else:
                     feedback.append(" **Ownership:** Avoid saying 'we' too much. Use 'I'.")
                 
-                with st.chat_message("ai", avatar=""):
+                with st.chat_message("ai"):
                     if score >= 85:
                         st.markdown(f"<div style='background: #064E3B; border-left: 4px solid #10B981; padding: 16px; border-radius: 8px; color: #FAFAFA;'><strong>PASS ({score}/100)</strong><br><br>{'<br>'.join(feedback)}</div>", unsafe_allow_html=True)
                     else:
